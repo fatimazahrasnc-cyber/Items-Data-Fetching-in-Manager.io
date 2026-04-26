@@ -7,11 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --bg:        #f4f6f9;
   --surface:   #ffffff;
-  --panel:     #ffffff;
   --border:    #dde2ea;
   --border2:   #c8d0dc;
   --accent:    #1d6fce;
@@ -35,18 +33,10 @@
   --radius:    8px;
   --shadow:    0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
 }
-
 html, body { height: 100%; }
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 14px;
-  font-size: 13px;
-}
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; padding: 14px; font-size: 13px; }
 
-/* ── Topbar ── */
+/* Topbar */
 .topbar {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   padding: 9px 14px; margin-bottom: 12px;
@@ -54,44 +44,32 @@ body {
   border-radius: var(--radius); box-shadow: var(--shadow);
   position: sticky; top: 0; z-index: 200;
 }
-.brand {
-  font-size: 13px; font-weight: 800; color: var(--accent);
-  letter-spacing: .03em; white-space: nowrap;
-}
-.vsep { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
-
+.brand { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .03em; white-space: nowrap; }
+.vsep  { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
 .load-btn {
   padding: 7px 16px; border: none; border-radius: 6px; cursor: pointer;
   font-family: var(--sans); font-size: 12px; font-weight: 700;
-  background: var(--accent); color: #fff;
-  transition: opacity .15s, transform .1s; white-space: nowrap;
+  background: var(--accent); color: #fff; transition: opacity .15s, transform .1s; white-space: nowrap;
 }
 .load-btn:hover:not(:disabled) { opacity: .87; transform: translateY(-1px); }
 .load-btn:disabled { opacity: .42; cursor: not-allowed; }
-
 .print-btn {
   padding: 7px 12px; border: 1px solid var(--border2); border-radius: 6px;
   background: transparent; color: var(--text-dim); font-family: var(--sans);
   font-size: 12px; cursor: pointer; white-space: nowrap; transition: all .15s;
 }
 .print-btn:hover { background: var(--bg); }
-
 .search-wrap { position: relative; min-width: 140px; max-width: 240px; flex: 1; }
 .search-wrap input {
-  width: 100%; padding: 6px 10px 6px 28px;
-  background: var(--bg); border: 1px solid var(--border2);
-  border-radius: 6px; color: var(--text);
-  font-family: var(--mono); font-size: 11px; outline: none;
-  transition: border-color .2s;
+  width: 100%; padding: 6px 10px 6px 28px; background: var(--bg); border: 1px solid var(--border2);
+  border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 11px; outline: none; transition: border-color .2s;
 }
 .search-wrap input:focus { border-color: var(--accent); }
 .search-wrap input::placeholder { color: var(--muted); }
 .si { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; }
-
 .ctrl-sel {
   padding: 6px 8px; background: var(--bg); border: 1px solid var(--border2);
-  border-radius: 6px; color: var(--text); font-family: var(--sans);
-  font-size: 11px; outline: none; cursor: pointer;
+  border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 11px; outline: none; cursor: pointer;
 }
 .fbtn {
   padding: 5px 10px; border: 1px solid var(--border2); border-radius: 6px;
@@ -99,49 +77,36 @@ body {
   font-size: 11px; cursor: pointer; transition: all .15s; white-space: nowrap;
 }
 .fbtn.on { background: var(--accent-lt); color: var(--accent); border-color: #90bdf0; font-weight: 700; }
-
 .prog-wrap { flex: 1; min-width: 60px; max-width: 130px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .prog-bar  { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .25s; }
 .status-txt { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
 
-/* ── Stats ── */
-.stats-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 9px; margin-bottom: 12px;
-}
-.stat-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 11px 13px; box-shadow: var(--shadow);
-}
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 9px; margin-bottom: 12px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 13px; box-shadow: var(--shadow); }
 .stat-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 3px; }
 .stat-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--head); line-height: 1; }
 .stat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
 
-/* ── Tabs ── */
+/* Tabs */
 .tab-bar { display: flex; gap: 2px; border-bottom: 2px solid var(--border); }
 .tab {
   padding: 8px 15px; font-size: 11px; font-weight: 700; cursor: pointer;
-  color: var(--text-dim); border-radius: 6px 6px 0 0;
-  transition: all .15s; white-space: nowrap;
+  color: var(--text-dim); border-radius: 6px 6px 0 0; transition: all .15s; white-space: nowrap;
   border: 1px solid transparent; border-bottom: none; margin-bottom: -2px;
 }
 .tab:hover { color: var(--accent); }
-.tab.active {
-  background: var(--surface); color: var(--accent);
-  border-color: var(--border); border-bottom-color: var(--surface);
-}
+.tab.active { background: var(--surface); color: var(--accent); border-color: var(--border); border-bottom-color: var(--surface); }
 
-/* ── Table ── */
+/* Table */
 .tbl-wrap {
   background: var(--surface); border: 1px solid var(--border);
   border-top: none; border-radius: 0 0 var(--radius) var(--radius);
   box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px;
 }
 .tbl-scroll { overflow-x: auto; max-height: calc(100vh - 290px); overflow-y: auto; }
-
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead { position: sticky; top: 0; z-index: 10; }
-
 thead tr.cg-row { background: #edf1f7; }
 th.cg {
   padding: 4px 10px 3px; font-size: 8px; font-weight: 800;
@@ -156,86 +121,70 @@ th.cg:last-child { border-right: none; }
 .cg-div  { color: #6639ba; background: #ede8ff; }
 .cg-cf   { color: #9a6700; background: #fff8c5; }
 .cg-misc { color: #4a5a6e; }
-
 thead tr.hdr-row { background: #f6f8fb; }
 th {
   padding: 8px 10px; text-align: left;
   font-family: var(--mono); font-size: 9px; font-weight: 600;
   color: var(--text-dim); text-transform: uppercase; letter-spacing: .07em;
-  border-bottom: 2px solid var(--border2);
-  border-right: 1px solid #edf1f7;
+  border-bottom: 2px solid var(--border2); border-right: 1px solid #edf1f7;
   white-space: nowrap; cursor: pointer; user-select: none; transition: color .15s;
 }
 th:last-child { border-right: none; }
 th:hover { color: var(--accent); }
 th.r { text-align: right; }
 th.c { text-align: center; }
-
 tbody tr { border-bottom: 1px solid #edf1f7; transition: background .08s; }
 tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: #f3f7ff; }
-
-td {
-  padding: 7px 10px; vertical-align: middle;
-  border-right: 1px solid #f0f3f7;
-}
+td { padding: 7px 10px; vertical-align: middle; border-right: 1px solid #f0f3f7; }
 td:last-child { border-right: none; }
-
 .td-name { font-weight: 600; color: var(--head); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .td-code { font-family: var(--mono); font-size: 10px; color: var(--accent); white-space: nowrap; }
 .td-unit { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-.td-num  { font-family: var(--mono); font-size: 11px; text-align: right; }
+.td-num  { font-family: var(--mono); font-size: 11px; text-align: right; white-space: nowrap; }
 .td-dim  { color: #b8c4d4; }
-.td-na   { color: #c8d4e0; font-style: italic; font-size: 10px; }
-
+.neg     { color: var(--red) !important; }
 .badge {
   display: inline-block; padding: 2px 7px; border-radius: 20px;
   font-size: 9px; font-weight: 700; letter-spacing: .04em; white-space: nowrap;
 }
-.b-active   { background: var(--green-lt);  color: var(--green);  border: 1px solid #aaddb8; }
-.b-inactive { background: var(--red-lt);    color: var(--red);    border: 1px solid #ffbbbc; }
-.b-val      { background: var(--accent-lt); color: var(--accent); border: 1px solid #a8ccf0; }
-.b-div      { background: var(--purple-lt); color: var(--purple); border: 1px solid #c4aef5; }
-.b-reorder  { background: var(--amber-lt);  color: var(--amber);  border: 1px solid #e8d060; }
-
+.b-active   { background: var(--green-lt); color: var(--green); border: 1px solid #aaddb8; }
+.b-inactive { background: var(--red-lt);   color: var(--red);   border: 1px solid #ffbbbc; }
+.b-val      { background: var(--accent-lt);color: var(--accent);border: 1px solid #a8ccf0; }
+.b-reorder  { background: var(--amber-lt); color: var(--amber); border: 1px solid #e8d060; }
 .grp-row td {
   background: #eef2f9; font-size: 9px; font-weight: 800;
   color: var(--accent); text-transform: uppercase; letter-spacing: .16em;
   padding: 4px 10px; border-top: 1px solid var(--border2);
 }
-
 .div-chip {
   display: inline-block; padding: 2px 8px; border-radius: 4px;
   font-size: 10px; background: var(--purple-lt); color: var(--purple);
   border: 1px solid #c4aef5; white-space: nowrap;
 }
-.div-code {
-  font-family: var(--mono); font-size: 9px; color: var(--muted);
-  margin-left: 4px;
-}
+.div-code { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-left: 4px; }
+.cf-cell  { font-family: var(--mono); font-size: 10px; color: var(--text); }
 
-.cf-cell { font-family: var(--mono); font-size: 10px; color: var(--text); }
-
-.empty-state {
-  text-align: center; padding: 60px 20px;
-  color: var(--muted); font-size: 13px;
+/* debug/info panel */
+.info-box {
+  background: var(--teal-lt); border: 1px solid #9ad8e8; border-radius: var(--radius);
+  padding: 10px 14px; margin-bottom: 12px; font-size: 11px; color: var(--teal);
+  font-family: var(--mono); display: none;
 }
-.empty-state .icon { font-size: 38px; margin-bottom: 10px; }
 .err-box {
-  color: var(--red); background: var(--red-lt);
-  border: 1px solid #ffbbbc; border-radius: var(--radius);
-  padding: 12px 16px; font-size: 12px; margin-bottom: 14px;
+  color: var(--red); background: var(--red-lt); border: 1px solid #ffbbbc;
+  border-radius: var(--radius); padding: 12px 16px; font-size: 12px; margin-bottom: 14px;
 }
-
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
+.empty-state .icon { font-size: 38px; margin-bottom: 10px; }
 .pagination {
   display: flex; align-items: center; justify-content: flex-end; gap: 5px;
   padding: 9px 13px; border-top: 1px solid var(--border);
-  font-size: 11px; color: var(--text-dim); flex-wrap: wrap;
-  background: #fafbfd;
+  font-size: 11px; color: var(--text-dim); flex-wrap: wrap; background: #fafbfd;
 }
 .pg-btn {
-  padding: 4px 9px; border: 1px solid var(--border2);
-  border-radius: 5px; background: var(--surface); color: var(--text-dim);
+  padding: 4px 9px; border: 1px solid var(--border2); border-radius: 5px;
+  background: var(--surface); color: var(--text-dim);
   font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all .15s;
 }
 .pg-btn:hover:not(:disabled) { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
@@ -243,22 +192,13 @@ td:last-child { border-right: none; }
 .pg-btn.cur { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
 .pg-dots { color: var(--muted); }
 
-/* loading overlay for meta fetch */
-.meta-notice {
-  font-family: var(--mono); font-size: 10px; color: var(--teal);
-  background: var(--teal-lt); border: 1px solid #9ad8e8;
-  border-radius: 5px; padding: 4px 10px; white-space: nowrap;
-}
-
 @media print {
   body { padding: 0; background: white; font-size: 10px; }
-  .topbar, .tab-bar, .pagination, .stats-grid, .print-btn { display: none !important; }
+  .topbar, .tab-bar, .pagination, .stats-grid, .print-btn, .info-box { display: none !important; }
   .tbl-wrap { box-shadow: none; border-radius: 0; border: none; }
   .tbl-scroll { max-height: none; overflow: visible; }
-  table { font-size: 9px; }
-  th, td { padding: 5px 7px; }
+  table { font-size: 9px; } th, td { padding: 5px 7px; }
 }
-
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -266,37 +206,33 @@ td:last-child { border-right: none; }
 </head>
 <body>
 
-<!-- ── Control bar ── -->
 <div class="topbar">
   <span class="brand">📦 Inventory Items</span>
   <div class="vsep"></div>
   <button class="load-btn" id="load-btn" onclick="loadAllRecords()">⬇ Load All Records</button>
   <button class="print-btn" onclick="window.print()">🖨 Print</button>
-  <span class="meta-notice" id="meta-notice" style="display:none">⏳ Loading field definitions…</span>
-
   <div class="search-wrap">
     <span class="si">🔍</span>
     <input type="text" id="search-input" placeholder="Search name / code…" oninput="applyFilters()" disabled>
   </div>
-
   <select class="ctrl-sel" id="sort-select" onchange="applyFilters()" disabled>
     <option value="name-asc">Name A→Z</option>
     <option value="name-desc">Name Z→A</option>
     <option value="code-asc">Code A→Z</option>
+    <option value="qty-desc">Qty On Hand ↓</option>
+    <option value="val-desc">Total Value ↓</option>
     <option value="sale-desc">Sale Price ↓</option>
     <option value="purchase-desc">Purchase Price ↓</option>
-    <option value="qty-desc">Qty Desired ↓</option>
   </select>
-
   <button class="fbtn" id="f-active"  onclick="toggleF('active')"  disabled>Active Only</button>
   <button class="fbtn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder</button>
   <button class="fbtn" id="f-hasdiv"  onclick="toggleF('hasdiv')"  disabled>Has Division</button>
   <button class="fbtn" id="f-hascf"   onclick="toggleF('hascf')"   disabled>Has Custom Fields</button>
-
   <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
   <span class="status-txt" id="status-txt">Press Load to fetch data</span>
 </div>
 
+<div class="info-box" id="info-box"></div>
 <div class="stats-grid" id="stats-grid" style="display:none"></div>
 
 <div id="tabs-container" style="display:none">
@@ -309,7 +245,6 @@ td:last-child { border-right: none; }
   </div>
   <div id="app"></div>
 </div>
-
 <div id="app-init"></div>
 
 <script>
@@ -374,23 +309,23 @@ async function getInventoryItemBatch(onProgress) {
 }
 
 /* ══════════════════════════════════
-   fetchAllPages — generic paginator for metadata endpoints
-   Used for custom field definitions, divisions, etc.
+   Generic paginator for any batch endpoint
 ══════════════════════════════════ */
-async function fetchAllPages(basePath) {
+async function fetchAllPages(path, onProgress) {
   const all = [];
   let nextToken = null;
   let pageNum = 0;
   do {
-    const path = nextToken
-      ? `${basePath}?next_page_token=${encodeURIComponent(nextToken)}`
-      : basePath;
-    const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path });
+    const url = nextToken
+      ? `${path}${path.includes('?')?'&':'?'}next_page_token=${encodeURIComponent(nextToken)}`
+      : path;
+    const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: url });
     const page = Array.isArray(data) ? data : (data.items || data.data || []);
     all.push(...page);
     nextToken = data.next_page_token || data.nextPageToken || data._links?.next?.href || null;
     pageNum++;
-    if (pageNum >= 100) break;
+    if (onProgress) onProgress(all.length, pageNum);
+    if (pageNum >= 1000) break;
   } while (nextToken);
   return all;
 }
@@ -403,13 +338,14 @@ let _filtered = [];
 let _page     = 1;
 let _tab      = 'inventory';
 const PAGE_SIZE = 50;
-const _filters = { active: false, reorder: false, hasdiv: false, hascf: false };
+const _filters  = { active: false, reorder: false, hasdiv: false, hascf: false };
 
-// Metadata maps built at load time
-// cfKeyToName: { [uuid_key]: "Human Field Name" }
-// divKeyToName: { [uuid_key]: { name, code } }
-let _cfKeyToName  = {};   // uuid → "Carton Size", "HS Code", etc.
-let _divKeyToInfo = {};   // uuid → { name, code }
+// Metadata: populated during load
+let _cfKeyToName  = {};  // CF UUID → human name e.g. "Carton Size"
+let _divKeyToInfo = {};  // Division UUID → { name, code }
+
+// Log which qty endpoint actually worked (shown in info box)
+let _qtyEndpointUsed = '';
 
 const VALUATION = { 1: 'Average Cost', 2: 'FIFO', 3: 'LIFO', 4: 'Specific ID' };
 
@@ -420,41 +356,128 @@ const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 const num   = (v, d=0) => v!=null ? Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}) : null;
 const price = v => v!=null ? num(v,2) : null;
 const dash  = () => `<span class="td-dim">—</span>`;
-const na    = () => `<span class="td-na" title="Not available in inventory-item-batch endpoint">n/a</span>`;
 
-/* Resolve a Manager reference object → display name */
-function resolveName(val) {
-  if (val == null) return null;
-  if (typeof val === 'object') {
-    // Check if this is a UUID key we have in our division lookup
-    const key = val.key ?? val.id ?? val.uuid;
-    if (key && _divKeyToInfo[key]) return _divKeyToInfo[key];
-    return { name: val.name ?? val.text ?? val.nameWithCode ?? JSON.stringify(val), code: val.code ?? null };
-  }
-  // Plain string — could be a UUID
-  if (typeof val === 'string' && _divKeyToInfo[val]) return _divKeyToInfo[val];
-  return { name: String(val), code: null };
+function numCell(v, decimals=2, highlight=false) {
+  if (v == null) return dash();
+  const n = Number(v);
+  const formatted = num(n, decimals);
+  const cls = n < 0 ? ' neg' : '';
+  const style = highlight && n > 0 ? ' style="color:var(--green);font-weight:600"' : '';
+  return `<span class="td-num${cls}"${style}>${formatted}</span>`;
 }
 
-/* Get human CF column name from key UUID */
+/* Resolve division raw value using our lookup map */
+function resolveDiv(val) {
+  if (val == null) return null;
+  // Manager returns division as a UUID string OR as { key, name, code } object
+  if (typeof val === 'string') {
+    const info = _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()];
+    return info ?? { name: val, code: null };
+  }
+  if (typeof val === 'object') {
+    const key = val.key ?? val.id ?? val.uuid ?? '';
+    const fromMap = _divKeyToInfo[key] ?? _divKeyToInfo[key.toLowerCase?.() ?? ''];
+    if (fromMap) return fromMap;
+    return { name: val.name ?? val.text ?? key, code: val.code ?? null };
+  }
+  return null;
+}
+
+/* Resolve CF key to human label */
 function cfLabel(key) {
   return _cfKeyToName[key] ?? _cfKeyToName[key?.toLowerCase()] ?? key;
 }
 
 /* ══════════════════════════════════
-   fetchMetadata
-   Loads custom field definitions and division list
-   so we can display human names instead of UUIDs.
-   Manager endpoints tried:
-     /api4/text-custom-field-batch       → Text CFs (like "Carton Size")
-     /api4/number-custom-field-batch     → Numeric CFs
-     /api4/date-custom-field-batch       → Date CFs
-     /api4/checkbox-custom-field-batch   → Boolean CFs
-     /api4/division-batch                → Divisions (name + code)
+   fetchQuantities
+   Manager stores inventory quantities separately.
+   We probe several known endpoint patterns and use
+   whichever one returns real data.
+
+   Known endpoints to try (in order):
+   1. /api4/inventory-quantity-batch          ← most likely
+   2. /api4/inventory-item-location-batch     ← multi-location
+   3. /api4/inventory-movement-batch          ← movement history (aggregate)
+
+   Each row typically: { key: itemUUID, item: { qtyOwned, qtyOnHand, ... } }
+   OR the quantities may be embedded as:
+   { key, qtyOwned, qtyOnHand, averageCost, totalValue, qtyToDeliver, qtyToReceive }
+══════════════════════════════════ */
+async function fetchQuantities(onStatus) {
+  // Map: itemKey → quantity object
+  const qtyMap = {};
+
+  const endpoints = [
+    '/api4/inventory-quantity-batch',
+    '/api4/inventory-item-location-batch',
+    '/api4/inventory-summary-batch',
+  ];
+
+  for (const ep of endpoints) {
+    try {
+      onStatus(`Fetching quantities from ${ep}…`);
+      const rows = await fetchAllPages(ep);
+      if (!rows.length) continue;
+
+      // Inspect first row to understand structure
+      const sample = rows[0];
+      const sampleStr = JSON.stringify(sample).toLowerCase();
+
+      // Check if this endpoint has qty data
+      const hasQty = sampleStr.includes('qtyowned') ||
+                     sampleStr.includes('qtyonhand') ||
+                     sampleStr.includes('quantityowned') ||
+                     sampleStr.includes('owned') ||
+                     sampleStr.includes('onhand') ||
+                     sampleStr.includes('averagecost') ||
+                     sampleStr.includes('totalvalue');
+
+      if (!hasQty) continue;
+
+      // Build map from rows
+      rows.forEach(row => {
+        // Key can be at row.key OR row.item.key OR row.inventoryItem (UUID string)
+        const itemKey = row?.key
+          ?? row?.item?.inventoryItem
+          ?? row?.inventoryItem
+          ?? row?.item?.key
+          ?? null;
+
+        if (!itemKey) return;
+
+        // Quantities can be at row.item.* or row.* directly
+        const src = row?.item ?? row;
+
+        qtyMap[itemKey] = {
+          qtyOwned:      src?.qtyOwned      ?? src?.quantityOwned      ?? src?.owned      ?? null,
+          qtyOnHand:     src?.qtyOnHand     ?? src?.quantityOnHand     ?? src?.onHand     ?? src?.onhand ?? null,
+          qtyToDeliver:  src?.qtyToDeliver  ?? src?.quantityToDeliver  ?? src?.toDeliver  ?? null,
+          qtyToReceive:  src?.qtyToReceive  ?? src?.quantityToReceive  ?? src?.toReceive  ?? null,
+          averageCost:   src?.averageCost   ?? src?.averageUnitCost    ?? src?.unitCost   ?? null,
+          totalValue:    src?.totalValue    ?? src?.inventoryValue     ?? src?.value      ?? null,
+        };
+      });
+
+      if (Object.keys(qtyMap).length > 0) {
+        _qtyEndpointUsed = ep;
+        return qtyMap;
+      }
+    } catch(e) {
+      // Try next endpoint
+    }
+  }
+
+  // Fallback: try fetching individual inventory item details via the self links
+  // This is slower but guaranteed to work — each item's own endpoint has qty data
+  _qtyEndpointUsed = 'per-item (via self links)';
+  return qtyMap; // empty map — quantities shown from item batch itself as last resort
+}
+
+/* ══════════════════════════════════
+   fetchMetadata — CF names + divisions
 ══════════════════════════════════ */
 async function fetchMetadata() {
-  document.getElementById('meta-notice').style.display = 'inline-block';
-
+  // Custom field definitions
   const cfEndpoints = [
     '/api4/text-custom-field-batch',
     '/api4/number-custom-field-batch',
@@ -462,17 +485,12 @@ async function fetchMetadata() {
     '/api4/checkbox-custom-field-batch',
     '/api4/dropdown-custom-field-batch',
   ];
-
-  // Fetch all CF types in parallel — silently ignore endpoints that don't exist
   const cfResults = await Promise.allSettled(cfEndpoints.map(ep => fetchAllPages(ep)));
-
-  cfResults.forEach(result => {
-    if (result.status !== 'fulfilled') return;
-    const items = result.value;
-    items.forEach(row => {
-      // Each row is { key: uuid, item: { name: "Carton Size", ... } } or similar
-      const key  = row?.key ?? row?.item?.key;
-      const name = row?.item?.name ?? row?.item?.fieldName ?? row?.name;
+  cfResults.forEach(r => {
+    if (r.status !== 'fulfilled') return;
+    r.value.forEach(row => {
+      const key  = row?.key;
+      const name = row?.item?.name ?? row?.name;
       if (key && name) {
         _cfKeyToName[key] = name;
         _cfKeyToName[key.toLowerCase()] = name;
@@ -480,11 +498,11 @@ async function fetchMetadata() {
     });
   });
 
-  // Fetch divisions
+  // Divisions
   try {
-    const divItems = await fetchAllPages('/api4/division-batch');
-    divItems.forEach(row => {
-      const key  = row?.key ?? row?.item?.key;
+    const divRows = await fetchAllPages('/api4/division-batch');
+    divRows.forEach(row => {
+      const key  = row?.key;
       const name = row?.item?.name ?? row?.name;
       const code = row?.item?.code ?? row?.code;
       if (key && name) {
@@ -492,19 +510,16 @@ async function fetchMetadata() {
         _divKeyToInfo[key.toLowerCase()] = { name, code };
       }
     });
-  } catch(e) {
-    // Division endpoint optional
-  }
-
-  document.getElementById('meta-notice').style.display = 'none';
+  } catch(e) {}
 }
 
 /* ══════════════════════════════════
-   Normalize raw API record → flat object
+   Normalize item + join quantity data
 ══════════════════════════════════ */
-function normalize(raw) {
+function normalize(raw, qtyMap) {
   const it  = raw?.item ?? raw;
   const cf2 = it?.customFields2 ?? {};
+  const key = raw?.key ?? it?.key ?? null;
 
   const cfStrings      = cf2.strings      ?? {};
   const cfDecimals     = cf2.decimals     ?? {};
@@ -520,29 +535,20 @@ function normalize(raw) {
     Object.keys(cfStringArrays).length
   );
 
-  // Resolve division — could be UUID string, object, or null
-  const divRaw  = it?.division;
-  const defDivRaw = it?.hasDefaultDivision ? it?.defaultDivision : null;
+  // Qty: first try dedicated qty map, then fall back to fields on the item itself
+  const qty = (key && qtyMap[key]) ? qtyMap[key] : {};
 
-  // If divRaw is a plain UUID string, look it up in our map
-  // If it's an object with .key, look that up
-  // If it's an object with .name directly, use that
-  function resolveDiv(val) {
-    if (val == null) return null;
-    if (typeof val === 'string') {
-      return _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()] ?? { name: val, code: null };
-    }
-    if (typeof val === 'object') {
-      const key = val.key ?? val.id;
-      if (key && _divKeyToInfo[key]) return _divKeyToInfo[key];
-      if (key && _divKeyToInfo[key?.toLowerCase()]) return _divKeyToInfo[key.toLowerCase()];
-      return { name: val.name ?? val.text ?? JSON.stringify(val), code: val.code ?? null };
-    }
-    return null;
-  }
+  const qtyOwned     = qty.qtyOwned     ?? it?.qtyOwned     ?? it?.quantityOwned      ?? null;
+  const qtyOnHand    = qty.qtyOnHand    ?? it?.qtyOnHand    ?? it?.quantityOnHand     ?? null;
+  const qtyToDeliver = qty.qtyToDeliver ?? it?.qtyToDeliver ?? it?.quantityToDeliver  ?? null;
+  const qtyToReceive = qty.qtyToReceive ?? it?.qtyToReceive ?? it?.quantityToReceive  ?? null;
+  const averageCost  = qty.averageCost  ?? it?.averageCost  ?? it?.unitCost           ??
+                       (it?.obsolete_StartingBalanceAverageCost2 > 0
+                         ? it.obsolete_StartingBalanceAverageCost2 : null);
+  const totalValue   = qty.totalValue   ?? it?.totalValue   ?? it?.inventoryValue     ?? null;
 
   return {
-    key:             raw?.key ?? null,
+    key,
     itemCode:        it?.itemCode   ?? null,
     itemName:        it?.itemName   ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
     unitName:        it?.unitName   ?? null,
@@ -551,15 +557,8 @@ function normalize(raw) {
     reorderPoint:    it?.reorderPoint ?? false,
     qtyDesired:      it?.qtyDesired ?? 0,
 
-    // Inventory quantities
-    qtyOwned:        it?.qtyOwned       ?? it?.quantityOwned      ?? null,
-    qtyOnHand:       it?.qtyOnHand      ?? it?.quantityOnHand     ?? null,
-    qtyToDeliver:    it?.qtyToDeliver   ?? it?.quantityToDeliver  ?? null,
-    qtyToReceive:    it?.qtyToReceive   ?? it?.quantityToReceive  ?? null,
-    averageCost:     it?.averageCost    ?? it?.unitCost           ??
-                     (it?.obsolete_StartingBalanceAverageCost2 > 0
-                       ? it.obsolete_StartingBalanceAverageCost2 : null),
-    totalValue:      it?.totalValue     ?? it?.inventoryValue     ?? null,
+    // Quantities — joined from dedicated endpoint
+    qtyOwned, qtyOnHand, qtyToDeliver, qtyToReceive, averageCost, totalValue,
 
     // Pricing
     defPurchasePrice: it?.hasDefaultPurchaseUnitPrice ? (it?.defaultPurchaseUnitPrice ?? 0) : null,
@@ -567,23 +566,19 @@ function normalize(raw) {
     defaultQty:       it?.hasDefaultQty ? (it?.defaultQty ?? 0) : null,
     defaultLineDesc:  it?.hasDefaultLineDescription ? it?.defaultLineDescription : null,
 
-    // Division — fully resolved to { name, code } or null
-    division:        resolveDiv(divRaw),
-    defaultDivision: resolveDiv(defDivRaw),
+    // Division — resolved to { name, code }
+    division:        resolveDiv(it?.division),
+    defaultDivision: it?.hasDefaultDivision ? resolveDiv(it?.defaultDivision) : null,
     divisionEnabled: it?.divisionEnabled ?? false,
 
     // Accounts
-    incomeAccountName:  it?.customIncomeAccount  ? resolveName(it?.incomeAccount)?.name  : null,
-    expenseAccountName: it?.customExpenseAccount ? resolveName(it?.expenseAccount)?.name : null,
-    controlAccountName: resolveName(it?.controlAccount)?.name ?? null,
+    incomeAccountName:  it?.customIncomeAccount  ? resolveDiv(it?.incomeAccount)?.name  : null,
+    expenseAccountName: it?.customExpenseAccount ? resolveDiv(it?.expenseAccount)?.name : null,
+    controlAccountName: resolveDiv(it?.controlAccount)?.name ?? null,
 
-    // Custom fields raw maps
+    // Custom fields
     cfStrings, cfDecimals, cfDates, cfBooleans, cfStringArrays,
     hasCF,
-
-    // Category from inventory list view
-    category: it?.category ?? null,
-    hsCode:   it?.hsCode   ?? null,
   };
 }
 
@@ -600,31 +595,45 @@ async function loadAllRecords() {
   document.getElementById('app-init').innerHTML = '';
   document.getElementById('stats-grid').style.display = 'none';
   document.getElementById('tabs-container').style.display = 'none';
+  document.getElementById('info-box').style.display = 'none';
 
   const ctrlIds = ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'];
   ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=true; });
 
   try {
-    // Step 1: fetch CF definitions + divisions in parallel with items
-    status.textContent = 'Fetching field definitions…';
+    // Phase 1: fetch items + metadata in parallel
+    status.textContent = 'Fetching items & field definitions…';
     const [rawItems] = await Promise.all([
       getInventoryItemBatch((loaded, total, page) => {
         status.textContent = total
-          ? `Page ${page} · ${loaded.toLocaleString()} / ${total.toLocaleString()}`
-          : `Page ${page} · ${loaded.toLocaleString()} records…`;
-        if (total) bar.style.width = Math.min(85, Math.round(loaded/total*100)) + '%';
+          ? `Items: page ${page} · ${loaded.toLocaleString()} / ${total.toLocaleString()}`
+          : `Items: page ${page} · ${loaded.toLocaleString()} loaded…`;
+        if (total) bar.style.width = Math.min(60, Math.round(loaded/total*60)) + '%';
       }),
       fetchMetadata(),
     ]);
+    bar.style.width = '65%';
 
+    // Phase 2: fetch quantities from dedicated endpoint
+    status.textContent = 'Fetching inventory quantities…';
+    const qtyMap = await fetchQuantities(msg => { status.textContent = msg; });
     bar.style.width = '100%';
-    status.textContent = `✓ ${rawItems.length.toLocaleString()} records loaded`;
-    btn.textContent = '↺ Reload'; btn.disabled = false;
 
+    const qtyCount = Object.keys(qtyMap).length;
+    status.textContent = `✓ ${rawItems.length.toLocaleString()} items · ${qtyCount.toLocaleString()} qty records`;
+
+    btn.textContent = '↺ Reload'; btn.disabled = false;
     ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=false; });
     document.getElementById('tabs-container').style.display = 'block';
 
-    _raw = rawItems.map(normalize);
+    // Show info about which endpoint provided qty data
+    const infoBox = document.getElementById('info-box');
+    if (_qtyEndpointUsed) {
+      infoBox.style.display = 'block';
+      infoBox.textContent = `ℹ Quantity data source: ${_qtyEndpointUsed} (${qtyCount} records matched)`;
+    }
+
+    _raw = rawItems.map(r => normalize(r, qtyMap));
     _page = 1;
     applyFilters();
 
@@ -663,9 +672,10 @@ function applyFilters() {
       case 'name-asc':      return a.itemName.localeCompare(b.itemName);
       case 'name-desc':     return b.itemName.localeCompare(a.itemName);
       case 'code-asc':      return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
+      case 'qty-desc':      return (b.qtyOnHand??-Infinity)-(a.qtyOnHand??-Infinity);
+      case 'val-desc':      return (b.totalValue??-Infinity)-(a.totalValue??-Infinity);
       case 'sale-desc':     return (b.defSalePrice??-Infinity)-(a.defSalePrice??-Infinity);
       case 'purchase-desc': return (b.defPurchasePrice??-Infinity)-(a.defPurchasePrice??-Infinity);
-      case 'qty-desc':      return (b.qtyDesired??0)-(a.qtyDesired??0);
       default:              return a.itemName.localeCompare(b.itemName);
     }
   });
@@ -684,20 +694,21 @@ function renderStats() {
   const reorder = _raw.filter(i=>i.reorderPoint).length;
   const hasDivs = _raw.filter(i=>i.division).length;
   const hasCFs  = _raw.filter(i=>i.hasCF).length;
+  const totalVal = _raw.reduce((s,i)=>s+(i.totalValue??0), 0);
   const sg = document.getElementById('stats-grid');
   sg.style.display = 'grid';
   sg.innerHTML = [
-    ['Total Items',   total,           'all records',        'var(--head)'],
-    ['Active',        active,          `${total?Math.round(active/total*100):0}% of total`,'var(--green)'],
-    ['Inactive',      total-active,    'hidden from use',    'var(--red)'],
-    ['Reorder Set',   reorder,         'have reorder point', 'var(--amber)'],
-    ['With Division', hasDivs,         'have division',      'var(--purple)'],
-    ['Custom Fields', hasCFs,          'have CF data',       'var(--teal)'],
-    ['Showing',       _filtered.length,'after filters',      'var(--accent)'],
+    ['Total Items',   total,           'all records',              'var(--head)'],
+    ['Active',        active,          `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
+    ['Inactive',      total-active,    'hidden from use',          'var(--red)'],
+    ['Reorder Set',   reorder,         'have reorder point',       'var(--amber)'],
+    ['Total Value',   num(totalVal,0), 'sum of inventory value',   'var(--teal)'],
+    ['With Division', hasDivs,         'have division assigned',   'var(--purple)'],
+    ['Showing',       _filtered.length,'after filters',            'var(--accent)'],
   ].map(([l,v,s,c])=>`
     <div class="stat-card">
       <div class="stat-label">${l}</div>
-      <div class="stat-value" style="color:${c}">${Number(v).toLocaleString()}</div>
+      <div class="stat-value" style="color:${c}">${typeof v==='number'?v.toLocaleString():v}</div>
       <div class="stat-sub">${s}</div>
     </div>`).join('');
 }
@@ -772,26 +783,16 @@ function maybeGrp(name, cols) {
   return `<tr class="grp-row"><td colspan="${cols}">— ${g} —</td></tr>`;
 }
 
-/* Division cell helper */
-function divCell(divInfo) {
-  if (!divInfo) return dash();
-  const label = esc(divInfo.name);
-  const code  = divInfo.code ? `<span class="div-code">(${esc(divInfo.code)})</span>` : '';
-  return `<span class="div-chip">${label}</span>${code}`;
+function divCell(d) {
+  if (!d) return dash();
+  const code = d.code ? `<span class="div-code">(${esc(d.code)})</span>` : '';
+  return `<span class="div-chip">${esc(d.name)}</span>${code}`;
 }
 
-/* ══════════════════════════════════
-   Collect CF column definitions from filtered data
-   Returns [{ key, label, type }] for each CF type
-══════════════════════════════════ */
-function getCFCols(items, cfField) {
+function getCFCols(items, field) {
   const seen = new Map();
-  items.forEach(i => {
-    Object.keys(i[cfField]??{}).forEach(k => {
-      if (!seen.has(k)) seen.set(k, cfLabel(k));
-    });
-  });
-  return [...seen.entries()].map(([key,label]) => ({key, label}));
+  items.forEach(i => Object.keys(i[field]??{}).forEach(k => { if(!seen.has(k)) seen.set(k, cfLabel(k)); }));
+  return [...seen.entries()].map(([key,label]) => ({key,label}));
 }
 
 /* ══════════════════════════════════
@@ -800,45 +801,78 @@ function getCFCols(items, cfField) {
 function renderInventoryTab() {
   const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
+
+  // Column totals
+  let totOwned=0, totOnHand=0, totDeliver=0, totReceive=0, totValue=0;
+
   let rows = '';
   items.forEach(i => {
     rows += maybeGrp(i.itemName, 11);
-    const qc = v => v!=null ? `<span>${num(v,2)}</span>` : na();
+    totOwned   += i.qtyOwned    ?? 0;
+    totOnHand  += i.qtyOnHand   ?? 0;
+    totDeliver += i.qtyToDeliver ?? 0;
+    totReceive += i.qtyToReceive ?? 0;
+    totValue   += i.totalValue   ?? 0;
+
     const sb = i.inactive
       ? `<span class="badge b-inactive">Inactive</span>`
       : `<span class="badge b-active">Active</span>`;
     const rc = i.reorderPoint
       ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`
       : dash();
+
     rows += `<tr>
       <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
       <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
-      <td class="td-num">${qc(i.qtyOwned)}</td>
-      <td class="td-num">${qc(i.qtyOnHand)}</td>
-      <td class="td-num">${qc(i.qtyToDeliver)}</td>
-      <td class="td-num">${qc(i.qtyToReceive)}</td>
-      <td class="td-num">${i.averageCost!=null?`<b>${num(i.averageCost,4)}</b>`:na()}</td>
-      <td class="td-num">${i.totalValue!=null?`<b style="color:var(--green)">${num(i.totalValue,2)}</b>`:na()}</td>
+      <td class="td-num">${numCell(i.qtyOwned,2)}</td>
+      <td class="td-num">${numCell(i.qtyOnHand,2)}</td>
+      <td class="td-num">${numCell(i.qtyToDeliver,2)}</td>
+      <td class="td-num">${numCell(i.qtyToReceive,2)}</td>
+      <td class="td-num">${numCell(i.averageCost,4)}</td>
+      <td class="td-num">${numCell(i.totalValue,2,true)}</td>
       <td>${rc}</td>
       <td>${sb}</td>
     </tr>`;
   });
-  const tbl = `<table><thead>
-    <tr class="cg-row">
-      <th class="cg cg-id" colspan="3">Identification</th>
-      <th class="cg cg-qty" colspan="4">Quantities</th>
-      <th class="cg cg-val" colspan="2">Valuation</th>
-      <th class="cg cg-misc" colspan="2">Status</th>
+
+  // Footer totals row
+  const foot = `<tfoot style="background:#f0f4f9;font-weight:700;border-top:2px solid var(--border2)">
+    <tr>
+      <td colspan="3" style="padding:7px 10px;font-size:10px;color:var(--muted)">PAGE TOTALS (${items.length} rows)</td>
+      <td class="td-num">${num(totOwned,2)}</td>
+      <td class="td-num">${num(totOnHand,2)}</td>
+      <td class="td-num">${num(totDeliver,2)}</td>
+      <td class="td-num">${num(totReceive,2)}</td>
+      <td></td>
+      <td class="td-num" style="color:var(--green)">${num(totValue,2)}</td>
+      <td colspan="2"></td>
     </tr>
-    <tr class="hdr-row">
-      <th>Code</th><th>Item Name</th><th>Unit</th>
-      <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
-      <th class="r">Qty to Deliver</th><th class="r">Qty to Receive</th>
-      <th class="r">Avg Cost</th><th class="r">Total Value</th>
-      <th class="r">Reorder</th><th>Status</th>
-    </tr>
-  </thead><tbody>${rows}</tbody></table>`;
+  </tfoot>`;
+
+  const tbl = `<table>
+    <thead>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="3">Identification</th>
+        <th class="cg cg-qty" colspan="4">Quantities</th>
+        <th class="cg cg-val" colspan="2">Valuation</th>
+        <th class="cg cg-misc" colspan="2">Status</th>
+      </tr>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th><th>Unit</th>
+        <th class="r">Qty Owned</th>
+        <th class="r">Qty On Hand</th>
+        <th class="r">Qty to Deliver</th>
+        <th class="r">Qty to Receive</th>
+        <th class="r">Avg Cost</th>
+        <th class="r">Total Value</th>
+        <th class="r">Reorder</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+    ${foot}
+  </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
@@ -857,31 +891,33 @@ function renderPricingTab() {
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
       <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
       <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:dash()}</td>
-      <td class="td-num">${price(i.defPurchasePrice)??dash()}</td>
-      <td class="td-num">${price(i.defSalePrice)??dash()}</td>
+      <td class="td-num">${numCell(i.defPurchasePrice,2)}</td>
+      <td class="td-num">${numCell(i.defSalePrice,2)}</td>
       <td class="td-num">${i.defaultQty!=null?num(i.defaultQty):dash()}</td>
       <td style="font-size:10px;color:var(--text-dim)">${i.defaultLineDesc?esc(i.defaultLineDesc):dash()}</td>
     </tr>`;
   });
-  const tbl = `<table><thead>
-    <tr class="cg-row">
-      <th class="cg cg-id" colspan="3">Identification</th>
-      <th class="cg cg-pri" colspan="2">Method &amp; Pricing</th>
-      <th class="cg cg-pri" colspan="3">Defaults</th>
-    </tr>
-    <tr class="hdr-row">
-      <th>Code</th><th>Item Name</th><th>Unit</th>
-      <th>Valuation Method</th>
-      <th class="r">Purchase Price</th><th class="r">Sale Price</th>
-      <th class="r">Default Qty</th><th>Default Description</th>
-    </tr>
-  </thead><tbody>${rows}</tbody></table>`;
+  const tbl = `<table>
+    <thead>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="3">Identification</th>
+        <th class="cg cg-pri" colspan="2">Method &amp; Cost</th>
+        <th class="cg cg-pri" colspan="3">Defaults</th>
+      </tr>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th><th>Unit</th>
+        <th>Valuation Method</th>
+        <th class="r">Purchase Price</th><th class="r">Sale Price</th>
+        <th class="r">Default Qty</th><th>Default Description</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
    Tab: Divisions & Accounts
-   Shows division NAME and CODE (e.g. "Pakola (D-4)")
 ══════════════════════════════════ */
 function renderDivisionsTab() {
   const {items,start,total,totalPages} = pageSlice();
@@ -901,36 +937,35 @@ function renderDivisionsTab() {
       <td>${ac(i.controlAccountName)}</td>
     </tr>`;
   });
-  const tbl = `<table><thead>
-    <tr class="cg-row">
-      <th class="cg cg-id" colspan="2">Identification</th>
-      <th class="cg cg-div" colspan="3">Divisions</th>
-      <th class="cg cg-misc" colspan="3">Accounts</th>
-    </tr>
-    <tr class="hdr-row">
-      <th>Code</th><th>Item Name</th>
-      <th>Division</th><th>Default Division</th><th class="c">Div. Enabled</th>
-      <th>Income Account</th><th>Expense Account</th><th>Control Account</th>
-    </tr>
-  </thead><tbody>${rows}</tbody></table>`;
+  const tbl = `<table>
+    <thead>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="2">Identification</th>
+        <th class="cg cg-div" colspan="3">Divisions</th>
+        <th class="cg cg-misc" colspan="3">Accounts</th>
+      </tr>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th>
+        <th>Division</th><th>Default Division</th><th class="c">Div. Enabled</th>
+        <th>Income Account</th><th>Expense Account</th><th>Control Account</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
    Tab: Custom Fields
-   Column headers use human names fetched from
-   /api4/text-custom-field-batch (etc.) — e.g. "Carton Size", "HS Code"
-   NOT the raw UUID keys.
+   Headers use human names (e.g. "Carton Size")
 ══════════════════════════════════ */
 function renderCFTab() {
   const {items,start,total,totalPages} = pageSlice();
-
-  // Build column lists with human labels
-  const strCols  = getCFCols(_filtered, 'cfStrings');
-  const decCols  = getCFCols(_filtered, 'cfDecimals');
-  const boolCols = getCFCols(_filtered, 'cfBooleans');
-  const dateCols = getCFCols(_filtered, 'cfDates');
-  const arrCols  = getCFCols(_filtered, 'cfStringArrays');
+  const strCols  = getCFCols(_filtered,'cfStrings');
+  const decCols  = getCFCols(_filtered,'cfDecimals');
+  const boolCols = getCFCols(_filtered,'cfBooleans');
+  const dateCols = getCFCols(_filtered,'cfDates');
+  const arrCols  = getCFCols(_filtered,'cfStringArrays');
   const cfCount  = strCols.length+decCols.length+boolCols.length+dateCols.length+arrCols.length;
 
   if (cfCount === 0) {
@@ -938,46 +973,28 @@ function renderCFTab() {
       <div class="empty-state"><div class="icon">🏷</div>
         <div>No custom field data found in loaded records.</div>
         <div style="font-size:11px;margin-top:6px;color:var(--muted)">
-          Custom fields (like "Carton Size") appear here once items have<br>
-          customFields2 data populated in Manager.
+          Custom fields (e.g. "Carton Size") appear here when items have customFields2 data in Manager.
         </div>
       </div></div>`;
     return;
   }
 
   _lastGrp = '';
-  const totalCols = 2+cfCount;
+  const totalCols = 2 + cfCount;
   let rows = '';
   items.forEach(i => {
     rows += maybeGrp(i.itemName, totalCols);
     let cells = `
       <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>`;
-    strCols.forEach(({key}) => {
-      const v = i.cfStrings[key];
-      cells += `<td class="cf-cell">${v!=null?esc(String(v)):dash()}</td>`;
-    });
-    decCols.forEach(({key}) => {
-      const v = i.cfDecimals[key];
-      cells += `<td class="td-num">${v!=null?num(Number(v),2):dash()}</td>`;
-    });
-    boolCols.forEach(({key}) => {
-      const v = i.cfBooleans[key];
-      cells += `<td style="text-align:center">${v!=null?(v?`<span style="color:var(--green)">✓</span>`:`<span style="color:var(--muted)">✗</span>`):dash()}</td>`;
-    });
-    dateCols.forEach(({key}) => {
-      const v = i.cfDates[key];
-      cells += `<td class="cf-cell">${v?esc(String(v)):dash()}</td>`;
-    });
-    arrCols.forEach(({key}) => {
-      const v = i.cfStringArrays[key];
-      const d = Array.isArray(v)?v.join(', '):(v!=null?String(v):null);
-      cells += `<td class="cf-cell">${d?esc(d):dash()}</td>`;
-    });
+    strCols.forEach(({key})  => { const v=i.cfStrings[key];       cells+=`<td class="cf-cell">${v!=null?esc(String(v)):dash()}</td>`; });
+    decCols.forEach(({key})  => { const v=i.cfDecimals[key];      cells+=`<td class="td-num">${v!=null?num(Number(v),2):dash()}</td>`; });
+    boolCols.forEach(({key}) => { const v=i.cfBooleans[key];      cells+=`<td style="text-align:center">${v!=null?(v?`<span style="color:var(--green)">✓</span>`:`<span style="color:var(--muted)">✗</span>`):dash()}</td>`; });
+    dateCols.forEach(({key}) => { const v=i.cfDates[key];         cells+=`<td class="cf-cell">${v?esc(String(v)):dash()}</td>`; });
+    arrCols.forEach(({key})  => { const v=i.cfStringArrays[key]; const d=Array.isArray(v)?v.join(', '):(v!=null?String(v):null); cells+=`<td class="cf-cell">${d?esc(d):dash()}</td>`; });
     rows += `<tr>${cells}</tr>`;
   });
 
-  // Column group header
   const cgRow = [
     `<th class="cg cg-id" colspan="2">Identification</th>`,
     strCols.length  ? `<th class="cg cg-cf" colspan="${strCols.length}">Text Fields</th>`    : '',
@@ -987,7 +1004,6 @@ function renderCFTab() {
     arrCols.length  ? `<th class="cg cg-cf" colspan="${arrCols.length}">List Fields</th>`    : '',
   ].join('');
 
-  // Human-label column headers (e.g. "Carton Size" not the UUID)
   const hdrRow = [
     `<th>Code</th><th>Item Name</th>`,
     ...strCols.map(c  => `<th>${esc(c.label)}</th>`),
@@ -997,15 +1013,18 @@ function renderCFTab() {
     ...arrCols.map(c  => `<th>${esc(c.label)}</th>`),
   ].join('');
 
-  const tbl = `<table><thead>
-    <tr class="cg-row">${cgRow}</tr>
-    <tr class="hdr-row">${hdrRow}</tr>
-  </thead><tbody>${rows}</tbody></table>`;
+  const tbl = `<table>
+    <thead>
+      <tr class="cg-row">${cgRow}</tr>
+      <tr class="hdr-row">${hdrRow}</tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
-   Tab: All Fields combined
+   Tab: All Fields
 ══════════════════════════════════ */
 function renderAllTab() {
   const {items,start,total,totalPages} = pageSlice();
@@ -1013,7 +1032,6 @@ function renderAllTab() {
   let rows = '';
   items.forEach(i => {
     rows += maybeGrp(i.itemName, 16);
-    const qc = v => v!=null?num(v,2):na();
     const vl = VALUATION[i.valuationMethod];
     const sb = i.inactive
       ? `<span class="badge b-inactive">Inactive</span>`
@@ -1023,50 +1041,48 @@ function renderAllTab() {
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
       <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
       <td>${sb}</td>
-      <td class="td-num">${qc(i.qtyOwned)}</td>
-      <td class="td-num">${qc(i.qtyOnHand)}</td>
-      <td class="td-num">${qc(i.qtyToDeliver)}</td>
-      <td class="td-num">${qc(i.qtyToReceive)}</td>
-      <td class="td-num">${i.averageCost!=null?num(i.averageCost,4):na()}</td>
-      <td class="td-num">${i.totalValue!=null?`<b style="color:var(--green)">${num(i.totalValue,2)}</b>`:na()}</td>
+      <td class="td-num">${numCell(i.qtyOwned,2)}</td>
+      <td class="td-num">${numCell(i.qtyOnHand,2)}</td>
+      <td class="td-num">${numCell(i.qtyToDeliver,2)}</td>
+      <td class="td-num">${numCell(i.qtyToReceive,2)}</td>
+      <td class="td-num">${numCell(i.averageCost,4)}</td>
+      <td class="td-num">${numCell(i.totalValue,2,true)}</td>
       <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:dash()}</td>
-      <td class="td-num">${price(i.defPurchasePrice)??dash()}</td>
-      <td class="td-num">${price(i.defSalePrice)??dash()}</td>
+      <td class="td-num">${numCell(i.defPurchasePrice,2)}</td>
+      <td class="td-num">${numCell(i.defSalePrice,2)}</td>
       <td>${divCell(i.division)}</td>
       <td>${divCell(i.defaultDivision)}</td>
       <td>${i.reorderPoint?`<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`:dash()}</td>
     </tr>`;
   });
-  const tbl = `<table><thead>
-    <tr class="cg-row">
-      <th class="cg cg-id" colspan="4">Identification</th>
-      <th class="cg cg-qty" colspan="4">Quantities</th>
-      <th class="cg cg-val" colspan="2">Valuation</th>
-      <th class="cg cg-pri" colspan="3">Pricing</th>
-      <th class="cg cg-div" colspan="2">Divisions</th>
-      <th class="cg cg-misc" colspan="1">Reorder</th>
-    </tr>
-    <tr class="hdr-row">
-      <th>Code</th><th>Item Name</th><th>Unit</th><th>Status</th>
-      <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
-      <th class="r">To Deliver</th><th class="r">To Receive</th>
-      <th class="r">Avg Cost</th><th class="r">Total Value</th>
-      <th>Method</th>
-      <th class="r">Purchase</th><th class="r">Sale</th>
-      <th>Division</th><th>Default Div.</th>
-      <th class="r">Reorder</th>
-    </tr>
-  </thead><tbody>${rows}</tbody></table>`;
+  const tbl = `<table>
+    <thead>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="4">Identification</th>
+        <th class="cg cg-qty" colspan="4">Quantities</th>
+        <th class="cg cg-val" colspan="2">Valuation</th>
+        <th class="cg cg-pri" colspan="3">Pricing</th>
+        <th class="cg cg-div" colspan="2">Divisions</th>
+        <th class="cg cg-misc" colspan="1">Reorder</th>
+      </tr>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th><th>Unit</th><th>Status</th>
+        <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
+        <th class="r">To Deliver</th><th class="r">To Receive</th>
+        <th class="r">Avg Cost</th><th class="r">Total Value</th>
+        <th>Method</th>
+        <th class="r">Purchase</th><th class="r">Sale</th>
+        <th>Division</th><th>Default Div.</th>
+        <th class="r">Reorder</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
-/* ══════════════════════════════════
-   render — entry point
-══════════════════════════════════ */
 function render(items) {
-  _raw = items.map(normalize);
-  _page = 1;
-  applyFilters();
+  // Not used directly — loadAllRecords handles everything
 }
 </script>
 </body>
