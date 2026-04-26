@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Inventory Items — Full View</title>
+<title>Inventory — Quantity Explorer</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,7 +36,7 @@
 html, body { height: 100%; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; padding: 14px; font-size: 13px; }
 
-/* Topbar */
+/* ── Topbar ── */
 .topbar {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   padding: 9px 14px; margin-bottom: 12px;
@@ -53,6 +53,14 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 }
 .load-btn:hover:not(:disabled) { opacity: .87; transform: translateY(-1px); }
 .load-btn:disabled { opacity: .42; cursor: not-allowed; }
+.probe-btn {
+  padding: 7px 14px; border: 1px solid var(--border2); border-radius: 6px;
+  background: transparent; color: var(--teal); font-family: var(--sans);
+  font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all .15s;
+  border-color: var(--teal);
+}
+.probe-btn:hover:not(:disabled) { background: var(--teal-lt); }
+.probe-btn:disabled { opacity: .42; cursor: not-allowed; }
 .print-btn {
   padding: 7px 12px; border: 1px solid var(--border2); border-radius: 6px;
   background: transparent; color: var(--text-dim); font-family: var(--sans);
@@ -81,14 +89,55 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .prog-bar  { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .25s; }
 .status-txt { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
 
-/* Stats */
+/* ── Endpoint probe panel ── */
+.probe-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  margin-bottom: 12px; overflow: hidden;
+}
+.probe-header {
+  padding: 10px 16px; background: #f0f6ff; border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px;
+}
+.probe-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px; background: var(--border);
+}
+.probe-card {
+  background: var(--surface); padding: 12px 16px;
+}
+.probe-ep {
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  font-weight: 600; margin-bottom: 6px; word-break: break-all;
+}
+.probe-status {
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  display: inline-block; margin-bottom: 6px;
+}
+.ps-ok      { background: var(--green-lt); color: var(--green); }
+.ps-empty   { background: var(--amber-lt); color: var(--amber); }
+.ps-error   { background: var(--red-lt);   color: var(--red); }
+.ps-loading { background: #f0f6ff;          color: var(--accent); }
+.probe-fields {
+  font-family: var(--mono); font-size: 9px; color: var(--text-dim);
+  line-height: 1.7; max-height: 120px; overflow-y: auto;
+}
+.probe-field-hit { color: var(--green); font-weight: 600; }
+.probe-sample {
+  margin-top: 6px; font-family: var(--mono); font-size: 9px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: 6px 8px; max-height: 140px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-all; color: var(--text-dim);
+}
+
+/* ── Stats ── */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 9px; margin-bottom: 12px; }
 .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 13px; box-shadow: var(--shadow); }
 .stat-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 3px; }
 .stat-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--head); line-height: 1; }
 .stat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
 
-/* Tabs */
+/* ── Tabs ── */
 .tab-bar { display: flex; gap: 2px; border-bottom: 2px solid var(--border); }
 .tab {
   padding: 8px 15px; font-size: 11px; font-weight: 700; cursor: pointer;
@@ -98,13 +147,13 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .tab:hover { color: var(--accent); }
 .tab.active { background: var(--surface); color: var(--accent); border-color: var(--border); border-bottom-color: var(--surface); }
 
-/* Table */
+/* ── Table ── */
 .tbl-wrap {
   background: var(--surface); border: 1px solid var(--border);
   border-top: none; border-radius: 0 0 var(--radius) var(--radius);
   box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px;
 }
-.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 290px); overflow-y: auto; }
+.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 300px); overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead { position: sticky; top: 0; z-index: 10; }
 thead tr.cg-row { background: #edf1f7; }
@@ -114,13 +163,13 @@ th.cg {
   border-bottom: 1px solid var(--border); border-right: 1px solid var(--border2);
 }
 th.cg:last-child { border-right: none; }
-.cg-id   { color: #4a5a6e; }
-.cg-qty  { color: #0e7490; background: #e0f6fb; }
-.cg-val  { color: #1a7f37; background: #e6f4ea; }
-.cg-pri  { color: #7a4f00; background: #fef9e7; }
-.cg-div  { color: #6639ba; background: #ede8ff; }
-.cg-cf   { color: #9a6700; background: #fff8c5; }
-.cg-misc { color: #4a5a6e; }
+.cg-id { color: #4a5a6e; }
+.cg-qty { color: #0e7490; background: #e0f6fb; }
+.cg-val { color: #1a7f37; background: #e6f4ea; }
+.cg-pri { color: #7a4f00; background: #fef9e7; }
+.cg-div { color: #6639ba; background: #ede8ff; }
+.cg-cf  { color: #9a6700; background: #fff8c5; }
+.cg-misc{ color: #4a5a6e; }
 thead tr.hdr-row { background: #f6f8fb; }
 th {
   padding: 8px 10px; text-align: left;
@@ -164,19 +213,29 @@ td:last-child { border-right: none; }
 }
 .div-code { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-left: 4px; }
 .cf-cell  { font-family: var(--mono); font-size: 10px; color: var(--text); }
+.qty-hit  { color: var(--green); font-weight: 600; }
+.qty-miss { color: #c8d4e0; font-style: italic; font-size: 10px; }
 
-/* debug/info panel */
-.info-box {
-  background: var(--teal-lt); border: 1px solid #9ad8e8; border-radius: var(--radius);
-  padding: 10px 14px; margin-bottom: 12px; font-size: 11px; color: var(--teal);
-  font-family: var(--mono); display: none;
+/* footer totals */
+tfoot tr td {
+  background: #f0f4f9; font-weight: 700; border-top: 2px solid var(--border2);
+  padding: 7px 10px; font-family: var(--mono); font-size: 11px;
 }
+
 .err-box {
   color: var(--red); background: var(--red-lt); border: 1px solid #ffbbbc;
   border-radius: var(--radius); padding: 12px 16px; font-size: 12px; margin-bottom: 14px;
 }
 .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
 .empty-state .icon { font-size: 38px; margin-bottom: 10px; }
+
+/* source badge */
+.src-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 9px;
+  font-weight: 700; font-family: var(--mono); background: var(--green-lt);
+  color: var(--green); border: 1px solid #aaddb8;
+}
+
 .pagination {
   display: flex; align-items: center; justify-content: flex-end; gap: 5px;
   padding: 9px 13px; border-top: 1px solid var(--border);
@@ -193,8 +252,7 @@ td:last-child { border-right: none; }
 .pg-dots { color: var(--muted); }
 
 @media print {
-  body { padding: 0; background: white; font-size: 10px; }
-  .topbar, .tab-bar, .pagination, .stats-grid, .print-btn, .info-box { display: none !important; }
+  .topbar, .tab-bar, .pagination, .stats-grid, .probe-panel, .print-btn { display: none !important; }
   .tbl-wrap { box-shadow: none; border-radius: 0; border: none; }
   .tbl-scroll { max-height: none; overflow: visible; }
   table { font-size: 9px; } th, td { padding: 5px 7px; }
@@ -206,10 +264,12 @@ td:last-child { border-right: none; }
 </head>
 <body>
 
+<!-- ── Control bar ── -->
 <div class="topbar">
-  <span class="brand">📦 Inventory Items</span>
+  <span class="brand">📦 Inventory Quantities</span>
   <div class="vsep"></div>
-  <button class="load-btn" id="load-btn" onclick="loadAllRecords()">⬇ Load All Records</button>
+  <button class="load-btn"  id="load-btn"  onclick="loadAllRecords()">⬇ Load All Records</button>
+  <button class="probe-btn" id="probe-btn" onclick="runProbe()" disabled>🔍 Probe Qty Endpoints</button>
   <button class="print-btn" onclick="window.print()">🖨 Print</button>
   <div class="search-wrap">
     <span class="si">🔍</span>
@@ -219,27 +279,38 @@ td:last-child { border-right: none; }
     <option value="name-asc">Name A→Z</option>
     <option value="name-desc">Name Z→A</option>
     <option value="code-asc">Code A→Z</option>
-    <option value="qty-desc">Qty On Hand ↓</option>
+    <option value="qty-on-hand-desc">Qty On Hand ↓</option>
+    <option value="qty-owned-desc">Qty Owned ↓</option>
     <option value="val-desc">Total Value ↓</option>
     <option value="sale-desc">Sale Price ↓</option>
-    <option value="purchase-desc">Purchase Price ↓</option>
   </select>
   <button class="fbtn" id="f-active"  onclick="toggleF('active')"  disabled>Active Only</button>
-  <button class="fbtn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder</button>
-  <button class="fbtn" id="f-hasdiv"  onclick="toggleF('hasdiv')"  disabled>Has Division</button>
-  <button class="fbtn" id="f-hascf"   onclick="toggleF('hascf')"   disabled>Has Custom Fields</button>
+  <button class="fbtn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder Set</button>
+  <button class="fbtn" id="f-negqty"  onclick="toggleF('negqty')"  disabled>Negative Qty</button>
   <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
   <span class="status-txt" id="status-txt">Press Load to fetch data</span>
 </div>
 
-<div class="info-box" id="info-box"></div>
+<!-- Probe panel (hidden until probe runs) -->
+<div class="probe-panel" id="probe-panel" style="display:none">
+  <div class="probe-header">
+    🔬 Endpoint Probe Results — discovering which endpoints serve quantity data for this business
+  </div>
+  <div class="probe-grid" id="probe-grid"></div>
+</div>
+
+<!-- Stats injected here -->
 <div class="stats-grid" id="stats-grid" style="display:none"></div>
 
+<!-- Qty source indicator -->
+<div id="qty-source-bar" style="display:none;margin-bottom:10px;padding:8px 14px;background:var(--green-lt);border:1px solid #aaddb8;border-radius:var(--radius);font-size:11px;color:var(--green);font-family:var(--mono)"></div>
+
+<!-- Tabs + content -->
 <div id="tabs-container" style="display:none">
   <div class="tab-bar">
     <div class="tab active" onclick="switchTab('inventory')">📊 Inventory &amp; Quantities</div>
     <div class="tab" onclick="switchTab('pricing')">💰 Pricing &amp; Valuation</div>
-    <div class="tab" onclick="switchTab('divisions')">🏢 Divisions &amp; Accounts</div>
+    <div class="tab" onclick="switchTab('divisions')">🏢 Divisions</div>
     <div class="tab" onclick="switchTab('customfields')">🏷 Custom Fields</div>
     <div class="tab" onclick="switchTab('all')">⚙ All Fields</div>
   </div>
@@ -309,23 +380,21 @@ async function getInventoryItemBatch(onProgress) {
 }
 
 /* ══════════════════════════════════
-   Generic paginator for any batch endpoint
+   Generic paginated fetcher
 ══════════════════════════════════ */
-async function fetchAllPages(path, onProgress) {
+async function fetchAllPages(basePath) {
   const all = [];
   let nextToken = null;
   let pageNum = 0;
   do {
-    const url = nextToken
-      ? `${path}${path.includes('?')?'&':'?'}next_page_token=${encodeURIComponent(nextToken)}`
-      : path;
+    const sep = basePath.includes('?') ? '&' : '?';
+    const url = nextToken ? `${basePath}${sep}next_page_token=${encodeURIComponent(nextToken)}` : basePath;
     const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: url });
     const page = Array.isArray(data) ? data : (data.items || data.data || []);
     all.push(...page);
     nextToken = data.next_page_token || data.nextPageToken || data._links?.next?.href || null;
     pageNum++;
-    if (onProgress) onProgress(all.length, pageNum);
-    if (pageNum >= 1000) break;
+    if (pageNum >= 500) break;
   } while (nextToken);
   return all;
 }
@@ -338,146 +407,221 @@ let _filtered = [];
 let _page     = 1;
 let _tab      = 'inventory';
 const PAGE_SIZE = 50;
-const _filters  = { active: false, reorder: false, hasdiv: false, hascf: false };
+const _filters  = { active: false, reorder: false, negqty: false };
 
-// Metadata: populated during load
-let _cfKeyToName  = {};  // CF UUID → human name e.g. "Carton Size"
-let _divKeyToInfo = {};  // Division UUID → { name, code }
-
-// Log which qty endpoint actually worked (shown in info box)
-let _qtyEndpointUsed = '';
+let _cfKeyToName  = {};
+let _divKeyToInfo = {};
+let _qtySourceMsg = '';
 
 const VALUATION = { 1: 'Average Cost', 2: 'FIFO', 3: 'LIFO', 4: 'Specific ID' };
 
 /* ══════════════════════════════════
-   Helpers
+   QTY FIELD EXTRACTOR
+   Checks every possible field name Manager might use
+   across different versions and endpoints.
 ══════════════════════════════════ */
-const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const num   = (v, d=0) => v!=null ? Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}) : null;
-const price = v => v!=null ? num(v,2) : null;
-const dash  = () => `<span class="td-dim">—</span>`;
+const QTY_FIELD_VARIANTS = {
+  qtyOwned:      ['qtyOwned','quantityOwned','owned','qty_owned','Owned','QtyOwned'],
+  qtyOnHand:     ['qtyOnHand','quantityOnHand','onHand','qty_on_hand','OnHand','QtyOnHand','inStock','quantityInStock'],
+  qtyToDeliver:  ['qtyToDeliver','quantityToDeliver','toDeliver','qty_to_deliver','ToDeliver','QtyToDeliver','committed','quantityCommitted'],
+  qtyToReceive:  ['qtyToReceive','quantityToReceive','toReceive','qty_to_receive','ToReceive','QtyToReceive','onOrder','quantityOnOrder'],
+  averageCost:   ['averageCost','averageUnitCost','unitCost','avgCost','average_cost','AverageCost'],
+  totalValue:    ['totalValue','inventoryValue','value','total_value','TotalValue','inventoryAmount'],
+};
 
-function numCell(v, decimals=2, highlight=false) {
-  if (v == null) return dash();
-  const n = Number(v);
-  const formatted = num(n, decimals);
-  const cls = n < 0 ? ' neg' : '';
-  const style = highlight && n > 0 ? ' style="color:var(--green);font-weight:600"' : '';
-  return `<span class="td-num${cls}"${style}>${formatted}</span>`;
+function extractQtyFields(src) {
+  const result = {};
+  for (const [field, variants] of Object.entries(QTY_FIELD_VARIANTS)) {
+    for (const v of variants) {
+      if (src[v] !== undefined && src[v] !== null) {
+        result[field] = src[v];
+        break;
+      }
+    }
+    if (result[field] === undefined) result[field] = null;
+  }
+  return result;
 }
 
-/* Resolve division raw value using our lookup map */
-function resolveDiv(val) {
-  if (val == null) return null;
-  // Manager returns division as a UUID string OR as { key, name, code } object
-  if (typeof val === 'string') {
-    const info = _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()];
-    return info ?? { name: val, code: null };
-  }
-  if (typeof val === 'object') {
-    const key = val.key ?? val.id ?? val.uuid ?? '';
-    const fromMap = _divKeyToInfo[key] ?? _divKeyToInfo[key.toLowerCase?.() ?? ''];
-    if (fromMap) return fromMap;
-    return { name: val.name ?? val.text ?? key, code: val.code ?? null };
-  }
-  return null;
-}
-
-/* Resolve CF key to human label */
-function cfLabel(key) {
-  return _cfKeyToName[key] ?? _cfKeyToName[key?.toLowerCase()] ?? key;
+function hasAnyQtyData(obj) {
+  const s = JSON.stringify(obj ?? '').toLowerCase();
+  return s.includes('qtyowned') || s.includes('qtyonhand') || s.includes('quantityowned') ||
+         s.includes('quantityonhand') || s.includes('onhand') || s.includes('totalvalue') ||
+         s.includes('averagecost') || s.includes('inventoryvalue') || s.includes('owned') ||
+         s.includes('instock');
 }
 
 /* ══════════════════════════════════
-   fetchQuantities
-   Manager stores inventory quantities separately.
-   We probe several known endpoint patterns and use
-   whichever one returns real data.
-
-   Known endpoints to try (in order):
-   1. /api4/inventory-quantity-batch          ← most likely
-   2. /api4/inventory-item-location-batch     ← multi-location
-   3. /api4/inventory-movement-batch          ← movement history (aggregate)
-
-   Each row typically: { key: itemUUID, item: { qtyOwned, qtyOnHand, ... } }
-   OR the quantities may be embedded as:
-   { key, qtyOwned, qtyOnHand, averageCost, totalValue, qtyToDeliver, qtyToReceive }
+   ALL QUANTITY ENDPOINTS TO PROBE
+   These are every batch endpoint Manager.io
+   is known to use for inventory quantities.
 ══════════════════════════════════ */
-async function fetchQuantities(onStatus) {
-  // Map: itemKey → quantity object
-  const qtyMap = {};
+const QTY_ENDPOINTS = [
+  '/api4/inventory-quantity-batch',
+  '/api4/inventory-balance-batch',
+  '/api4/inventory-item-balance-batch',
+  '/api4/inventory-stock-batch',
+  '/api4/inventory-location-batch',
+  '/api4/inventory-item-location-batch',
+  '/api4/inventory-summary-batch',
+  '/api4/inventory-value-batch',
+  '/api4/inventory-movement-summary-batch',
+  '/api4/inventory-on-hand-batch',
+  '/api4/stock-on-hand-batch',
+];
 
-  const endpoints = [
-    '/api4/inventory-quantity-batch',
-    '/api4/inventory-item-location-batch',
-    '/api4/inventory-summary-batch',
-  ];
+/* ══════════════════════════════════
+   PROBE — run all qty endpoints, show results
+   This is the diagnostic tool that reveals
+   which endpoint your Manager instance uses.
+══════════════════════════════════ */
+async function runProbe() {
+  const btn = document.getElementById('probe-btn');
+  btn.disabled = true; btn.textContent = '⏳ Probing…';
 
-  for (const ep of endpoints) {
+  const panel = document.getElementById('probe-panel');
+  const grid  = document.getElementById('probe-grid');
+  panel.style.display = 'block';
+  grid.innerHTML = '';
+
+  // Create a card for each endpoint
+  const cards = {};
+  QTY_ENDPOINTS.forEach(ep => {
+    const div = document.createElement('div');
+    div.className = 'probe-card';
+    div.innerHTML = `
+      <div class="probe-ep">${ep}</div>
+      <div class="probe-status ps-loading">⏳ Testing…</div>
+      <div class="probe-fields"></div>`;
+    grid.appendChild(div);
+    cards[ep] = div;
+  });
+
+  // Also probe the self-link of the first item if we have items
+  const firstItem = _raw[0];
+  const selfHref = firstItem?._links?.self?.href ?? firstItem?.links?.self ?? null;
+
+  // Probe each endpoint
+  for (const ep of QTY_ENDPOINTS) {
+    const card   = cards[ep];
+    const statusEl = card.querySelector('.probe-status');
+    const fieldsEl = card.querySelector('.probe-fields');
     try {
-      onStatus(`Fetching quantities from ${ep}…`);
       const rows = await fetchAllPages(ep);
-      if (!rows.length) continue;
+      if (!rows.length) {
+        statusEl.className = 'probe-status ps-empty';
+        statusEl.textContent = '⚠ Empty response (0 rows)';
+        fieldsEl.textContent = 'Endpoint exists but returned no data.';
+        continue;
+      }
 
-      // Inspect first row to understand structure
       const sample = rows[0];
-      const sampleStr = JSON.stringify(sample).toLowerCase();
+      const src = sample?.item ?? sample;
+      const hasQty = hasAnyQtyData(src) || hasAnyQtyData(sample);
 
-      // Check if this endpoint has qty data
-      const hasQty = sampleStr.includes('qtyowned') ||
-                     sampleStr.includes('qtyonhand') ||
-                     sampleStr.includes('quantityowned') ||
-                     sampleStr.includes('owned') ||
-                     sampleStr.includes('onhand') ||
-                     sampleStr.includes('averagecost') ||
-                     sampleStr.includes('totalvalue');
+      if (hasQty) {
+        statusEl.className = 'probe-status ps-ok';
+        statusEl.textContent = `✓ ${rows.length} rows — HAS QTY DATA`;
 
-      if (!hasQty) continue;
+        // Show which fields were found
+        const found = [];
+        const allKeys = Object.keys(src);
+        const qtyKeys = allKeys.filter(k =>
+          k.toLowerCase().includes('qty') || k.toLowerCase().includes('quantity') ||
+          k.toLowerCase().includes('owned') || k.toLowerCase().includes('hand') ||
+          k.toLowerCase().includes('deliver') || k.toLowerCase().includes('receive') ||
+          k.toLowerCase().includes('value') || k.toLowerCase().includes('cost') ||
+          k.toLowerCase().includes('stock')
+        );
+        qtyKeys.forEach(k => {
+          found.push(`<span class="probe-field-hit">✓ ${k}: ${JSON.stringify(src[k]).slice(0,30)}</span>`);
+        });
+        (allKeys.filter(k=>!qtyKeys.includes(k))).slice(0,8).forEach(k => {
+          found.push(`${k}: ${JSON.stringify(src[k]).slice(0,20)}`);
+        });
+        fieldsEl.innerHTML = found.join('<br>');
 
-      // Build map from rows
-      rows.forEach(row => {
-        // Key can be at row.key OR row.item.key OR row.inventoryItem (UUID string)
-        const itemKey = row?.key
-          ?? row?.item?.inventoryItem
-          ?? row?.inventoryItem
-          ?? row?.item?.key
-          ?? null;
+        // Show raw sample
+        const sampleDiv = document.createElement('div');
+        sampleDiv.className = 'probe-sample';
+        sampleDiv.textContent = JSON.stringify(sample, null, 2).slice(0,800);
+        card.appendChild(sampleDiv);
 
-        if (!itemKey) return;
+        // AUTO-APPLY: use this endpoint to update qty data
+        await applyQtyFromEndpoint(ep, rows);
 
-        // Quantities can be at row.item.* or row.* directly
-        const src = row?.item ?? row;
-
-        qtyMap[itemKey] = {
-          qtyOwned:      src?.qtyOwned      ?? src?.quantityOwned      ?? src?.owned      ?? null,
-          qtyOnHand:     src?.qtyOnHand     ?? src?.quantityOnHand     ?? src?.onHand     ?? src?.onhand ?? null,
-          qtyToDeliver:  src?.qtyToDeliver  ?? src?.quantityToDeliver  ?? src?.toDeliver  ?? null,
-          qtyToReceive:  src?.qtyToReceive  ?? src?.quantityToReceive  ?? src?.toReceive  ?? null,
-          averageCost:   src?.averageCost   ?? src?.averageUnitCost    ?? src?.unitCost   ?? null,
-          totalValue:    src?.totalValue    ?? src?.inventoryValue     ?? src?.value      ?? null,
-        };
-      });
-
-      if (Object.keys(qtyMap).length > 0) {
-        _qtyEndpointUsed = ep;
-        return qtyMap;
+      } else {
+        statusEl.className = 'probe-status ps-empty';
+        statusEl.textContent = `⚠ ${rows.length} rows — no qty fields found`;
+        const allKeys = Object.keys(src).slice(0,12);
+        fieldsEl.innerHTML = allKeys.map(k=>`${k}: ${JSON.stringify(src[k]).slice(0,25)}`).join('<br>');
       }
     } catch(e) {
-      // Try next endpoint
+      statusEl.className = 'probe-status ps-error';
+      statusEl.textContent = `✗ Error: ${e.message.slice(0,60)}`;
+      fieldsEl.textContent = 'Endpoint not available or access denied.';
     }
   }
 
-  // Fallback: try fetching individual inventory item details via the self links
-  // This is slower but guaranteed to work — each item's own endpoint has qty data
-  _qtyEndpointUsed = 'per-item (via self links)';
-  return qtyMap; // empty map — quantities shown from item batch itself as last resort
+  btn.disabled = false; btn.textContent = '🔍 Re-Probe';
+}
+
+/* ══════════════════════════════════
+   applyQtyFromEndpoint
+   Takes rows from a successful qty endpoint,
+   builds the qty map, and refreshes the UI.
+══════════════════════════════════ */
+async function applyQtyFromEndpoint(endpoint, rows) {
+  const qtyMap = {};
+
+  rows.forEach(row => {
+    // The item UUID can be at different locations depending on endpoint
+    const key = row?.key
+      ?? row?.item?.inventoryItem?.key
+      ?? row?.item?.inventoryItem
+      ?? row?.inventoryItem
+      ?? row?.item?.key
+      ?? null;
+
+    if (!key) return;
+
+    const src = row?.item ?? row;
+    qtyMap[key] = extractQtyFields(src);
+    // Also check nested structures
+    if (row?.item?.inventoryItem && typeof row.item.inventoryItem === 'object') {
+      const nested = extractQtyFields(row.item.inventoryItem);
+      for (const [k,v] of Object.entries(nested)) {
+        if (v !== null && qtyMap[key][k] === null) qtyMap[key][k] = v;
+      }
+    }
+  });
+
+  const matched = _raw.filter(i => i.key && qtyMap[i.key]).length;
+
+  // Update qty on all normalized items
+  _raw.forEach(i => {
+    if (!i.key || !qtyMap[i.key]) return;
+    const q = qtyMap[i.key];
+    i.qtyOwned     = q.qtyOwned     ?? i.qtyOwned;
+    i.qtyOnHand    = q.qtyOnHand    ?? i.qtyOnHand;
+    i.qtyToDeliver = q.qtyToDeliver ?? i.qtyToDeliver;
+    i.qtyToReceive = q.qtyToReceive ?? i.qtyToReceive;
+    i.averageCost  = q.averageCost  ?? i.averageCost;
+    i.totalValue   = q.totalValue   ?? i.totalValue;
+  });
+
+  _qtySourceMsg = `✓ Qty source: ${endpoint} · ${rows.length} rows · ${matched}/${_raw.length} items matched`;
+  const srcBar = document.getElementById('qty-source-bar');
+  srcBar.style.display = 'block';
+  srcBar.textContent = _qtySourceMsg;
+
+  applyFilters();
 }
 
 /* ══════════════════════════════════
    fetchMetadata — CF names + divisions
 ══════════════════════════════════ */
 async function fetchMetadata() {
-  // Custom field definitions
   const cfEndpoints = [
     '/api4/text-custom-field-batch',
     '/api4/number-custom-field-batch',
@@ -491,14 +635,9 @@ async function fetchMetadata() {
     r.value.forEach(row => {
       const key  = row?.key;
       const name = row?.item?.name ?? row?.name;
-      if (key && name) {
-        _cfKeyToName[key] = name;
-        _cfKeyToName[key.toLowerCase()] = name;
-      }
+      if (key && name) { _cfKeyToName[key] = name; _cfKeyToName[key.toLowerCase()] = name; }
     });
   });
-
-  // Divisions
   try {
     const divRows = await fetchAllPages('/api4/division-batch');
     divRows.forEach(row => {
@@ -514,12 +653,74 @@ async function fetchMetadata() {
 }
 
 /* ══════════════════════════════════
-   Normalize item + join quantity data
+   fetchQuantitiesAuto
+   Tries all known endpoints silently,
+   uses first one that returns qty data.
 ══════════════════════════════════ */
-function normalize(raw, qtyMap) {
+async function fetchQuantitiesAuto(onStatus) {
+  for (const ep of QTY_ENDPOINTS) {
+    try {
+      onStatus(`Trying ${ep}…`);
+      const rows = await fetchAllPages(ep);
+      if (!rows.length) continue;
+      const sample = rows[0];
+      const src = sample?.item ?? sample;
+      if (!hasAnyQtyData(src) && !hasAnyQtyData(sample)) continue;
+      // Found a working endpoint
+      await applyQtyFromEndpoint(ep, rows);
+      return ep;
+    } catch(e) { /* try next */ }
+  }
+
+  // Last resort: fetch individual item detail via self link for first few items to detect fields
+  onStatus('No batch qty endpoint found — checking item self-links…');
+  if (_raw.length > 0) {
+    const selfHref = _raw[0]?._selfHref;
+    if (selfHref) {
+      try {
+        const detail = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: selfHref });
+        if (hasAnyQtyData(detail)) {
+          // Fetch all items individually (slow but works)
+          onStatus('Loading quantities via item detail links…');
+          for (let i = 0; i < _raw.length; i++) {
+            const href = _raw[i]._selfHref;
+            if (!href) continue;
+            try {
+              const d = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: href });
+              const src = d?.item ?? d;
+              const qty = extractQtyFields(src);
+              _raw[i].qtyOwned     = qty.qtyOwned     ?? _raw[i].qtyOwned;
+              _raw[i].qtyOnHand    = qty.qtyOnHand    ?? _raw[i].qtyOnHand;
+              _raw[i].qtyToDeliver = qty.qtyToDeliver ?? _raw[i].qtyToDeliver;
+              _raw[i].qtyToReceive = qty.qtyToReceive ?? _raw[i].qtyToReceive;
+              _raw[i].averageCost  = qty.averageCost  ?? _raw[i].averageCost;
+              _raw[i].totalValue   = qty.totalValue   ?? _raw[i].totalValue;
+              if (i % 10 === 0) onStatus(`Loading item details… ${i+1}/${_raw.length}`);
+            } catch(e) {}
+          }
+          _qtySourceMsg = 'Qty source: individual item detail endpoints';
+          const srcBar = document.getElementById('qty-source-bar');
+          srcBar.style.display = 'block';
+          srcBar.textContent = _qtySourceMsg;
+          return 'self-links';
+        }
+      } catch(e) {}
+    }
+  }
+  return null;
+}
+
+/* ══════════════════════════════════
+   Normalize raw item
+══════════════════════════════════ */
+function normalize(raw) {
   const it  = raw?.item ?? raw;
   const cf2 = it?.customFields2 ?? {};
-  const key = raw?.key ?? it?.key ?? null;
+  const key = raw?.key ?? null;
+  const selfHref = raw?._links?.self?.href ?? null;
+
+  // Try to pull qty from the item batch itself (some Manager versions include them)
+  const itemQty = extractQtyFields(it);
 
   const cfStrings      = cf2.strings      ?? {};
   const cfDecimals     = cf2.decimals     ?? {};
@@ -528,27 +729,27 @@ function normalize(raw, qtyMap) {
   const cfStringArrays = cf2.stringArrays ?? {};
 
   const hasCF = !!(
-    Object.keys(cfStrings).length ||
-    Object.keys(cfDecimals).length ||
-    Object.keys(cfDates).length ||
-    Object.keys(cfBooleans).length ||
+    Object.keys(cfStrings).length || Object.keys(cfDecimals).length ||
+    Object.keys(cfDates).length   || Object.keys(cfBooleans).length ||
     Object.keys(cfStringArrays).length
   );
 
-  // Qty: first try dedicated qty map, then fall back to fields on the item itself
-  const qty = (key && qtyMap[key]) ? qtyMap[key] : {};
-
-  const qtyOwned     = qty.qtyOwned     ?? it?.qtyOwned     ?? it?.quantityOwned      ?? null;
-  const qtyOnHand    = qty.qtyOnHand    ?? it?.qtyOnHand    ?? it?.quantityOnHand     ?? null;
-  const qtyToDeliver = qty.qtyToDeliver ?? it?.qtyToDeliver ?? it?.quantityToDeliver  ?? null;
-  const qtyToReceive = qty.qtyToReceive ?? it?.qtyToReceive ?? it?.quantityToReceive  ?? null;
-  const averageCost  = qty.averageCost  ?? it?.averageCost  ?? it?.unitCost           ??
-                       (it?.obsolete_StartingBalanceAverageCost2 > 0
-                         ? it.obsolete_StartingBalanceAverageCost2 : null);
-  const totalValue   = qty.totalValue   ?? it?.totalValue   ?? it?.inventoryValue     ?? null;
+  function resolveDiv(val) {
+    if (val == null) return null;
+    if (typeof val === 'string') return _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()] ?? { name: val, code: null };
+    if (typeof val === 'object') {
+      const k = val.key ?? val.id ?? '';
+      const fromMap = _divKeyToInfo[k] ?? _divKeyToInfo[k.toLowerCase?.() ?? ''];
+      if (fromMap) return fromMap;
+      return { name: val.name ?? val.text ?? k, code: val.code ?? null };
+    }
+    return null;
+  }
 
   return {
     key,
+    _selfHref: selfHref,
+
     itemCode:        it?.itemCode   ?? null,
     itemName:        it?.itemName   ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
     unitName:        it?.unitName   ?? null,
@@ -557,8 +758,13 @@ function normalize(raw, qtyMap) {
     reorderPoint:    it?.reorderPoint ?? false,
     qtyDesired:      it?.qtyDesired ?? 0,
 
-    // Quantities — joined from dedicated endpoint
-    qtyOwned, qtyOnHand, qtyToDeliver, qtyToReceive, averageCost, totalValue,
+    // Quantities — from item batch if present, otherwise filled later by qty endpoint
+    qtyOwned:      itemQty.qtyOwned,
+    qtyOnHand:     itemQty.qtyOnHand,
+    qtyToDeliver:  itemQty.qtyToDeliver,
+    qtyToReceive:  itemQty.qtyToReceive,
+    averageCost:   itemQty.averageCost  ?? (it?.obsolete_StartingBalanceAverageCost2 > 0 ? it.obsolete_StartingBalanceAverageCost2 : null),
+    totalValue:    itemQty.totalValue,
 
     // Pricing
     defPurchasePrice: it?.hasDefaultPurchaseUnitPrice ? (it?.defaultPurchaseUnitPrice ?? 0) : null,
@@ -566,7 +772,7 @@ function normalize(raw, qtyMap) {
     defaultQty:       it?.hasDefaultQty ? (it?.defaultQty ?? 0) : null,
     defaultLineDesc:  it?.hasDefaultLineDescription ? it?.defaultLineDescription : null,
 
-    // Division — resolved to { name, code }
+    // Division
     division:        resolveDiv(it?.division),
     defaultDivision: it?.hasDefaultDivision ? resolveDiv(it?.defaultDivision) : null,
     divisionEnabled: it?.divisionEnabled ?? false,
@@ -579,6 +785,9 @@ function normalize(raw, qtyMap) {
     // Custom fields
     cfStrings, cfDecimals, cfDates, cfBooleans, cfStringArrays,
     hasCF,
+
+    // Store raw links for per-item fetching
+    _links: raw?._links ?? null,
   };
 }
 
@@ -595,45 +804,41 @@ async function loadAllRecords() {
   document.getElementById('app-init').innerHTML = '';
   document.getElementById('stats-grid').style.display = 'none';
   document.getElementById('tabs-container').style.display = 'none';
-  document.getElementById('info-box').style.display = 'none';
+  document.getElementById('qty-source-bar').style.display = 'none';
 
-  const ctrlIds = ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'];
+  const ctrlIds = ['search-input','sort-select','f-active','f-reorder','f-negqty'];
   ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=true; });
 
   try {
-    // Phase 1: fetch items + metadata in parallel
+    // Phase 1: items + metadata in parallel
     status.textContent = 'Fetching items & field definitions…';
     const [rawItems] = await Promise.all([
       getInventoryItemBatch((loaded, total, page) => {
         status.textContent = total
-          ? `Items: page ${page} · ${loaded.toLocaleString()} / ${total.toLocaleString()}`
-          : `Items: page ${page} · ${loaded.toLocaleString()} loaded…`;
-        if (total) bar.style.width = Math.min(60, Math.round(loaded/total*60)) + '%';
+          ? `Items: ${loaded.toLocaleString()} / ${total.toLocaleString()}`
+          : `Items: ${loaded.toLocaleString()} loaded…`;
+        if (total) bar.style.width = Math.min(55, Math.round(loaded/total*55)) + '%';
       }),
       fetchMetadata(),
     ]);
-    bar.style.width = '65%';
+    bar.style.width = '60%';
 
-    // Phase 2: fetch quantities from dedicated endpoint
+    // Phase 2: normalize (with qty from batch if present)
+    _raw = rawItems.map(r => normalize(r));
+
+    // Phase 3: try to get qty from dedicated endpoint
     status.textContent = 'Fetching inventory quantities…';
-    const qtyMap = await fetchQuantities(msg => { status.textContent = msg; });
+    const usedEp = await fetchQuantitiesAuto(msg => { status.textContent = msg; });
     bar.style.width = '100%';
 
-    const qtyCount = Object.keys(qtyMap).length;
-    status.textContent = `✓ ${rawItems.length.toLocaleString()} items · ${qtyCount.toLocaleString()} qty records`;
+    const qtyHits = _raw.filter(i => i.qtyOnHand !== null || i.qtyOwned !== null).length;
+    status.textContent = `✓ ${_raw.length.toLocaleString()} items · qty: ${qtyHits}/${_raw.length} have data`;
 
     btn.textContent = '↺ Reload'; btn.disabled = false;
+    document.getElementById('probe-btn').disabled = false;
     ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=false; });
     document.getElementById('tabs-container').style.display = 'block';
 
-    // Show info about which endpoint provided qty data
-    const infoBox = document.getElementById('info-box');
-    if (_qtyEndpointUsed) {
-      infoBox.style.display = 'block';
-      infoBox.textContent = `ℹ Quantity data source: ${_qtyEndpointUsed} (${qtyCount} records matched)`;
-    }
-
-    _raw = rawItems.map(r => normalize(r, qtyMap));
     _page = 1;
     applyFilters();
 
@@ -643,6 +848,35 @@ async function loadAllRecords() {
     document.getElementById('app-init').innerHTML =
       `<div class="err-box">⚠ ${esc(err.message)}<br><small>Make sure this is running inside Manager.io</small></div>`;
   }
+}
+
+/* ══════════════════════════════════
+   Helpers
+══════════════════════════════════ */
+const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const num   = (v, d=0) => v!=null ? Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}) : null;
+
+function numCell(v, d=2, greenPositive=false) {
+  if (v === null || v === undefined) return `<span class="td-dim">—</span>`;
+  const n = Number(v);
+  const fmt = num(n, d);
+  if (n < 0) return `<span class="neg">${fmt}</span>`;
+  if (greenPositive && n > 0) return `<span style="color:var(--green);font-weight:600">${fmt}</span>`;
+  return fmt;
+}
+
+function cfLabel(key) {
+  return _cfKeyToName[key] ?? _cfKeyToName[key?.toLowerCase()] ?? key;
+}
+
+function resolveDiv(val) {
+  if (val == null) return null;
+  if (typeof val === 'string') return _divKeyToInfo[val] ?? { name: val, code: null };
+  if (typeof val === 'object') {
+    const k = val.key ?? '';
+    return _divKeyToInfo[k] ?? { name: val.name ?? val.text ?? k, code: val.code ?? null };
+  }
+  return null;
 }
 
 /* ══════════════════════════════════
@@ -661,22 +895,21 @@ function applyFilters() {
   let list = _raw.filter(i => {
     if (_filters.active  && i.inactive) return false;
     if (_filters.reorder && !i.reorderPoint) return false;
-    if (_filters.hasdiv  && !i.division) return false;
-    if (_filters.hascf   && !i.hasCF) return false;
+    if (_filters.negqty  && !((i.qtyOnHand??0) < 0 || (i.qtyOwned??0) < 0)) return false;
     if (q && !(i.itemName.toLowerCase().includes(q) || (i.itemCode??'').toLowerCase().includes(q))) return false;
     return true;
   });
 
   list.sort((a,b) => {
     switch(sortKey) {
-      case 'name-asc':      return a.itemName.localeCompare(b.itemName);
-      case 'name-desc':     return b.itemName.localeCompare(a.itemName);
-      case 'code-asc':      return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
-      case 'qty-desc':      return (b.qtyOnHand??-Infinity)-(a.qtyOnHand??-Infinity);
-      case 'val-desc':      return (b.totalValue??-Infinity)-(a.totalValue??-Infinity);
-      case 'sale-desc':     return (b.defSalePrice??-Infinity)-(a.defSalePrice??-Infinity);
-      case 'purchase-desc': return (b.defPurchasePrice??-Infinity)-(a.defPurchasePrice??-Infinity);
-      default:              return a.itemName.localeCompare(b.itemName);
+      case 'name-asc':          return a.itemName.localeCompare(b.itemName);
+      case 'name-desc':         return b.itemName.localeCompare(a.itemName);
+      case 'code-asc':          return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
+      case 'qty-on-hand-desc':  return (b.qtyOnHand??-Infinity)-(a.qtyOnHand??-Infinity);
+      case 'qty-owned-desc':    return (b.qtyOwned??-Infinity)-(a.qtyOwned??-Infinity);
+      case 'val-desc':          return (b.totalValue??-Infinity)-(a.totalValue??-Infinity);
+      case 'sale-desc':         return (b.defSalePrice??-Infinity)-(a.defSalePrice??-Infinity);
+      default:                  return a.itemName.localeCompare(b.itemName);
     }
   });
 
@@ -689,22 +922,22 @@ function applyFilters() {
    Stats
 ══════════════════════════════════ */
 function renderStats() {
-  const total   = _raw.length;
-  const active  = _raw.filter(i=>!i.inactive).length;
-  const reorder = _raw.filter(i=>i.reorderPoint).length;
-  const hasDivs = _raw.filter(i=>i.division).length;
-  const hasCFs  = _raw.filter(i=>i.hasCF).length;
-  const totalVal = _raw.reduce((s,i)=>s+(i.totalValue??0), 0);
+  const total     = _raw.length;
+  const active    = _raw.filter(i=>!i.inactive).length;
+  const reorder   = _raw.filter(i=>i.reorderPoint).length;
+  const negQty    = _raw.filter(i=>(i.qtyOnHand??0)<0||(i.qtyOwned??0)<0).length;
+  const totalVal  = _raw.reduce((s,i)=>s+(i.totalValue??0),0);
+  const totalOwned = _raw.reduce((s,i)=>s+(i.qtyOwned??0),0);
   const sg = document.getElementById('stats-grid');
   sg.style.display = 'grid';
   sg.innerHTML = [
-    ['Total Items',   total,           'all records',              'var(--head)'],
-    ['Active',        active,          `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
-    ['Inactive',      total-active,    'hidden from use',          'var(--red)'],
-    ['Reorder Set',   reorder,         'have reorder point',       'var(--amber)'],
-    ['Total Value',   num(totalVal,0), 'sum of inventory value',   'var(--teal)'],
-    ['With Division', hasDivs,         'have division assigned',   'var(--purple)'],
-    ['Showing',       _filtered.length,'after filters',            'var(--accent)'],
+    ['Total Items',    total,             'all records',            'var(--head)'],
+    ['Active',         active,            `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
+    ['Total Qty Owned',num(totalOwned,0), 'sum across all items',   'var(--teal)'],
+    ['Total Value',    num(totalVal,0),   'sum of inventory value',  'var(--accent)'],
+    ['Reorder Set',    reorder,           'have reorder point',      'var(--amber)'],
+    ['Negative Qty',   negQty,            'qty on hand < 0',         negQty>0?'var(--red)':'var(--muted)'],
+    ['Showing',        _filtered.length,  'after filters',           'var(--purple)'],
   ].map(([l,v,s,c])=>`
     <div class="stat-card">
       <div class="stat-label">${l}</div>
@@ -714,7 +947,7 @@ function renderStats() {
 }
 
 /* ══════════════════════════════════
-   Tab management
+   Tabs
 ══════════════════════════════════ */
 function switchTab(tab) {
   _tab = tab; _page = 1;
@@ -771,7 +1004,6 @@ function wrapTable(tbl, pag) {
   </div></div>`;
   return `<div class="tbl-wrap"><div class="tbl-scroll">${tbl}</div>${pag}</div>`;
 }
-
 let _lastGrp = '';
 function maybeGrp(name, cols) {
   const sk = document.getElementById('sort-select')?.value ?? 'name-asc';
@@ -782,13 +1014,11 @@ function maybeGrp(name, cols) {
   _lastGrp = g;
   return `<tr class="grp-row"><td colspan="${cols}">— ${g} —</td></tr>`;
 }
-
 function divCell(d) {
-  if (!d) return dash();
+  if (!d) return `<span class="td-dim">—</span>`;
   const code = d.code ? `<span class="div-code">(${esc(d.code)})</span>` : '';
   return `<span class="div-chip">${esc(d.name)}</span>${code}`;
 }
-
 function getCFCols(items, field) {
   const seen = new Map();
   items.forEach(i => Object.keys(i[field]??{}).forEach(k => { if(!seen.has(k)) seen.set(k, cfLabel(k)); }));
@@ -801,30 +1031,24 @@ function getCFCols(items, field) {
 function renderInventoryTab() {
   const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
-
-  // Column totals
   let totOwned=0, totOnHand=0, totDeliver=0, totReceive=0, totValue=0;
-
   let rows = '';
+
   items.forEach(i => {
     rows += maybeGrp(i.itemName, 11);
-    totOwned   += i.qtyOwned    ?? 0;
-    totOnHand  += i.qtyOnHand   ?? 0;
-    totDeliver += i.qtyToDeliver ?? 0;
-    totReceive += i.qtyToReceive ?? 0;
-    totValue   += i.totalValue   ?? 0;
+    totOwned    += i.qtyOwned    ?? 0;
+    totOnHand   += i.qtyOnHand   ?? 0;
+    totDeliver  += i.qtyToDeliver ?? 0;
+    totReceive  += i.qtyToReceive ?? 0;
+    totValue    += i.totalValue   ?? 0;
 
-    const sb = i.inactive
-      ? `<span class="badge b-inactive">Inactive</span>`
-      : `<span class="badge b-active">Active</span>`;
-    const rc = i.reorderPoint
-      ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`
-      : dash();
+    const sb = i.inactive ? `<span class="badge b-inactive">Inactive</span>` : `<span class="badge b-active">Active</span>`;
+    const rc = i.reorderPoint ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired,0):'Set'}</span>` : `<span class="td-dim">—</span>`;
 
     rows += `<tr>
-      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):'<span class="td-dim">—</span>'}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
+      <td class="td-unit">${i.unitName?esc(i.unitName):'<span class="td-dim">—</span>'}</td>
       <td class="td-num">${numCell(i.qtyOwned,2)}</td>
       <td class="td-num">${numCell(i.qtyOnHand,2)}</td>
       <td class="td-num">${numCell(i.qtyToDeliver,2)}</td>
@@ -836,19 +1060,16 @@ function renderInventoryTab() {
     </tr>`;
   });
 
-  // Footer totals row
-  const foot = `<tfoot style="background:#f0f4f9;font-weight:700;border-top:2px solid var(--border2)">
-    <tr>
-      <td colspan="3" style="padding:7px 10px;font-size:10px;color:var(--muted)">PAGE TOTALS (${items.length} rows)</td>
-      <td class="td-num">${num(totOwned,2)}</td>
-      <td class="td-num">${num(totOnHand,2)}</td>
-      <td class="td-num">${num(totDeliver,2)}</td>
-      <td class="td-num">${num(totReceive,2)}</td>
-      <td></td>
-      <td class="td-num" style="color:var(--green)">${num(totValue,2)}</td>
-      <td colspan="2"></td>
-    </tr>
-  </tfoot>`;
+  const foot = `<tfoot><tr>
+    <td colspan="3" style="font-size:10px;color:var(--muted)">PAGE TOTALS — ${items.length} rows</td>
+    <td class="td-num">${num(totOwned,2)}</td>
+    <td class="td-num">${num(totOnHand,2)}</td>
+    <td class="td-num">${num(totDeliver,2)}</td>
+    <td class="td-num">${num(totReceive,2)}</td>
+    <td></td>
+    <td class="td-num" style="color:var(--green)">${num(totValue,2)}</td>
+    <td colspan="2"></td>
+  </tr></tfoot>`;
 
   const tbl = `<table>
     <thead>
@@ -877,7 +1098,7 @@ function renderInventoryTab() {
 }
 
 /* ══════════════════════════════════
-   Tab: Pricing & Valuation
+   Tab: Pricing
 ══════════════════════════════════ */
 function renderPricingTab() {
   const {items,start,total,totalPages} = pageSlice();
@@ -887,14 +1108,14 @@ function renderPricingTab() {
     rows += maybeGrp(i.itemName, 8);
     const vl = VALUATION[i.valuationMethod];
     rows += `<tr>
-      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):'<span class="td-dim">—</span>'}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
-      <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:dash()}</td>
+      <td class="td-unit">${i.unitName?esc(i.unitName):'<span class="td-dim">—</span>'}</td>
+      <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:'<span class="td-dim">—</span>'}</td>
       <td class="td-num">${numCell(i.defPurchasePrice,2)}</td>
       <td class="td-num">${numCell(i.defSalePrice,2)}</td>
-      <td class="td-num">${i.defaultQty!=null?num(i.defaultQty):dash()}</td>
-      <td style="font-size:10px;color:var(--text-dim)">${i.defaultLineDesc?esc(i.defaultLineDesc):dash()}</td>
+      <td class="td-num">${i.defaultQty!=null?num(i.defaultQty,0):'<span class="td-dim">—</span>'}</td>
+      <td style="font-size:10px;color:var(--text-dim)">${i.defaultLineDesc?esc(i.defaultLineDesc):'<span class="td-dim">—</span>'}</td>
     </tr>`;
   });
   const tbl = `<table>
@@ -917,7 +1138,7 @@ function renderPricingTab() {
 }
 
 /* ══════════════════════════════════
-   Tab: Divisions & Accounts
+   Tab: Divisions
 ══════════════════════════════════ */
 function renderDivisionsTab() {
   const {items,start,total,totalPages} = pageSlice();
@@ -925,9 +1146,9 @@ function renderDivisionsTab() {
   let rows = '';
   items.forEach(i => {
     rows += maybeGrp(i.itemName, 8);
-    const ac = n => n ? `<span style="font-size:10px">${esc(n)}</span>` : dash();
+    const ac = n => n ? `<span style="font-size:10px">${esc(n)}</span>` : `<span class="td-dim">—</span>`;
     rows += `<tr>
-      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):'<span class="td-dim">—</span>'}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
       <td>${divCell(i.division)}</td>
       <td>${divCell(i.defaultDivision)}</td>
@@ -946,7 +1167,7 @@ function renderDivisionsTab() {
       </tr>
       <tr class="hdr-row">
         <th>Code</th><th>Item Name</th>
-        <th>Division</th><th>Default Division</th><th class="c">Div. Enabled</th>
+        <th>Division</th><th>Default Division</th><th class="c">Enabled</th>
         <th>Income Account</th><th>Expense Account</th><th>Control Account</th>
       </tr>
     </thead>
@@ -957,7 +1178,6 @@ function renderDivisionsTab() {
 
 /* ══════════════════════════════════
    Tab: Custom Fields
-   Headers use human names (e.g. "Carton Size")
 ══════════════════════════════════ */
 function renderCFTab() {
   const {items,start,total,totalPages} = pageSlice();
@@ -971,30 +1191,26 @@ function renderCFTab() {
   if (cfCount === 0) {
     document.getElementById('app').innerHTML = `<div class="tbl-wrap">
       <div class="empty-state"><div class="icon">🏷</div>
-        <div>No custom field data found in loaded records.</div>
-        <div style="font-size:11px;margin-top:6px;color:var(--muted)">
-          Custom fields (e.g. "Carton Size") appear here when items have customFields2 data in Manager.
-        </div>
+        <div>No custom field data found.</div>
+        <div style="font-size:11px;margin-top:6px;color:var(--muted)">Custom fields appear here once items have customFields2 data.</div>
       </div></div>`;
     return;
   }
-
   _lastGrp = '';
   const totalCols = 2 + cfCount;
   let rows = '';
   items.forEach(i => {
     rows += maybeGrp(i.itemName, totalCols);
     let cells = `
-      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):'<span class="td-dim">—</span>'}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>`;
-    strCols.forEach(({key})  => { const v=i.cfStrings[key];       cells+=`<td class="cf-cell">${v!=null?esc(String(v)):dash()}</td>`; });
-    decCols.forEach(({key})  => { const v=i.cfDecimals[key];      cells+=`<td class="td-num">${v!=null?num(Number(v),2):dash()}</td>`; });
-    boolCols.forEach(({key}) => { const v=i.cfBooleans[key];      cells+=`<td style="text-align:center">${v!=null?(v?`<span style="color:var(--green)">✓</span>`:`<span style="color:var(--muted)">✗</span>`):dash()}</td>`; });
-    dateCols.forEach(({key}) => { const v=i.cfDates[key];         cells+=`<td class="cf-cell">${v?esc(String(v)):dash()}</td>`; });
-    arrCols.forEach(({key})  => { const v=i.cfStringArrays[key]; const d=Array.isArray(v)?v.join(', '):(v!=null?String(v):null); cells+=`<td class="cf-cell">${d?esc(d):dash()}</td>`; });
+    strCols.forEach(({key})  => { const v=i.cfStrings[key];       cells+=`<td class="cf-cell">${v!=null?esc(String(v)):'<span class="td-dim">—</span>'}</td>`; });
+    decCols.forEach(({key})  => { const v=i.cfDecimals[key];      cells+=`<td class="td-num">${v!=null?num(Number(v),2):'<span class="td-dim">—</span>'}</td>`; });
+    boolCols.forEach(({key}) => { const v=i.cfBooleans[key];      cells+=`<td style="text-align:center">${v!=null?(v?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--muted)">✗</span>'):'<span class="td-dim">—</span>'}</td>`; });
+    dateCols.forEach(({key}) => { const v=i.cfDates[key];         cells+=`<td class="cf-cell">${v?esc(String(v)):'<span class="td-dim">—</span>'}</td>`; });
+    arrCols.forEach(({key})  => { const v=i.cfStringArrays[key];  const d=Array.isArray(v)?v.join(', '):(v!=null?String(v):null); cells+=`<td class="cf-cell">${d?esc(d):'<span class="td-dim">—</span>'}</td>`; });
     rows += `<tr>${cells}</tr>`;
   });
-
   const cgRow = [
     `<th class="cg cg-id" colspan="2">Identification</th>`,
     strCols.length  ? `<th class="cg cg-cf" colspan="${strCols.length}">Text Fields</th>`    : '',
@@ -1003,21 +1219,15 @@ function renderCFTab() {
     dateCols.length ? `<th class="cg cg-cf" colspan="${dateCols.length}">Date Fields</th>`   : '',
     arrCols.length  ? `<th class="cg cg-cf" colspan="${arrCols.length}">List Fields</th>`    : '',
   ].join('');
-
-  const hdrRow = [
-    `<th>Code</th><th>Item Name</th>`,
-    ...strCols.map(c  => `<th>${esc(c.label)}</th>`),
-    ...decCols.map(c  => `<th class="r">${esc(c.label)}</th>`),
-    ...boolCols.map(c => `<th style="text-align:center">${esc(c.label)}</th>`),
-    ...dateCols.map(c => `<th>${esc(c.label)}</th>`),
-    ...arrCols.map(c  => `<th>${esc(c.label)}</th>`),
+  const hdrRow = [`<th>Code</th><th>Item Name</th>`,
+    ...strCols.map(c=>`<th>${esc(c.label)}</th>`),
+    ...decCols.map(c=>`<th class="r">${esc(c.label)}</th>`),
+    ...boolCols.map(c=>`<th style="text-align:center">${esc(c.label)}</th>`),
+    ...dateCols.map(c=>`<th>${esc(c.label)}</th>`),
+    ...arrCols.map(c=>`<th>${esc(c.label)}</th>`),
   ].join('');
-
   const tbl = `<table>
-    <thead>
-      <tr class="cg-row">${cgRow}</tr>
-      <tr class="hdr-row">${hdrRow}</tr>
-    </thead>
+    <thead><tr class="cg-row">${cgRow}</tr><tr class="hdr-row">${hdrRow}</tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
@@ -1033,13 +1243,11 @@ function renderAllTab() {
   items.forEach(i => {
     rows += maybeGrp(i.itemName, 16);
     const vl = VALUATION[i.valuationMethod];
-    const sb = i.inactive
-      ? `<span class="badge b-inactive">Inactive</span>`
-      : `<span class="badge b-active">Active</span>`;
+    const sb = i.inactive ? `<span class="badge b-inactive">Inactive</span>` : `<span class="badge b-active">Active</span>`;
     rows += `<tr>
-      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):'<span class="td-dim">—</span>'}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
+      <td class="td-unit">${i.unitName?esc(i.unitName):'<span class="td-dim">—</span>'}</td>
       <td>${sb}</td>
       <td class="td-num">${numCell(i.qtyOwned,2)}</td>
       <td class="td-num">${numCell(i.qtyOnHand,2)}</td>
@@ -1047,12 +1255,12 @@ function renderAllTab() {
       <td class="td-num">${numCell(i.qtyToReceive,2)}</td>
       <td class="td-num">${numCell(i.averageCost,4)}</td>
       <td class="td-num">${numCell(i.totalValue,2,true)}</td>
-      <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:dash()}</td>
+      <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:'<span class="td-dim">—</span>'}</td>
       <td class="td-num">${numCell(i.defPurchasePrice,2)}</td>
       <td class="td-num">${numCell(i.defSalePrice,2)}</td>
       <td>${divCell(i.division)}</td>
       <td>${divCell(i.defaultDivision)}</td>
-      <td>${i.reorderPoint?`<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`:dash()}</td>
+      <td>${i.reorderPoint?`<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired,0):'Set'}</span>`:'<span class="td-dim">—</span>'}</td>
     </tr>`;
   });
   const tbl = `<table>
@@ -1063,17 +1271,15 @@ function renderAllTab() {
         <th class="cg cg-val" colspan="2">Valuation</th>
         <th class="cg cg-pri" colspan="3">Pricing</th>
         <th class="cg cg-div" colspan="2">Divisions</th>
-        <th class="cg cg-misc" colspan="1">Reorder</th>
+        <th class="cg cg-misc">Reorder</th>
       </tr>
       <tr class="hdr-row">
         <th>Code</th><th>Item Name</th><th>Unit</th><th>Status</th>
         <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
         <th class="r">To Deliver</th><th class="r">To Receive</th>
         <th class="r">Avg Cost</th><th class="r">Total Value</th>
-        <th>Method</th>
-        <th class="r">Purchase</th><th class="r">Sale</th>
-        <th>Division</th><th>Default Div.</th>
-        <th class="r">Reorder</th>
+        <th>Method</th><th class="r">Purchase</th><th class="r">Sale</th>
+        <th>Division</th><th>Default Div.</th><th class="r">Reorder</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
@@ -1082,7 +1288,7 @@ function renderAllTab() {
 }
 
 function render(items) {
-  // Not used directly — loadAllRecords handles everything
+  // Entry point kept for compatibility — loadAllRecords handles everything
 }
 </script>
 </body>
