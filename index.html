@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Inventory — Quantity Explorer</title>
+<title>Inventory Items — Full Quantity View</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,20 +53,12 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 }
 .load-btn:hover:not(:disabled) { opacity: .87; transform: translateY(-1px); }
 .load-btn:disabled { opacity: .42; cursor: not-allowed; }
-.probe-btn {
-  padding: 7px 14px; border: 1px solid var(--border2); border-radius: 6px;
-  background: transparent; color: var(--teal); font-family: var(--sans);
-  font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all .15s;
-  border-color: var(--teal);
-}
-.probe-btn:hover:not(:disabled) { background: var(--teal-lt); }
-.probe-btn:disabled { opacity: .42; cursor: not-allowed; }
-.print-btn {
+.sec-btn {
   padding: 7px 12px; border: 1px solid var(--border2); border-radius: 6px;
   background: transparent; color: var(--text-dim); font-family: var(--sans);
   font-size: 12px; cursor: pointer; white-space: nowrap; transition: all .15s;
 }
-.print-btn:hover { background: var(--bg); }
+.sec-btn:hover { background: var(--bg); }
 .search-wrap { position: relative; min-width: 140px; max-width: 240px; flex: 1; }
 .search-wrap input {
   width: 100%; padding: 6px 10px 6px 28px; background: var(--bg); border: 1px solid var(--border2);
@@ -85,49 +77,46 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   font-size: 11px; cursor: pointer; transition: all .15s; white-space: nowrap;
 }
 .fbtn.on { background: var(--accent-lt); color: var(--accent); border-color: #90bdf0; font-weight: 700; }
-.prog-wrap { flex: 1; min-width: 60px; max-width: 130px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.prog-wrap { flex: 1; min-width: 60px; max-width: 140px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .prog-bar  { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .25s; }
 .status-txt { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
 
-/* ── Endpoint probe panel ── */
-.probe-panel {
+/* ── Info / source bar ── */
+.info-bar {
+  padding: 8px 14px; border-radius: var(--radius); margin-bottom: 10px;
+  font-size: 11px; font-family: var(--mono); border: 1px solid;
+}
+.info-bar.ok     { background: var(--green-lt); color: var(--green); border-color: #aaddb8; }
+.info-bar.warn   { background: var(--amber-lt); color: var(--amber); border-color: #e8d060; }
+.info-bar.teal   { background: var(--teal-lt);  color: var(--teal);  border-color: #9ad8e8; }
+
+/* ── Report discovery panel ── */
+.discovery-panel {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); box-shadow: var(--shadow);
-  margin-bottom: 12px; overflow: hidden;
+  border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden;
 }
-.probe-header {
+.discovery-hdr {
   padding: 10px 16px; background: #f0f6ff; border-bottom: 1px solid var(--border);
-  font-size: 11px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; color: var(--accent);
 }
-.probe-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1px; background: var(--border);
+.discovery-body { padding: 14px 16px; font-size: 11px; }
+.ep-row {
+  display: flex; align-items: flex-start; gap: 10px; padding: 6px 0;
+  border-bottom: 1px solid #f0f3f7; font-family: var(--mono); font-size: 10px;
 }
-.probe-card {
-  background: var(--surface); padding: 12px 16px;
+.ep-row:last-child { border-bottom: none; }
+.ep-path { flex: 1; color: var(--accent); word-break: break-all; }
+.ep-badge {
+  padding: 2px 7px; border-radius: 4px; font-size: 9px; font-weight: 700; white-space: nowrap;
 }
-.probe-ep {
-  font-family: var(--mono); font-size: 10px; color: var(--accent);
-  font-weight: 600; margin-bottom: 6px; word-break: break-all;
-}
-.probe-status {
-  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
-  display: inline-block; margin-bottom: 6px;
-}
-.ps-ok      { background: var(--green-lt); color: var(--green); }
-.ps-empty   { background: var(--amber-lt); color: var(--amber); }
-.ps-error   { background: var(--red-lt);   color: var(--red); }
-.ps-loading { background: #f0f6ff;          color: var(--accent); }
-.probe-fields {
-  font-family: var(--mono); font-size: 9px; color: var(--text-dim);
-  line-height: 1.7; max-height: 120px; overflow-y: auto;
-}
-.probe-field-hit { color: var(--green); font-weight: 600; }
-.probe-sample {
-  margin-top: 6px; font-family: var(--mono); font-size: 9px;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 4px; padding: 6px 8px; max-height: 140px; overflow-y: auto;
-  white-space: pre-wrap; word-break: break-all; color: var(--text-dim);
+.ep-ok    { background: var(--green-lt); color: var(--green); border: 1px solid #aaddb8; }
+.ep-empty { background: var(--amber-lt); color: var(--amber); border: 1px solid #e8d060; }
+.ep-err   { background: var(--red-lt);   color: var(--red);   border: 1px solid #ffbbbc; }
+.ep-info  { color: var(--text-dim); font-size: 9px; flex: 2; }
+.ep-sample {
+  font-family: var(--mono); font-size: 9px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: 6px 8px; margin-top: 4px; max-height: 100px; overflow-y: auto;
+  white-space: pre; color: var(--text-dim); word-break: break-all;
 }
 
 /* ── Stats ── */
@@ -153,7 +142,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   border-top: none; border-radius: 0 0 var(--radius) var(--radius);
   box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px;
 }
-.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 300px); overflow-y: auto; }
+.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 310px); overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead { position: sticky; top: 0; z-index: 10; }
 thead tr.cg-row { background: #edf1f7; }
@@ -163,13 +152,13 @@ th.cg {
   border-bottom: 1px solid var(--border); border-right: 1px solid var(--border2);
 }
 th.cg:last-child { border-right: none; }
-.cg-id { color: #4a5a6e; }
-.cg-qty { color: #0e7490; background: #e0f6fb; }
-.cg-val { color: #1a7f37; background: #e6f4ea; }
-.cg-pri { color: #7a4f00; background: #fef9e7; }
-.cg-div { color: #6639ba; background: #ede8ff; }
-.cg-cf  { color: #9a6700; background: #fff8c5; }
-.cg-misc{ color: #4a5a6e; }
+.cg-id   { color: #4a5a6e; }
+.cg-qty  { color: #0e7490; background: #e0f6fb; }
+.cg-val  { color: #1a7f37; background: #e6f4ea; }
+.cg-pri  { color: #7a4f00; background: #fef9e7; }
+.cg-div  { color: #6639ba; background: #ede8ff; }
+.cg-cf   { color: #9a6700; background: #fff8c5; }
+.cg-misc { color: #4a5a6e; }
 thead tr.hdr-row { background: #f6f8fb; }
 th {
   padding: 8px 10px; text-align: left;
@@ -213,29 +202,16 @@ td:last-child { border-right: none; }
 }
 .div-code { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-left: 4px; }
 .cf-cell  { font-family: var(--mono); font-size: 10px; color: var(--text); }
-.qty-hit  { color: var(--green); font-weight: 600; }
-.qty-miss { color: #c8d4e0; font-style: italic; font-size: 10px; }
-
-/* footer totals */
 tfoot tr td {
   background: #f0f4f9; font-weight: 700; border-top: 2px solid var(--border2);
   padding: 7px 10px; font-family: var(--mono); font-size: 11px;
 }
-
 .err-box {
   color: var(--red); background: var(--red-lt); border: 1px solid #ffbbbc;
   border-radius: var(--radius); padding: 12px 16px; font-size: 12px; margin-bottom: 14px;
 }
 .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
 .empty-state .icon { font-size: 38px; margin-bottom: 10px; }
-
-/* source badge */
-.src-badge {
-  display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 9px;
-  font-weight: 700; font-family: var(--mono); background: var(--green-lt);
-  color: var(--green); border: 1px solid #aaddb8;
-}
-
 .pagination {
   display: flex; align-items: center; justify-content: flex-end; gap: 5px;
   padding: 9px 13px; border-top: 1px solid var(--border);
@@ -252,7 +228,7 @@ tfoot tr td {
 .pg-dots { color: var(--muted); }
 
 @media print {
-  .topbar, .tab-bar, .pagination, .stats-grid, .probe-panel, .print-btn { display: none !important; }
+  .topbar, .tab-bar, .pagination, .stats-grid, .discovery-panel, .info-bar, .sec-btn { display: none !important; }
   .tbl-wrap { box-shadow: none; border-radius: 0; border: none; }
   .tbl-scroll { max-height: none; overflow: visible; }
   table { font-size: 9px; } th, td { padding: 5px 7px; }
@@ -266,11 +242,11 @@ tfoot tr td {
 
 <!-- ── Control bar ── -->
 <div class="topbar">
-  <span class="brand">📦 Inventory Quantities</span>
+  <span class="brand">📦 Inventory + Quantities</span>
   <div class="vsep"></div>
-  <button class="load-btn"  id="load-btn"  onclick="loadAllRecords()">⬇ Load All Records</button>
-  <button class="probe-btn" id="probe-btn" onclick="runProbe()" disabled>🔍 Probe Qty Endpoints</button>
-  <button class="print-btn" onclick="window.print()">🖨 Print</button>
+  <button class="load-btn" id="load-btn" onclick="loadAllRecords()">⬇ Load All Records</button>
+  <button class="sec-btn"  id="disc-btn" onclick="runDiscovery()" disabled>🔬 Discover Reports</button>
+  <button class="sec-btn"  onclick="window.print()">🖨 Print</button>
   <div class="search-wrap">
     <span class="si">🔍</span>
     <input type="text" id="search-input" placeholder="Search name / code…" oninput="applyFilters()" disabled>
@@ -279,38 +255,27 @@ tfoot tr td {
     <option value="name-asc">Name A→Z</option>
     <option value="name-desc">Name Z→A</option>
     <option value="code-asc">Code A→Z</option>
-    <option value="qty-on-hand-desc">Qty On Hand ↓</option>
+    <option value="qty-hand-desc">Qty On Hand ↓</option>
     <option value="qty-owned-desc">Qty Owned ↓</option>
     <option value="val-desc">Total Value ↓</option>
     <option value="sale-desc">Sale Price ↓</option>
   </select>
   <button class="fbtn" id="f-active"  onclick="toggleF('active')"  disabled>Active Only</button>
-  <button class="fbtn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder Set</button>
+  <button class="fbtn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder</button>
+  <button class="fbtn" id="f-hasdiv"  onclick="toggleF('hasdiv')"  disabled>Has Division</button>
   <button class="fbtn" id="f-negqty"  onclick="toggleF('negqty')"  disabled>Negative Qty</button>
   <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
   <span class="status-txt" id="status-txt">Press Load to fetch data</span>
 </div>
 
-<!-- Probe panel (hidden until probe runs) -->
-<div class="probe-panel" id="probe-panel" style="display:none">
-  <div class="probe-header">
-    🔬 Endpoint Probe Results — discovering which endpoints serve quantity data for this business
-  </div>
-  <div class="probe-grid" id="probe-grid"></div>
-</div>
-
-<!-- Stats injected here -->
+<div id="info-bar-container"></div>
 <div class="stats-grid" id="stats-grid" style="display:none"></div>
 
-<!-- Qty source indicator -->
-<div id="qty-source-bar" style="display:none;margin-bottom:10px;padding:8px 14px;background:var(--green-lt);border:1px solid #aaddb8;border-radius:var(--radius);font-size:11px;color:var(--green);font-family:var(--mono)"></div>
-
-<!-- Tabs + content -->
 <div id="tabs-container" style="display:none">
   <div class="tab-bar">
     <div class="tab active" onclick="switchTab('inventory')">📊 Inventory &amp; Quantities</div>
     <div class="tab" onclick="switchTab('pricing')">💰 Pricing &amp; Valuation</div>
-    <div class="tab" onclick="switchTab('divisions')">🏢 Divisions</div>
+    <div class="tab" onclick="switchTab('divisions')">🏢 Divisions &amp; Accounts</div>
     <div class="tab" onclick="switchTab('customfields')">🏷 Custom Fields</div>
     <div class="tab" onclick="switchTab('all')">⚙ All Fields</div>
   </div>
@@ -382,13 +347,13 @@ async function getInventoryItemBatch(onProgress) {
 /* ══════════════════════════════════
    Generic paginated fetcher
 ══════════════════════════════════ */
-async function fetchAllPages(basePath) {
+async function fetchAllPages(path) {
   const all = [];
   let nextToken = null;
   let pageNum = 0;
   do {
-    const sep = basePath.includes('?') ? '&' : '?';
-    const url = nextToken ? `${basePath}${sep}next_page_token=${encodeURIComponent(nextToken)}` : basePath;
+    const sep = path.includes('?') ? '&' : '?';
+    const url = nextToken ? `${path}${sep}next_page_token=${encodeURIComponent(nextToken)}` : path;
     const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: url });
     const page = Array.isArray(data) ? data : (data.items || data.data || []);
     all.push(...page);
@@ -400,6 +365,18 @@ async function fetchAllPages(basePath) {
 }
 
 /* ══════════════════════════════════
+   Safe single fetch (doesn't throw)
+══════════════════════════════════ */
+async function tryFetch(path) {
+  try {
+    const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path });
+    return { ok: true, data };
+  } catch(e) {
+    return { ok: false, error: e.message };
+  }
+}
+
+/* ══════════════════════════════════
    State
 ══════════════════════════════════ */
 let _raw      = [];
@@ -407,307 +384,437 @@ let _filtered = [];
 let _page     = 1;
 let _tab      = 'inventory';
 const PAGE_SIZE = 50;
-const _filters  = { active: false, reorder: false, negqty: false };
+const _filters  = { active: false, reorder: false, hasdiv: false, negqty: false };
 
 let _cfKeyToName  = {};
 let _divKeyToInfo = {};
-let _qtySourceMsg = '';
+let _qtySource    = '';
 
 const VALUATION = { 1: 'Average Cost', 2: 'FIFO', 3: 'LIFO', 4: 'Specific ID' };
 
 /* ══════════════════════════════════
-   QTY FIELD EXTRACTOR
-   Checks every possible field name Manager might use
-   across different versions and endpoints.
+   HELPERS
 ══════════════════════════════════ */
-const QTY_FIELD_VARIANTS = {
-  qtyOwned:      ['qtyOwned','quantityOwned','owned','qty_owned','Owned','QtyOwned'],
-  qtyOnHand:     ['qtyOnHand','quantityOnHand','onHand','qty_on_hand','OnHand','QtyOnHand','inStock','quantityInStock'],
-  qtyToDeliver:  ['qtyToDeliver','quantityToDeliver','toDeliver','qty_to_deliver','ToDeliver','QtyToDeliver','committed','quantityCommitted'],
-  qtyToReceive:  ['qtyToReceive','quantityToReceive','toReceive','qty_to_receive','ToReceive','QtyToReceive','onOrder','quantityOnOrder'],
-  averageCost:   ['averageCost','averageUnitCost','unitCost','avgCost','average_cost','AverageCost'],
-  totalValue:    ['totalValue','inventoryValue','value','total_value','TotalValue','inventoryAmount'],
-};
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const num = (v, d=0) => v!=null ? Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}) : null;
 
-function extractQtyFields(src) {
-  const result = {};
-  for (const [field, variants] of Object.entries(QTY_FIELD_VARIANTS)) {
-    for (const v of variants) {
-      if (src[v] !== undefined && src[v] !== null) {
-        result[field] = src[v];
-        break;
-      }
-    }
-    if (result[field] === undefined) result[field] = null;
+function numCell(v, d=2, greenPos=false) {
+  if (v === null || v === undefined) return `<span class="td-dim">—</span>`;
+  const n = Number(v);
+  const f = num(n, d);
+  if (n < 0) return `<span class="neg">${f}</span>`;
+  if (greenPos && n > 0) return `<span style="color:var(--green);font-weight:600">${f}</span>`;
+  return f;
+}
+
+function showInfoBar(msg, type='ok') {
+  document.getElementById('info-bar-container').innerHTML =
+    `<div class="info-bar ${type}">${msg}</div>`;
+}
+
+function cfLabel(key) {
+  return _cfKeyToName[key] ?? _cfKeyToName[key?.toLowerCase()] ?? key;
+}
+
+function resolveDiv(val) {
+  if (val == null) return null;
+  if (typeof val === 'string') return _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()] ?? { name: val, code: null };
+  if (typeof val === 'object') {
+    const k = val.key ?? val.id ?? '';
+    return _divKeyToInfo[k] ?? _divKeyToInfo[k.toLowerCase?.()] ?? { name: val.name ?? val.text ?? k, code: val.code ?? null };
   }
-  return result;
-}
-
-function hasAnyQtyData(obj) {
-  const s = JSON.stringify(obj ?? '').toLowerCase();
-  return s.includes('qtyowned') || s.includes('qtyonhand') || s.includes('quantityowned') ||
-         s.includes('quantityonhand') || s.includes('onhand') || s.includes('totalvalue') ||
-         s.includes('averagecost') || s.includes('inventoryvalue') || s.includes('owned') ||
-         s.includes('instock');
+  return null;
 }
 
 /* ══════════════════════════════════
-   ALL QUANTITY ENDPOINTS TO PROBE
-   These are every batch endpoint Manager.io
-   is known to use for inventory quantities.
+   QUANTITY FETCHING STRATEGY
+   
+   Based on your screenshot, Manager stores
+   quantities in "Inventory Quantity Summary"
+   which is a REPORT accessed via:
+     GET /api4/reports   (list all reports)
+     GET /api4/report/{key}  (get report data)
+   
+   We also try the inventory-item self links
+   since those show individual item detail.
 ══════════════════════════════════ */
-const QTY_ENDPOINTS = [
-  '/api4/inventory-quantity-batch',
-  '/api4/inventory-balance-batch',
-  '/api4/inventory-item-balance-batch',
-  '/api4/inventory-stock-batch',
-  '/api4/inventory-location-batch',
-  '/api4/inventory-item-location-batch',
-  '/api4/inventory-summary-batch',
-  '/api4/inventory-value-batch',
-  '/api4/inventory-movement-summary-batch',
-  '/api4/inventory-on-hand-batch',
-  '/api4/stock-on-hand-batch',
-];
 
-/* ══════════════════════════════════
-   PROBE — run all qty endpoints, show results
-   This is the diagnostic tool that reveals
-   which endpoint your Manager instance uses.
-══════════════════════════════════ */
-async function runProbe() {
-  const btn = document.getElementById('probe-btn');
-  btn.disabled = true; btn.textContent = '⏳ Probing…';
-
-  const panel = document.getElementById('probe-panel');
-  const grid  = document.getElementById('probe-grid');
-  panel.style.display = 'block';
-  grid.innerHTML = '';
-
-  // Create a card for each endpoint
-  const cards = {};
-  QTY_ENDPOINTS.forEach(ep => {
-    const div = document.createElement('div');
-    div.className = 'probe-card';
-    div.innerHTML = `
-      <div class="probe-ep">${ep}</div>
-      <div class="probe-status ps-loading">⏳ Testing…</div>
-      <div class="probe-fields"></div>`;
-    grid.appendChild(div);
-    cards[ep] = div;
-  });
-
-  // Also probe the self-link of the first item if we have items
-  const firstItem = _raw[0];
-  const selfHref = firstItem?._links?.self?.href ?? firstItem?.links?.self ?? null;
-
-  // Probe each endpoint
-  for (const ep of QTY_ENDPOINTS) {
-    const card   = cards[ep];
-    const statusEl = card.querySelector('.probe-status');
-    const fieldsEl = card.querySelector('.probe-fields');
-    try {
-      const rows = await fetchAllPages(ep);
-      if (!rows.length) {
-        statusEl.className = 'probe-status ps-empty';
-        statusEl.textContent = '⚠ Empty response (0 rows)';
-        fieldsEl.textContent = 'Endpoint exists but returned no data.';
-        continue;
-      }
-
-      const sample = rows[0];
-      const src = sample?.item ?? sample;
-      const hasQty = hasAnyQtyData(src) || hasAnyQtyData(sample);
-
-      if (hasQty) {
-        statusEl.className = 'probe-status ps-ok';
-        statusEl.textContent = `✓ ${rows.length} rows — HAS QTY DATA`;
-
-        // Show which fields were found
-        const found = [];
-        const allKeys = Object.keys(src);
-        const qtyKeys = allKeys.filter(k =>
-          k.toLowerCase().includes('qty') || k.toLowerCase().includes('quantity') ||
-          k.toLowerCase().includes('owned') || k.toLowerCase().includes('hand') ||
-          k.toLowerCase().includes('deliver') || k.toLowerCase().includes('receive') ||
-          k.toLowerCase().includes('value') || k.toLowerCase().includes('cost') ||
-          k.toLowerCase().includes('stock')
-        );
-        qtyKeys.forEach(k => {
-          found.push(`<span class="probe-field-hit">✓ ${k}: ${JSON.stringify(src[k]).slice(0,30)}</span>`);
-        });
-        (allKeys.filter(k=>!qtyKeys.includes(k))).slice(0,8).forEach(k => {
-          found.push(`${k}: ${JSON.stringify(src[k]).slice(0,20)}`);
-        });
-        fieldsEl.innerHTML = found.join('<br>');
-
-        // Show raw sample
-        const sampleDiv = document.createElement('div');
-        sampleDiv.className = 'probe-sample';
-        sampleDiv.textContent = JSON.stringify(sample, null, 2).slice(0,800);
-        card.appendChild(sampleDiv);
-
-        // AUTO-APPLY: use this endpoint to update qty data
-        await applyQtyFromEndpoint(ep, rows);
-
-      } else {
-        statusEl.className = 'probe-status ps-empty';
-        statusEl.textContent = `⚠ ${rows.length} rows — no qty fields found`;
-        const allKeys = Object.keys(src).slice(0,12);
-        fieldsEl.innerHTML = allKeys.map(k=>`${k}: ${JSON.stringify(src[k]).slice(0,25)}`).join('<br>');
-      }
-    } catch(e) {
-      statusEl.className = 'probe-status ps-error';
-      statusEl.textContent = `✗ Error: ${e.message.slice(0,60)}`;
-      fieldsEl.textContent = 'Endpoint not available or access denied.';
-    }
-  }
-
-  btn.disabled = false; btn.textContent = '🔍 Re-Probe';
-}
-
-/* ══════════════════════════════════
-   applyQtyFromEndpoint
-   Takes rows from a successful qty endpoint,
-   builds the qty map, and refreshes the UI.
-══════════════════════════════════ */
-async function applyQtyFromEndpoint(endpoint, rows) {
-  const qtyMap = {};
+/* Build a qty map from any data structure that contains item names/codes + qty fields */
+function parseQtyFromRows(rows, itemsByCode, itemsByName) {
+  const qtyMap = {}; // itemKey → { qtyOwned, qtyOnHand, qtyToDeliver, qtyToReceive, averageCost, totalValue }
+  let matched = 0;
 
   rows.forEach(row => {
-    // The item UUID can be at different locations depending on endpoint
-    const key = row?.key
-      ?? row?.item?.inventoryItem?.key
-      ?? row?.item?.inventoryItem
-      ?? row?.inventoryItem
-      ?? row?.item?.key
-      ?? null;
+    // Manager report rows can have many shapes — probe all possibilities
+    const src = row?.item ?? row?.data ?? row;
 
-    if (!key) return;
+    // Try to identify which inventory item this row refers to
+    // Could be: { key: uuid } or { itemCode: "..." } or { name: "Item Name - Code" } or { inventoryItem: uuid }
+    let itemKey = null;
 
-    const src = row?.item ?? row;
-    qtyMap[key] = extractQtyFields(src);
-    // Also check nested structures
-    if (row?.item?.inventoryItem && typeof row.item.inventoryItem === 'object') {
-      const nested = extractQtyFields(row.item.inventoryItem);
-      for (const [k,v] of Object.entries(nested)) {
-        if (v !== null && qtyMap[key][k] === null) qtyMap[key][k] = v;
+    // Direct key reference
+    const directKey = row?.key ?? src?.inventoryItem ?? src?.inventoryItemKey ?? src?.item?.key;
+    if (directKey && typeof directKey === 'string' && directKey.includes('-')) {
+      itemKey = directKey;
+    }
+
+    // Match by item code embedded in name like "GT+LMT-028 - All Time 10KG"
+    if (!itemKey) {
+      const nameField = src?.name ?? src?.itemName ?? src?.description ?? src?.account ?? src?.text ?? '';
+      const nameStr = typeof nameField === 'string' ? nameField : (nameField?.name ?? nameField?.text ?? '');
+      if (nameStr) {
+        // Try "CODE - Name" pattern (Manager's nameWithCode format)
+        const dashIdx = nameStr.indexOf(' - ');
+        if (dashIdx > 0) {
+          const possibleCode = nameStr.substring(0, dashIdx).trim();
+          if (itemsByCode[possibleCode]) itemKey = itemsByCode[possibleCode];
+        }
+        // Try direct name match
+        if (!itemKey && itemsByName[nameStr.trim()]) itemKey = itemsByName[nameStr.trim()];
+        // Try nameWithCode match
+        if (!itemKey) {
+          for (const [code, key] of Object.entries(itemsByCode)) {
+            if (nameStr.includes(code)) { itemKey = key; break; }
+          }
+        }
       }
+    }
+
+    if (!itemKey) return;
+
+    // Now extract qty fields — Manager report uses various field names
+    const qtyOwned     = src?.qtyOwned     ?? src?.quantityOwned     ?? src?.owned        ?? src?.balance    ??
+                         src?.closingBalance ?? src?.closing_balance  ?? null;
+    const qtyOnHand    = src?.qtyOnHand    ?? src?.quantityOnHand    ?? src?.onHand        ?? src?.inStock    ??
+                         src?.stock        ?? src?.quantityInStock    ?? null;
+    const qtyToDeliver = src?.qtyToDeliver ?? src?.quantityToDeliver ?? src?.toDeliver     ??
+                         src?.committed    ?? src?.sales              ?? null;
+    const qtyToReceive = src?.qtyToReceive ?? src?.quantityToReceive ?? src?.toReceive     ??
+                         src?.purchases    ?? src?.onOrder            ?? null;
+    const averageCost  = src?.averageCost  ?? src?.averageUnitCost   ?? src?.unitCost      ??
+                         src?.avgCost      ?? null;
+    const totalValue   = src?.totalValue   ?? src?.inventoryValue    ?? src?.value         ??
+                         src?.amount       ?? null;
+
+    // Only record if at least one qty field has data
+    if (qtyOwned!==null || qtyOnHand!==null || qtyToDeliver!==null || qtyToReceive!==null || averageCost!==null) {
+      qtyMap[itemKey] = { qtyOwned, qtyOnHand, qtyToDeliver, qtyToReceive, averageCost, totalValue };
+      matched++;
     }
   });
 
-  const matched = _raw.filter(i => i.key && qtyMap[i.key]).length;
+  return { qtyMap, matched };
+}
 
-  // Update qty on all normalized items
+/* ══════════════════════════════════
+   fetchReportList — get all available reports
+   Then find inventory-related ones
+══════════════════════════════════ */
+async function fetchReportList() {
+  // Try the reports batch endpoint
+  const endpoints = [
+    '/api4/report-batch',
+    '/api4/reports',
+    '/api4/report',
+  ];
+  for (const ep of endpoints) {
+    try {
+      const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: ep });
+      const rows = Array.isArray(data) ? data : (data.items || data.data || data.reports || []);
+      if (rows.length > 0) return { endpoint: ep, rows };
+    } catch(e) {}
+  }
+  return null;
+}
+
+/* ══════════════════════════════════
+   fetchInventoryQtyFromReports
+   Fetches the report list, finds inventory
+   quantity reports, fetches their data,
+   and parses quantities from rows.
+══════════════════════════════════ */
+async function fetchInventoryQtyFromReports(itemsByCode, itemsByName, onStatus) {
+  onStatus('Fetching report list…');
+  const reportList = await fetchReportList();
+
+  if (!reportList) {
+    onStatus('Report list endpoint not found.');
+    return null;
+  }
+
+  const { rows: reports } = reportList;
+  onStatus(`Found ${reports.length} reports — searching for inventory quantity reports…`);
+
+  // Filter to inventory-related reports
+  const inventoryReports = reports.filter(r => {
+    const name = (r?.item?.name ?? r?.name ?? r?.title ?? '').toLowerCase();
+    return name.includes('inventory') && (
+      name.includes('quantity') || name.includes('qty') ||
+      name.includes('stock') || name.includes('balance') || name.includes('summary')
+    );
+  });
+
+  if (!inventoryReports.length) {
+    // Try ALL reports if no inventory-specific ones found
+    onStatus('No inventory reports found by name — trying all reports…');
+    inventoryReports.push(...reports.slice(0, 20)); // limit to first 20
+  }
+
+  // Try fetching each inventory report
+  for (const report of inventoryReports) {
+    const reportKey = report?.key ?? report?.id;
+    const reportName = report?.item?.name ?? report?.name ?? report?.title ?? reportKey;
+    onStatus(`Trying report: ${reportName}…`);
+
+    if (!reportKey) continue;
+
+    // Reports can be fetched via different paths
+    const reportPaths = [
+      `/api4/report/${reportKey}`,
+      `/api4/reports/${reportKey}`,
+      `/api4/report-batch/${reportKey}`,
+      `/api4/report?key=${reportKey}`,
+    ];
+
+    for (const rPath of reportPaths) {
+      try {
+        const rData = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: rPath });
+        // Report data can be in many shapes
+        const rows = Array.isArray(rData)
+          ? rData
+          : (rData?.rows ?? rData?.data ?? rData?.items ?? rData?.lines ??
+             rData?.report?.rows ?? rData?.result ?? []);
+
+        if (!rows.length) continue;
+
+        const { qtyMap, matched } = parseQtyFromRows(rows, itemsByCode, itemsByName);
+        if (matched > 0) {
+          return { source: `Report: ${reportName}`, qtyMap, matched, totalRows: rows.length };
+        }
+
+        // Even if not matched by key, show what fields we got for debugging
+      } catch(e) {}
+    }
+  }
+  return null;
+}
+
+/* ══════════════════════════════════
+   fetchInventoryQtyFromItemDetail
+   Falls back to fetching each item's detail
+   page via its self link (guaranteed to work
+   but slower for large catalogs)
+══════════════════════════════════ */
+async function fetchInventoryQtyFromItemDetail(onStatus) {
+  const itemsWithSelf = _raw.filter(i => i._selfHref);
+  if (!itemsWithSelf.length) return null;
+
+  onStatus(`Fetching item details (${itemsWithSelf.length} items)…`);
+  let fetched = 0;
+  const qtyMap = {};
+
+  for (const item of itemsWithSelf) {
+    try {
+      const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: item._selfHref });
+      const src = data?.item ?? data;
+      // Check every field for qty-like data
+      const keys = Object.keys(src ?? {});
+      const qtyKeys = keys.filter(k => {
+        const kl = k.toLowerCase();
+        return kl.includes('qty') || kl.includes('quantity') || kl.includes('owned') ||
+               kl.includes('onhand') || kl.includes('deliver') || kl.includes('receive') ||
+               kl.includes('stock') || kl.includes('balance') || kl.includes('value') ||
+               kl.includes('cost');
+      });
+      if (qtyKeys.length > 0) {
+        const entry = {};
+        qtyKeys.forEach(k => { entry[k] = src[k]; });
+        // Map to standard names
+        qtyMap[item.key] = {
+          qtyOwned:     src?.qtyOwned     ?? src?.quantityOwned  ?? src?.owned    ?? src?.balance ?? null,
+          qtyOnHand:    src?.qtyOnHand    ?? src?.quantityOnHand ?? src?.onHand   ?? src?.stock   ?? null,
+          qtyToDeliver: src?.qtyToDeliver ?? src?.toDeliver      ?? src?.sales    ?? null,
+          qtyToReceive: src?.qtyToReceive ?? src?.toReceive      ?? src?.purchases ?? null,
+          averageCost:  src?.averageCost  ?? src?.unitCost       ?? src?.avgCost  ?? null,
+          totalValue:   src?.totalValue   ?? src?.inventoryValue ?? src?.value    ?? null,
+          _rawFields:   entry, // keep raw for debugging
+        };
+      }
+    } catch(e) {}
+    fetched++;
+    if (fetched % 5 === 0) onStatus(`Fetching item details… ${fetched}/${itemsWithSelf.length}`);
+  }
+
+  const matched = Object.keys(qtyMap).length;
+  return matched > 0 ? { source: 'Item detail self-links', qtyMap, matched } : null;
+}
+
+/* ══════════════════════════════════
+   applyQtyMap — merge qty data into _raw
+══════════════════════════════════ */
+function applyQtyMap(qtyMap) {
   _raw.forEach(i => {
     if (!i.key || !qtyMap[i.key]) return;
     const q = qtyMap[i.key];
-    i.qtyOwned     = q.qtyOwned     ?? i.qtyOwned;
-    i.qtyOnHand    = q.qtyOnHand    ?? i.qtyOnHand;
-    i.qtyToDeliver = q.qtyToDeliver ?? i.qtyToDeliver;
-    i.qtyToReceive = q.qtyToReceive ?? i.qtyToReceive;
-    i.averageCost  = q.averageCost  ?? i.averageCost;
-    i.totalValue   = q.totalValue   ?? i.totalValue;
+    if (q.qtyOwned     !== null) i.qtyOwned     = q.qtyOwned;
+    if (q.qtyOnHand    !== null) i.qtyOnHand    = q.qtyOnHand;
+    if (q.qtyToDeliver !== null) i.qtyToDeliver = q.qtyToDeliver;
+    if (q.qtyToReceive !== null) i.qtyToReceive = q.qtyToReceive;
+    if (q.averageCost  !== null) i.averageCost  = q.averageCost;
+    if (q.totalValue   !== null) i.totalValue   = q.totalValue;
   });
-
-  _qtySourceMsg = `✓ Qty source: ${endpoint} · ${rows.length} rows · ${matched}/${_raw.length} items matched`;
-  const srcBar = document.getElementById('qty-source-bar');
-  srcBar.style.display = 'block';
-  srcBar.textContent = _qtySourceMsg;
-
-  applyFilters();
 }
 
 /* ══════════════════════════════════
-   fetchMetadata — CF names + divisions
+   runDiscovery — diagnostic tool that shows
+   ALL available report endpoints and their data
+══════════════════════════════════ */
+async function runDiscovery() {
+  const btn = document.getElementById('disc-btn');
+  btn.disabled = true; btn.textContent = '⏳ Discovering…';
+
+  // Remove old panel if any
+  const old = document.getElementById('discovery-panel');
+  if (old) old.remove();
+
+  const panel = document.createElement('div');
+  panel.id = 'discovery-panel';
+  panel.className = 'discovery-panel';
+  panel.innerHTML = `
+    <div class="discovery-hdr">🔬 Report Discovery — finding all available data sources for inventory quantities</div>
+    <div class="discovery-body" id="disc-body"><i>Scanning…</i></div>`;
+  document.getElementById('info-bar-container').after(panel);
+
+  const body = document.getElementById('disc-body');
+  const log = (html) => { body.innerHTML += html; };
+  body.innerHTML = '';
+
+  // Try report list
+  const reportEndpoints = ['/api4/report-batch', '/api4/reports', '/api4/report'];
+  let reportRows = [];
+  let reportEndpoint = '';
+
+  for (const ep of reportEndpoints) {
+    const r = await tryFetch(ep);
+    const rows = r.ok ? (Array.isArray(r.data) ? r.data : (r.data?.items || r.data?.data || [])) : [];
+    log(`<div class="ep-row">
+      <div class="ep-path">${ep}</div>
+      <div class="ep-badge ${r.ok ? (rows.length?'ep-ok':'ep-empty') : 'ep-err'}">
+        ${r.ok ? (rows.length ? `✓ ${rows.length} rows` : '⚠ empty') : '✗ error'}
+      </div>
+      <div class="ep-info">${r.ok ? '' : esc(r.error?.slice(0,80)??'')}</div>
+    </div>`);
+    if (r.ok && rows.length && !reportRows.length) { reportRows = rows; reportEndpoint = ep; }
+  }
+
+  if (!reportRows.length) {
+    log(`<div style="padding:12px;color:var(--red)">⚠ No report list endpoint found. Trying individual known report paths…</div>`);
+  } else {
+    log(`<div style="padding:10px 0 4px;font-weight:700;color:var(--head);font-size:11px">Reports found via ${reportEndpoint}:</div>`);
+    const inventoryReports = reportRows.filter(r => {
+      const n = (r?.item?.name ?? r?.name ?? '').toLowerCase();
+      return n.includes('inventory') || n.includes('stock') || n.includes('quantity');
+    });
+
+    // Show all reports but highlight inventory ones
+    reportRows.slice(0, 50).forEach(r => {
+      const key  = r?.key ?? r?.id ?? '?';
+      const name = r?.item?.name ?? r?.name ?? r?.title ?? key;
+      const isInv = (name.toLowerCase().includes('inventory') || name.toLowerCase().includes('stock') || name.toLowerCase().includes('quantity'));
+      log(`<div class="ep-row" style="${isInv?'background:var(--green-lt)':''}">
+        <div class="ep-path">${esc(name)} ${isInv?'<b style="color:var(--green)">← INVENTORY</b>':''}</div>
+        <div class="ep-badge" style="background:#f0f4f9;color:var(--muted);border:1px solid var(--border)">${esc(key.slice(0,20))}…</div>
+        <div class="ep-info">
+          <a href="#" onclick="fetchAndShowReport('${esc(key)}','${esc(name)}');return false" style="color:var(--accent)">▶ Fetch this report</a>
+        </div>
+      </div>`);
+    });
+  }
+
+  // Also probe non-report batch endpoints one more time
+  const batchEndpoints = [
+    '/api4/inventory-quantity-batch', '/api4/inventory-balance-batch',
+    '/api4/inventory-stock-batch', '/api4/inventory-value-batch',
+    '/api4/inventory-item-location-batch', '/api4/inventory-on-hand-batch',
+  ];
+  log(`<div style="padding:10px 0 4px;font-weight:700;color:var(--head);font-size:11px">Batch endpoint probe:</div>`);
+  for (const ep of batchEndpoints) {
+    const r = await tryFetch(ep);
+    const rows = r.ok ? (Array.isArray(r.data) ? r.data : (r.data?.items||[])) : [];
+    const sample = rows[0] ? JSON.stringify(rows[0]).slice(0, 200) : '';
+    log(`<div class="ep-row">
+      <div class="ep-path">${ep}</div>
+      <div class="ep-badge ${r.ok?(rows.length?'ep-ok':'ep-empty'):'ep-err'}">
+        ${r.ok?(rows.length?`✓ ${rows.length} rows`:'⚠ empty'):'✗ '+esc((r.error||'').slice(0,40))}
+      </div>
+      <div class="ep-info">${sample?`<div class="ep-sample">${esc(sample)}</div>`:''}</div>
+    </div>`);
+  }
+
+  btn.disabled = false; btn.textContent = '🔬 Discover Reports';
+}
+
+/* Fetch a specific report and try to extract qty data */
+window.fetchAndShowReport = async function(key, name) {
+  showInfoBar(`⏳ Fetching report: ${name}…`, 'teal');
+  const paths = [`/api4/report/${key}`, `/api4/reports/${key}`];
+  for (const p of paths) {
+    try {
+      const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: p });
+      const rows = Array.isArray(data) ? data : (data?.rows ?? data?.data ?? data?.items ?? data?.lines ?? []);
+
+      // Build lookup maps
+      const byCode = {}, byName = {};
+      _raw.forEach(i => {
+        if (i.itemCode) byCode[i.itemCode] = i.key;
+        if (i.itemName) byName[i.itemName] = i.key;
+      });
+
+      const { qtyMap, matched } = parseQtyFromRows(rows, byCode, byName);
+
+      if (matched > 0) {
+        applyQtyMap(qtyMap);
+        _qtySource = `Report: ${name} (${matched} matched)`;
+        showInfoBar(`✓ Quantities loaded from "${name}" — ${matched} items matched from ${rows.length} rows`, 'ok');
+        applyFilters();
+      } else {
+        // Show raw structure for debugging
+        const sample = JSON.stringify(rows.slice(0,3), null, 2);
+        showInfoBar(`⚠ Report fetched (${rows.length} rows) but couldn't match items. Check console for structure.`, 'warn');
+        // Show the raw data in discovery panel
+        const disc = document.getElementById('disc-body');
+        if (disc) disc.innerHTML += `<div style="margin-top:12px;font-weight:700">Raw sample from "${name}":</div><div class="ep-sample" style="max-height:200px">${esc(sample)}</div>`;
+      }
+      return;
+    } catch(e) {}
+  }
+  showInfoBar(`✗ Could not fetch report "${name}"`, 'warn');
+};
+
+/* ══════════════════════════════════
+   fetchMetadata
 ══════════════════════════════════ */
 async function fetchMetadata() {
   const cfEndpoints = [
-    '/api4/text-custom-field-batch',
-    '/api4/number-custom-field-batch',
-    '/api4/date-custom-field-batch',
-    '/api4/checkbox-custom-field-batch',
+    '/api4/text-custom-field-batch', '/api4/number-custom-field-batch',
+    '/api4/date-custom-field-batch', '/api4/checkbox-custom-field-batch',
     '/api4/dropdown-custom-field-batch',
   ];
-  const cfResults = await Promise.allSettled(cfEndpoints.map(ep => fetchAllPages(ep)));
-  cfResults.forEach(r => {
+  const results = await Promise.allSettled(cfEndpoints.map(ep => fetchAllPages(ep)));
+  results.forEach(r => {
     if (r.status !== 'fulfilled') return;
     r.value.forEach(row => {
-      const key  = row?.key;
-      const name = row?.item?.name ?? row?.name;
+      const key = row?.key, name = row?.item?.name ?? row?.name;
       if (key && name) { _cfKeyToName[key] = name; _cfKeyToName[key.toLowerCase()] = name; }
     });
   });
   try {
     const divRows = await fetchAllPages('/api4/division-batch');
     divRows.forEach(row => {
-      const key  = row?.key;
-      const name = row?.item?.name ?? row?.name;
-      const code = row?.item?.code ?? row?.code;
-      if (key && name) {
-        _divKeyToInfo[key] = { name, code };
-        _divKeyToInfo[key.toLowerCase()] = { name, code };
-      }
+      const key = row?.key, name = row?.item?.name ?? row?.name, code = row?.item?.code ?? row?.code;
+      if (key && name) { _divKeyToInfo[key] = { name, code }; _divKeyToInfo[key.toLowerCase()] = { name, code }; }
     });
   } catch(e) {}
-}
-
-/* ══════════════════════════════════
-   fetchQuantitiesAuto
-   Tries all known endpoints silently,
-   uses first one that returns qty data.
-══════════════════════════════════ */
-async function fetchQuantitiesAuto(onStatus) {
-  for (const ep of QTY_ENDPOINTS) {
-    try {
-      onStatus(`Trying ${ep}…`);
-      const rows = await fetchAllPages(ep);
-      if (!rows.length) continue;
-      const sample = rows[0];
-      const src = sample?.item ?? sample;
-      if (!hasAnyQtyData(src) && !hasAnyQtyData(sample)) continue;
-      // Found a working endpoint
-      await applyQtyFromEndpoint(ep, rows);
-      return ep;
-    } catch(e) { /* try next */ }
-  }
-
-  // Last resort: fetch individual item detail via self link for first few items to detect fields
-  onStatus('No batch qty endpoint found — checking item self-links…');
-  if (_raw.length > 0) {
-    const selfHref = _raw[0]?._selfHref;
-    if (selfHref) {
-      try {
-        const detail = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: selfHref });
-        if (hasAnyQtyData(detail)) {
-          // Fetch all items individually (slow but works)
-          onStatus('Loading quantities via item detail links…');
-          for (let i = 0; i < _raw.length; i++) {
-            const href = _raw[i]._selfHref;
-            if (!href) continue;
-            try {
-              const d = await postMessageWithResponse({ type: 'api-request', method: 'GET', path: href });
-              const src = d?.item ?? d;
-              const qty = extractQtyFields(src);
-              _raw[i].qtyOwned     = qty.qtyOwned     ?? _raw[i].qtyOwned;
-              _raw[i].qtyOnHand    = qty.qtyOnHand    ?? _raw[i].qtyOnHand;
-              _raw[i].qtyToDeliver = qty.qtyToDeliver ?? _raw[i].qtyToDeliver;
-              _raw[i].qtyToReceive = qty.qtyToReceive ?? _raw[i].qtyToReceive;
-              _raw[i].averageCost  = qty.averageCost  ?? _raw[i].averageCost;
-              _raw[i].totalValue   = qty.totalValue   ?? _raw[i].totalValue;
-              if (i % 10 === 0) onStatus(`Loading item details… ${i+1}/${_raw.length}`);
-            } catch(e) {}
-          }
-          _qtySourceMsg = 'Qty source: individual item detail endpoints';
-          const srcBar = document.getElementById('qty-source-bar');
-          srcBar.style.display = 'block';
-          srcBar.textContent = _qtySourceMsg;
-          return 'self-links';
-        }
-      } catch(e) {}
-    }
-  }
-  return null;
 }
 
 /* ══════════════════════════════════
@@ -717,54 +824,32 @@ function normalize(raw) {
   const it  = raw?.item ?? raw;
   const cf2 = it?.customFields2 ?? {};
   const key = raw?.key ?? null;
-  const selfHref = raw?._links?.self?.href ?? null;
-
-  // Try to pull qty from the item batch itself (some Manager versions include them)
-  const itemQty = extractQtyFields(it);
 
   const cfStrings      = cf2.strings      ?? {};
   const cfDecimals     = cf2.decimals     ?? {};
   const cfDates        = cf2.dates        ?? {};
   const cfBooleans     = cf2.booleans     ?? {};
   const cfStringArrays = cf2.stringArrays ?? {};
-
-  const hasCF = !!(
-    Object.keys(cfStrings).length || Object.keys(cfDecimals).length ||
-    Object.keys(cfDates).length   || Object.keys(cfBooleans).length ||
-    Object.keys(cfStringArrays).length
-  );
-
-  function resolveDiv(val) {
-    if (val == null) return null;
-    if (typeof val === 'string') return _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()] ?? { name: val, code: null };
-    if (typeof val === 'object') {
-      const k = val.key ?? val.id ?? '';
-      const fromMap = _divKeyToInfo[k] ?? _divKeyToInfo[k.toLowerCase?.() ?? ''];
-      if (fromMap) return fromMap;
-      return { name: val.name ?? val.text ?? k, code: val.code ?? null };
-    }
-    return null;
-  }
+  const hasCF = !!(Object.keys(cfStrings).length||Object.keys(cfDecimals).length||Object.keys(cfDates).length||Object.keys(cfBooleans).length||Object.keys(cfStringArrays).length);
 
   return {
     key,
-    _selfHref: selfHref,
-
-    itemCode:        it?.itemCode   ?? null,
-    itemName:        it?.itemName   ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
-    unitName:        it?.unitName   ?? null,
+    _selfHref: raw?._links?.self?.href ?? null,
+    itemCode:  it?.itemCode ?? null,
+    itemName:  it?.itemName ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
+    unitName:  it?.unitName ?? null,
     valuationMethod: it?.valuationMethod ?? null,
-    inactive:        it?.inactive   ?? false,
-    reorderPoint:    it?.reorderPoint ?? false,
-    qtyDesired:      it?.qtyDesired ?? 0,
+    inactive:  it?.inactive  ?? false,
+    reorderPoint: it?.reorderPoint ?? false,
+    qtyDesired: it?.qtyDesired ?? 0,
 
-    // Quantities — from item batch if present, otherwise filled later by qty endpoint
-    qtyOwned:      itemQty.qtyOwned,
-    qtyOnHand:     itemQty.qtyOnHand,
-    qtyToDeliver:  itemQty.qtyToDeliver,
-    qtyToReceive:  itemQty.qtyToReceive,
-    averageCost:   itemQty.averageCost  ?? (it?.obsolete_StartingBalanceAverageCost2 > 0 ? it.obsolete_StartingBalanceAverageCost2 : null),
-    totalValue:    itemQty.totalValue,
+    // Quantities — null initially, filled by qty fetch
+    qtyOwned:     null,
+    qtyOnHand:    null,
+    qtyToDeliver: null,
+    qtyToReceive: null,
+    averageCost:  it?.obsolete_StartingBalanceAverageCost2 > 0 ? it.obsolete_StartingBalanceAverageCost2 : null,
+    totalValue:   null,
 
     // Pricing
     defPurchasePrice: it?.hasDefaultPurchaseUnitPrice ? (it?.defaultPurchaseUnitPrice ?? 0) : null,
@@ -777,17 +862,12 @@ function normalize(raw) {
     defaultDivision: it?.hasDefaultDivision ? resolveDiv(it?.defaultDivision) : null,
     divisionEnabled: it?.divisionEnabled ?? false,
 
-    // Accounts
     incomeAccountName:  it?.customIncomeAccount  ? resolveDiv(it?.incomeAccount)?.name  : null,
     expenseAccountName: it?.customExpenseAccount ? resolveDiv(it?.expenseAccount)?.name : null,
     controlAccountName: resolveDiv(it?.controlAccount)?.name ?? null,
 
-    // Custom fields
     cfStrings, cfDecimals, cfDates, cfBooleans, cfStringArrays,
     hasCF,
-
-    // Store raw links for per-item fetching
-    _links: raw?._links ?? null,
   };
 }
 
@@ -795,8 +875,8 @@ function normalize(raw) {
    loadAllRecords
 ══════════════════════════════════ */
 async function loadAllRecords() {
-  const btn    = document.getElementById('load-btn');
-  const bar    = document.getElementById('prog-bar');
+  const btn = document.getElementById('load-btn');
+  const bar = document.getElementById('prog-bar');
   const status = document.getElementById('status-txt');
 
   btn.disabled = true; btn.textContent = 'Loading…';
@@ -804,38 +884,66 @@ async function loadAllRecords() {
   document.getElementById('app-init').innerHTML = '';
   document.getElementById('stats-grid').style.display = 'none';
   document.getElementById('tabs-container').style.display = 'none';
-  document.getElementById('qty-source-bar').style.display = 'none';
+  document.getElementById('info-bar-container').innerHTML = '';
 
-  const ctrlIds = ['search-input','sort-select','f-active','f-reorder','f-negqty'];
+  const ctrlIds = ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-negqty'];
   ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=true; });
 
   try {
-    // Phase 1: items + metadata in parallel
-    status.textContent = 'Fetching items & field definitions…';
+    // Phase 1: Items + metadata in parallel
+    status.textContent = 'Fetching items & definitions…';
     const [rawItems] = await Promise.all([
       getInventoryItemBatch((loaded, total, page) => {
         status.textContent = total
           ? `Items: ${loaded.toLocaleString()} / ${total.toLocaleString()}`
           : `Items: ${loaded.toLocaleString()} loaded…`;
-        if (total) bar.style.width = Math.min(55, Math.round(loaded/total*55)) + '%';
+        if (total) bar.style.width = Math.min(50, Math.round(loaded/total*50)) + '%';
       }),
       fetchMetadata(),
     ]);
-    bar.style.width = '60%';
+    bar.style.width = '55%';
 
-    // Phase 2: normalize (with qty from batch if present)
     _raw = rawItems.map(r => normalize(r));
 
-    // Phase 3: try to get qty from dedicated endpoint
-    status.textContent = 'Fetching inventory quantities…';
-    const usedEp = await fetchQuantitiesAuto(msg => { status.textContent = msg; });
-    bar.style.width = '100%';
+    // Build lookup maps for qty matching
+    const byCode = {}, byName = {};
+    _raw.forEach(i => {
+      if (i.itemCode) byCode[i.itemCode] = i.key;
+      if (i.itemName) { byName[i.itemName] = i.key; }
+      if (i.itemCode && i.itemName) byName[`${i.itemCode} - ${i.itemName}`] = i.key;
+    });
 
+    // Phase 2: Try reports for quantities
+    status.textContent = 'Fetching quantity data from reports…';
+    let qtyResult = await fetchInventoryQtyFromReports(byCode, byName, msg => { status.textContent = msg; });
+    bar.style.width = '80%';
+
+    if (qtyResult && qtyResult.matched > 0) {
+      applyQtyMap(qtyResult.qtyMap);
+      _qtySource = qtyResult.source;
+      showInfoBar(`✓ Quantities loaded from: ${qtyResult.source} · ${qtyResult.matched} items matched`, 'ok');
+    } else {
+      // Phase 3: Fallback — fetch item details via self links
+      status.textContent = 'Fetching quantities via item self-links (fallback)…';
+      qtyResult = await fetchInventoryQtyFromItemDetail(msg => { status.textContent = msg; });
+      if (qtyResult && qtyResult.matched > 0) {
+        applyQtyMap(qtyResult.qtyMap);
+        _qtySource = qtyResult.source;
+        showInfoBar(`✓ Quantities from: ${qtyResult.source} · ${qtyResult.matched} items`, 'ok');
+      } else {
+        showInfoBar(
+          `⚠ Could not fetch quantity data automatically. Click "🔬 Discover Reports" to find the correct data source, then click "▶ Fetch this report" next to the Inventory Quantity Summary report.`,
+          'warn'
+        );
+      }
+    }
+
+    bar.style.width = '100%';
     const qtyHits = _raw.filter(i => i.qtyOnHand !== null || i.qtyOwned !== null).length;
-    status.textContent = `✓ ${_raw.length.toLocaleString()} items · qty: ${qtyHits}/${_raw.length} have data`;
+    status.textContent = `✓ ${_raw.length.toLocaleString()} items · qty: ${qtyHits}/${_raw.length}`;
 
     btn.textContent = '↺ Reload'; btn.disabled = false;
-    document.getElementById('probe-btn').disabled = false;
+    document.getElementById('disc-btn').disabled = false;
     ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=false; });
     document.getElementById('tabs-container').style.display = 'block';
 
@@ -851,36 +959,7 @@ async function loadAllRecords() {
 }
 
 /* ══════════════════════════════════
-   Helpers
-══════════════════════════════════ */
-const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const num   = (v, d=0) => v!=null ? Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}) : null;
-
-function numCell(v, d=2, greenPositive=false) {
-  if (v === null || v === undefined) return `<span class="td-dim">—</span>`;
-  const n = Number(v);
-  const fmt = num(n, d);
-  if (n < 0) return `<span class="neg">${fmt}</span>`;
-  if (greenPositive && n > 0) return `<span style="color:var(--green);font-weight:600">${fmt}</span>`;
-  return fmt;
-}
-
-function cfLabel(key) {
-  return _cfKeyToName[key] ?? _cfKeyToName[key?.toLowerCase()] ?? key;
-}
-
-function resolveDiv(val) {
-  if (val == null) return null;
-  if (typeof val === 'string') return _divKeyToInfo[val] ?? { name: val, code: null };
-  if (typeof val === 'object') {
-    const k = val.key ?? '';
-    return _divKeyToInfo[k] ?? { name: val.name ?? val.text ?? k, code: val.code ?? null };
-  }
-  return null;
-}
-
-/* ══════════════════════════════════
-   Filters & sort
+   Filters & Sort
 ══════════════════════════════════ */
 function toggleF(key) {
   _filters[key] = !_filters[key];
@@ -890,26 +969,27 @@ function toggleF(key) {
 
 function applyFilters() {
   const q = (document.getElementById('search-input')?.value ?? '').trim().toLowerCase();
-  const sortKey = document.getElementById('sort-select')?.value ?? 'name-asc';
+  const sk = document.getElementById('sort-select')?.value ?? 'name-asc';
 
   let list = _raw.filter(i => {
     if (_filters.active  && i.inactive) return false;
     if (_filters.reorder && !i.reorderPoint) return false;
-    if (_filters.negqty  && !((i.qtyOnHand??0) < 0 || (i.qtyOwned??0) < 0)) return false;
-    if (q && !(i.itemName.toLowerCase().includes(q) || (i.itemCode??'').toLowerCase().includes(q))) return false;
+    if (_filters.hasdiv  && !i.division) return false;
+    if (_filters.negqty  && !((i.qtyOnHand??0)<0 || (i.qtyOwned??0)<0)) return false;
+    if (q && !(i.itemName.toLowerCase().includes(q)||(i.itemCode??'').toLowerCase().includes(q))) return false;
     return true;
   });
 
   list.sort((a,b) => {
-    switch(sortKey) {
-      case 'name-asc':          return a.itemName.localeCompare(b.itemName);
-      case 'name-desc':         return b.itemName.localeCompare(a.itemName);
-      case 'code-asc':          return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
-      case 'qty-on-hand-desc':  return (b.qtyOnHand??-Infinity)-(a.qtyOnHand??-Infinity);
-      case 'qty-owned-desc':    return (b.qtyOwned??-Infinity)-(a.qtyOwned??-Infinity);
-      case 'val-desc':          return (b.totalValue??-Infinity)-(a.totalValue??-Infinity);
-      case 'sale-desc':         return (b.defSalePrice??-Infinity)-(a.defSalePrice??-Infinity);
-      default:                  return a.itemName.localeCompare(b.itemName);
+    switch(sk) {
+      case 'name-asc':       return a.itemName.localeCompare(b.itemName);
+      case 'name-desc':      return b.itemName.localeCompare(a.itemName);
+      case 'code-asc':       return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
+      case 'qty-hand-desc':  return (b.qtyOnHand??-Infinity)-(a.qtyOnHand??-Infinity);
+      case 'qty-owned-desc': return (b.qtyOwned??-Infinity)-(a.qtyOwned??-Infinity);
+      case 'val-desc':       return (b.totalValue??-Infinity)-(a.totalValue??-Infinity);
+      case 'sale-desc':      return (b.defSalePrice??-Infinity)-(a.defSalePrice??-Infinity);
+      default:               return a.itemName.localeCompare(b.itemName);
     }
   });
 
@@ -922,22 +1002,24 @@ function applyFilters() {
    Stats
 ══════════════════════════════════ */
 function renderStats() {
-  const total     = _raw.length;
-  const active    = _raw.filter(i=>!i.inactive).length;
-  const reorder   = _raw.filter(i=>i.reorderPoint).length;
-  const negQty    = _raw.filter(i=>(i.qtyOnHand??0)<0||(i.qtyOwned??0)<0).length;
-  const totalVal  = _raw.reduce((s,i)=>s+(i.totalValue??0),0);
-  const totalOwned = _raw.reduce((s,i)=>s+(i.qtyOwned??0),0);
+  const total    = _raw.length;
+  const active   = _raw.filter(i=>!i.inactive).length;
+  const reorder  = _raw.filter(i=>i.reorderPoint).length;
+  const hasDivs  = _raw.filter(i=>i.division).length;
+  const negQty   = _raw.filter(i=>(i.qtyOnHand??0)<0||(i.qtyOwned??0)<0).length;
+  const totalVal = _raw.reduce((s,i)=>s+(i.totalValue??0),0);
+  const totalOwn = _raw.reduce((s,i)=>s+(i.qtyOwned??0),0);
+
   const sg = document.getElementById('stats-grid');
   sg.style.display = 'grid';
   sg.innerHTML = [
-    ['Total Items',    total,             'all records',            'var(--head)'],
-    ['Active',         active,            `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
-    ['Total Qty Owned',num(totalOwned,0), 'sum across all items',   'var(--teal)'],
-    ['Total Value',    num(totalVal,0),   'sum of inventory value',  'var(--accent)'],
-    ['Reorder Set',    reorder,           'have reorder point',      'var(--amber)'],
-    ['Negative Qty',   negQty,            'qty on hand < 0',         negQty>0?'var(--red)':'var(--muted)'],
-    ['Showing',        _filtered.length,  'after filters',           'var(--purple)'],
+    ['Total Items',    total,           'all records',           'var(--head)'],
+    ['Active',         active,          `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
+    ['Total Qty Owned',num(totalOwn,0), 'sum all items',         'var(--teal)'],
+    ['Total Value',    num(totalVal,0), 'inventory value sum',   'var(--accent)'],
+    ['Reorder Set',    reorder,         'have reorder point',    'var(--amber)'],
+    ['With Division',  hasDivs,         'have division',         'var(--purple)'],
+    ['Showing',        _filtered.length,'after filters',         'var(--muted)'],
   ].map(([l,v,s,c])=>`
     <div class="stat-card">
       <div class="stat-label">${l}</div>
@@ -999,8 +1081,7 @@ function goPage(p) {
 }
 function wrapTable(tbl, pag) {
   if (!_filtered.length) return `<div class="tbl-wrap"><div class="empty-state">
-    <div class="icon">📭</div>
-    <div>${_raw.length?'No items match your filters.':'No data loaded.'}</div>
+    <div class="icon">📭</div><div>${_raw.length?'No items match filters.':'No data loaded.'}</div>
   </div></div>`;
   return `<div class="tbl-wrap"><div class="tbl-scroll">${tbl}</div>${pag}</div>`;
 }
@@ -1031,16 +1112,16 @@ function getCFCols(items, field) {
 function renderInventoryTab() {
   const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
-  let totOwned=0, totOnHand=0, totDeliver=0, totReceive=0, totValue=0;
+  let tOwned=0, tHand=0, tDeliver=0, tReceive=0, tValue=0;
   let rows = '';
 
   items.forEach(i => {
     rows += maybeGrp(i.itemName, 11);
-    totOwned    += i.qtyOwned    ?? 0;
-    totOnHand   += i.qtyOnHand   ?? 0;
-    totDeliver  += i.qtyToDeliver ?? 0;
-    totReceive  += i.qtyToReceive ?? 0;
-    totValue    += i.totalValue   ?? 0;
+    tOwned   += i.qtyOwned    ?? 0;
+    tHand    += i.qtyOnHand   ?? 0;
+    tDeliver += i.qtyToDeliver ?? 0;
+    tReceive += i.qtyToReceive ?? 0;
+    tValue   += i.totalValue   ?? 0;
 
     const sb = i.inactive ? `<span class="badge b-inactive">Inactive</span>` : `<span class="badge b-active">Active</span>`;
     const rc = i.reorderPoint ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired,0):'Set'}</span>` : `<span class="td-dim">—</span>`;
@@ -1062,12 +1143,12 @@ function renderInventoryTab() {
 
   const foot = `<tfoot><tr>
     <td colspan="3" style="font-size:10px;color:var(--muted)">PAGE TOTALS — ${items.length} rows</td>
-    <td class="td-num">${num(totOwned,2)}</td>
-    <td class="td-num">${num(totOnHand,2)}</td>
-    <td class="td-num">${num(totDeliver,2)}</td>
-    <td class="td-num">${num(totReceive,2)}</td>
+    <td class="td-num">${num(tOwned,2)}</td>
+    <td class="td-num">${num(tHand,2)}</td>
+    <td class="td-num">${num(tDeliver,2)}</td>
+    <td class="td-num">${num(tReceive,2)}</td>
     <td></td>
-    <td class="td-num" style="color:var(--green)">${num(totValue,2)}</td>
+    <td class="td-num" style="color:var(--green)">${num(tValue,2)}</td>
     <td colspan="2"></td>
   </tr></tfoot>`;
 
@@ -1081,18 +1162,13 @@ function renderInventoryTab() {
       </tr>
       <tr class="hdr-row">
         <th>Code</th><th>Item Name</th><th>Unit</th>
-        <th class="r">Qty Owned</th>
-        <th class="r">Qty On Hand</th>
-        <th class="r">Qty to Deliver</th>
-        <th class="r">Qty to Receive</th>
-        <th class="r">Avg Cost</th>
-        <th class="r">Total Value</th>
-        <th class="r">Reorder</th>
-        <th>Status</th>
+        <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
+        <th class="r">Qty to Deliver</th><th class="r">Qty to Receive</th>
+        <th class="r">Avg Cost</th><th class="r">Total Value</th>
+        <th class="r">Reorder</th><th>Status</th>
       </tr>
     </thead>
-    <tbody>${rows}</tbody>
-    ${foot}
+    <tbody>${rows}</tbody>${foot}
   </table>`;
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
@@ -1192,7 +1268,6 @@ function renderCFTab() {
     document.getElementById('app').innerHTML = `<div class="tbl-wrap">
       <div class="empty-state"><div class="icon">🏷</div>
         <div>No custom field data found.</div>
-        <div style="font-size:11px;margin-top:6px;color:var(--muted)">Custom fields appear here once items have customFields2 data.</div>
       </div></div>`;
     return;
   }
@@ -1204,11 +1279,11 @@ function renderCFTab() {
     let cells = `
       <td class="td-code">${i.itemCode?esc(i.itemCode):'<span class="td-dim">—</span>'}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>`;
-    strCols.forEach(({key})  => { const v=i.cfStrings[key];       cells+=`<td class="cf-cell">${v!=null?esc(String(v)):'<span class="td-dim">—</span>'}</td>`; });
-    decCols.forEach(({key})  => { const v=i.cfDecimals[key];      cells+=`<td class="td-num">${v!=null?num(Number(v),2):'<span class="td-dim">—</span>'}</td>`; });
-    boolCols.forEach(({key}) => { const v=i.cfBooleans[key];      cells+=`<td style="text-align:center">${v!=null?(v?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--muted)">✗</span>'):'<span class="td-dim">—</span>'}</td>`; });
-    dateCols.forEach(({key}) => { const v=i.cfDates[key];         cells+=`<td class="cf-cell">${v?esc(String(v)):'<span class="td-dim">—</span>'}</td>`; });
-    arrCols.forEach(({key})  => { const v=i.cfStringArrays[key];  const d=Array.isArray(v)?v.join(', '):(v!=null?String(v):null); cells+=`<td class="cf-cell">${d?esc(d):'<span class="td-dim">—</span>'}</td>`; });
+    strCols.forEach(({key})  => { const v=i.cfStrings[key];      cells+=`<td class="cf-cell">${v!=null?esc(String(v)):'<span class="td-dim">—</span>'}</td>`; });
+    decCols.forEach(({key})  => { const v=i.cfDecimals[key];     cells+=`<td class="td-num">${v!=null?num(Number(v),2):'<span class="td-dim">—</span>'}</td>`; });
+    boolCols.forEach(({key}) => { const v=i.cfBooleans[key];     cells+=`<td style="text-align:center">${v!=null?(v?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--muted)">✗</span>'):'<span class="td-dim">—</span>'}</td>`; });
+    dateCols.forEach(({key}) => { const v=i.cfDates[key];        cells+=`<td class="cf-cell">${v?esc(String(v)):'<span class="td-dim">—</span>'}</td>`; });
+    arrCols.forEach(({key})  => { const v=i.cfStringArrays[key]; const d=Array.isArray(v)?v.join(', '):(v!=null?String(v):null); cells+=`<td class="cf-cell">${d?esc(d):'<span class="td-dim">—</span>'}</td>`; });
     rows += `<tr>${cells}</tr>`;
   });
   const cgRow = [
@@ -1287,9 +1362,7 @@ function renderAllTab() {
   document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
-function render(items) {
-  // Entry point kept for compatibility — loadAllRecords handles everything
-}
+function render(items) { /* handled by loadAllRecords */ }
 </script>
 </body>
 </html>
