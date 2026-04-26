@@ -9,7 +9,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #f5f7fa;
+  --bg:        #f4f6f9;
   --surface:   #ffffff;
   --panel:     #ffffff;
   --border:    #dde2ea;
@@ -33,7 +33,7 @@
   --mono:      'IBM Plex Mono', monospace;
   --sans:      'Plus Jakarta Sans', system-ui, sans-serif;
   --radius:    8px;
-  --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.05);
+  --shadow:    0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
 }
 
 html, body { height: 100%; }
@@ -42,20 +42,23 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 16px;
+  padding: 14px;
   font-size: 13px;
 }
 
 /* ── Topbar ── */
 .topbar {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  padding: 10px 16px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 9px 14px; margin-bottom: 12px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--shadow);
   position: sticky; top: 0; z-index: 200;
 }
-.brand { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .04em; white-space: nowrap; }
-.vsep  { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+.brand {
+  font-size: 13px; font-weight: 800; color: var(--accent);
+  letter-spacing: .03em; white-space: nowrap;
+}
+.vsep { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
 
 .load-btn {
   padding: 7px 16px; border: none; border-radius: 6px; cursor: pointer;
@@ -63,17 +66,17 @@ body {
   background: var(--accent); color: #fff;
   transition: opacity .15s, transform .1s; white-space: nowrap;
 }
-.load-btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
-.load-btn:disabled { opacity: .45; cursor: not-allowed; }
+.load-btn:hover:not(:disabled) { opacity: .87; transform: translateY(-1px); }
+.load-btn:disabled { opacity: .42; cursor: not-allowed; }
 
 .print-btn {
-  padding: 7px 14px; border: 1px solid var(--border2); border-radius: 6px;
+  padding: 7px 12px; border: 1px solid var(--border2); border-radius: 6px;
   background: transparent; color: var(--text-dim); font-family: var(--sans);
   font-size: 12px; cursor: pointer; white-space: nowrap; transition: all .15s;
 }
-.print-btn:hover { background: var(--bg); color: var(--text); }
+.print-btn:hover { background: var(--bg); }
 
-.search-wrap { position: relative; min-width: 140px; max-width: 260px; flex: 1; }
+.search-wrap { position: relative; min-width: 140px; max-width: 240px; flex: 1; }
 .search-wrap input {
   width: 100%; padding: 6px 10px 6px 28px;
   background: var(--bg); border: 1px solid var(--border2);
@@ -86,41 +89,41 @@ body {
 .si { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; }
 
 .ctrl-sel {
-  padding: 6px 9px; background: var(--bg); border: 1px solid var(--border2);
+  padding: 6px 8px; background: var(--bg); border: 1px solid var(--border2);
   border-radius: 6px; color: var(--text); font-family: var(--sans);
   font-size: 11px; outline: none; cursor: pointer;
 }
 .fbtn {
-  padding: 5px 11px; border: 1px solid var(--border2); border-radius: 6px;
+  padding: 5px 10px; border: 1px solid var(--border2); border-radius: 6px;
   background: transparent; color: var(--text-dim); font-family: var(--sans);
   font-size: 11px; cursor: pointer; transition: all .15s; white-space: nowrap;
 }
-.fbtn.on { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); font-weight: 700; }
+.fbtn.on { background: var(--accent-lt); color: var(--accent); border-color: #90bdf0; font-weight: 700; }
 
-.prog-wrap { flex: 1; min-width: 60px; max-width: 140px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.prog-wrap { flex: 1; min-width: 60px; max-width: 130px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .prog-bar  { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .25s; }
 .status-txt { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
 
 /* ── Stats ── */
 .stats-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 10px; margin-bottom: 14px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 9px; margin-bottom: 12px;
 }
 .stat-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow);
+  border-radius: var(--radius); padding: 11px 13px; box-shadow: var(--shadow);
 }
-.stat-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px; }
-.stat-value { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--head); line-height: 1; }
-.stat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+.stat-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 3px; }
+.stat-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--head); line-height: 1; }
+.stat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
 
 /* ── Tabs ── */
-.tab-bar { display: flex; gap: 2px; margin-bottom: 0; border-bottom: 2px solid var(--border); }
+.tab-bar { display: flex; gap: 2px; border-bottom: 2px solid var(--border); }
 .tab {
-  padding: 8px 16px; font-size: 11px; font-weight: 700; cursor: pointer;
+  padding: 8px 15px; font-size: 11px; font-weight: 700; cursor: pointer;
   color: var(--text-dim); border-radius: 6px 6px 0 0;
-  transition: all .15s; white-space: nowrap; border: 1px solid transparent;
-  border-bottom: none; margin-bottom: -2px;
+  transition: all .15s; white-space: nowrap;
+  border: 1px solid transparent; border-bottom: none; margin-bottom: -2px;
 }
 .tab:hover { color: var(--accent); }
 .tab.active {
@@ -134,47 +137,47 @@ body {
   border-top: none; border-radius: 0 0 var(--radius) var(--radius);
   box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px;
 }
-.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 300px); overflow-y: auto; }
+.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 290px); overflow-y: auto; }
 
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead { position: sticky; top: 0; z-index: 10; }
 
-/* col-group row */
-thead tr.cg-row { background: #f0f4f9; }
+thead tr.cg-row { background: #edf1f7; }
 th.cg {
   padding: 4px 10px 3px; font-size: 8px; font-weight: 800;
   text-transform: uppercase; letter-spacing: .14em; text-align: center;
   border-bottom: 1px solid var(--border); border-right: 1px solid var(--border2);
 }
 th.cg:last-child { border-right: none; }
-.cg-id   { color: #5a6a7a; background: #edf1f6; }
+.cg-id   { color: #4a5a6e; }
 .cg-qty  { color: #0e7490; background: #e0f6fb; }
 .cg-val  { color: #1a7f37; background: #e6f4ea; }
+.cg-pri  { color: #7a4f00; background: #fef9e7; }
 .cg-div  { color: #6639ba; background: #ede8ff; }
 .cg-cf   { color: #9a6700; background: #fff8c5; }
-.cg-misc { color: #5a6a7a; background: #edf1f6; }
+.cg-misc { color: #4a5a6e; }
 
 thead tr.hdr-row { background: #f6f8fb; }
 th {
   padding: 8px 10px; text-align: left;
   font-family: var(--mono); font-size: 9px; font-weight: 600;
-  color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: .07em;
   border-bottom: 2px solid var(--border2);
-  border-right: 1px solid var(--border);
-  white-space: nowrap; cursor: pointer; user-select: none;
-  transition: color .15s;
+  border-right: 1px solid #edf1f7;
+  white-space: nowrap; cursor: pointer; user-select: none; transition: color .15s;
 }
 th:last-child { border-right: none; }
 th:hover { color: var(--accent); }
 th.r { text-align: right; }
+th.c { text-align: center; }
 
-tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr { border-bottom: 1px solid #edf1f7; transition: background .08s; }
 tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: #f5f8ff; }
+tbody tr:hover { background: #f3f7ff; }
 
 td {
-  padding: 8px 10px; vertical-align: middle;
-  border-right: 1px solid #edf1f6;
+  padding: 7px 10px; vertical-align: middle;
+  border-right: 1px solid #f0f3f7;
 }
 td:last-child { border-right: none; }
 
@@ -182,75 +185,75 @@ td:last-child { border-right: none; }
 .td-code { font-family: var(--mono); font-size: 10px; color: var(--accent); white-space: nowrap; }
 .td-unit { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
 .td-num  { font-family: var(--mono); font-size: 11px; text-align: right; }
-.td-dim  { color: #b0bac6; }
-.td-na   { color: #c8d4e0; font-style: italic; }
+.td-dim  { color: #b8c4d4; }
+.td-na   { color: #c8d4e0; font-style: italic; font-size: 10px; }
 
 .badge {
   display: inline-block; padding: 2px 7px; border-radius: 20px;
-  font-size: 9px; font-weight: 700; letter-spacing: .05em; white-space: nowrap;
+  font-size: 9px; font-weight: 700; letter-spacing: .04em; white-space: nowrap;
 }
-.b-active   { background: var(--green-lt);  color: var(--green);  border: 1px solid #b0e4be; }
-.b-inactive { background: var(--red-lt);    color: var(--red);    border: 1px solid #ffc0c0; }
-.b-val      { background: var(--accent-lt); color: var(--accent); border: 1px solid #b8d4f5; }
-.b-div      { background: var(--purple-lt); color: var(--purple); border: 1px solid #c8b8f0; }
+.b-active   { background: var(--green-lt);  color: var(--green);  border: 1px solid #aaddb8; }
+.b-inactive { background: var(--red-lt);    color: var(--red);    border: 1px solid #ffbbbc; }
+.b-val      { background: var(--accent-lt); color: var(--accent); border: 1px solid #a8ccf0; }
+.b-div      { background: var(--purple-lt); color: var(--purple); border: 1px solid #c4aef5; }
 .b-reorder  { background: var(--amber-lt);  color: var(--amber);  border: 1px solid #e8d060; }
 
-/* group letter divider */
 .grp-row td {
-  background: #eef2f8; font-size: 9px; font-weight: 800;
+  background: #eef2f9; font-size: 9px; font-weight: 800;
   color: var(--accent); text-transform: uppercase; letter-spacing: .16em;
   padding: 4px 10px; border-top: 1px solid var(--border2);
 }
 
-/* division chip */
 .div-chip {
   display: inline-block; padding: 2px 8px; border-radius: 4px;
   font-size: 10px; background: var(--purple-lt); color: var(--purple);
-  border: 1px solid #c8b8f0;
+  border: 1px solid #c4aef5; white-space: nowrap;
+}
+.div-code {
+  font-family: var(--mono); font-size: 9px; color: var(--muted);
+  margin-left: 4px;
 }
 
-/* custom field tag */
-.cf-tag {
-  display: inline-block; padding: 2px 7px; border-radius: 4px;
-  font-size: 10px; background: var(--amber-lt); color: var(--amber);
-  border: 1px solid #e8d060; font-family: var(--mono);
-  max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
+.cf-cell { font-family: var(--mono); font-size: 10px; color: var(--text); }
 
-/* empty / error */
 .empty-state {
   text-align: center; padding: 60px 20px;
   color: var(--muted); font-size: 13px;
 }
-.empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+.empty-state .icon { font-size: 38px; margin-bottom: 10px; }
 .err-box {
   color: var(--red); background: var(--red-lt);
-  border: 1px solid #ffc0c0; border-radius: var(--radius);
+  border: 1px solid #ffbbbc; border-radius: var(--radius);
   padding: 12px 16px; font-size: 12px; margin-bottom: 14px;
 }
 
-/* pagination */
 .pagination {
-  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
-  padding: 10px 14px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: flex-end; gap: 5px;
+  padding: 9px 13px; border-top: 1px solid var(--border);
   font-size: 11px; color: var(--text-dim); flex-wrap: wrap;
   background: #fafbfd;
 }
 .pg-btn {
-  padding: 4px 10px; border: 1px solid var(--border2);
+  padding: 4px 9px; border: 1px solid var(--border2);
   border-radius: 5px; background: var(--surface); color: var(--text-dim);
   font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all .15s;
 }
 .pg-btn:hover:not(:disabled) { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
-.pg-btn:disabled { opacity: .35; cursor: not-allowed; }
+.pg-btn:disabled { opacity: .3; cursor: not-allowed; }
 .pg-btn.cur { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
 .pg-dots { color: var(--muted); }
 
-/* print */
+/* loading overlay for meta fetch */
+.meta-notice {
+  font-family: var(--mono); font-size: 10px; color: var(--teal);
+  background: var(--teal-lt); border: 1px solid #9ad8e8;
+  border-radius: 5px; padding: 4px 10px; white-space: nowrap;
+}
+
 @media print {
   body { padding: 0; background: white; font-size: 10px; }
-  .topbar, .tab-bar, .pagination, .stats-grid, .fbtn, .search-wrap, .ctrl-sel, .print-btn { display: none !important; }
-  .tbl-wrap { box-shadow: none; border-radius: 0; }
+  .topbar, .tab-bar, .pagination, .stats-grid, .print-btn { display: none !important; }
+  .tbl-wrap { box-shadow: none; border-radius: 0; border: none; }
   .tbl-scroll { max-height: none; overflow: visible; }
   table { font-size: 9px; }
   th, td { padding: 5px 7px; }
@@ -259,7 +262,6 @@ td:last-child { border-right: none; }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 </style>
 </head>
 <body>
@@ -269,7 +271,8 @@ td:last-child { border-right: none; }
   <span class="brand">📦 Inventory Items</span>
   <div class="vsep"></div>
   <button class="load-btn" id="load-btn" onclick="loadAllRecords()">⬇ Load All Records</button>
-  <button class="print-btn" onclick="window.print()">🖨 Print / Export</button>
+  <button class="print-btn" onclick="window.print()">🖨 Print</button>
+  <span class="meta-notice" id="meta-notice" style="display:none">⏳ Loading field definitions…</span>
 
   <div class="search-wrap">
     <span class="si">🔍</span>
@@ -294,10 +297,8 @@ td:last-child { border-right: none; }
   <span class="status-txt" id="status-txt">Press Load to fetch data</span>
 </div>
 
-<!-- Stats injected here -->
 <div class="stats-grid" id="stats-grid" style="display:none"></div>
 
-<!-- Tab bar + content -->
 <div id="tabs-container" style="display:none">
   <div class="tab-bar">
     <div class="tab active" onclick="switchTab('inventory')">📊 Inventory &amp; Quantities</div>
@@ -373,6 +374,28 @@ async function getInventoryItemBatch(onProgress) {
 }
 
 /* ══════════════════════════════════
+   fetchAllPages — generic paginator for metadata endpoints
+   Used for custom field definitions, divisions, etc.
+══════════════════════════════════ */
+async function fetchAllPages(basePath) {
+  const all = [];
+  let nextToken = null;
+  let pageNum = 0;
+  do {
+    const path = nextToken
+      ? `${basePath}?next_page_token=${encodeURIComponent(nextToken)}`
+      : basePath;
+    const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path });
+    const page = Array.isArray(data) ? data : (data.items || data.data || []);
+    all.push(...page);
+    nextToken = data.next_page_token || data.nextPageToken || data._links?.next?.href || null;
+    pageNum++;
+    if (pageNum >= 100) break;
+  } while (nextToken);
+  return all;
+}
+
+/* ══════════════════════════════════
    State
 ══════════════════════════════════ */
 let _raw      = [];
@@ -382,39 +405,98 @@ let _tab      = 'inventory';
 const PAGE_SIZE = 50;
 const _filters = { active: false, reorder: false, hasdiv: false, hascf: false };
 
-/* valuation method labels */
+// Metadata maps built at load time
+// cfKeyToName: { [uuid_key]: "Human Field Name" }
+// divKeyToName: { [uuid_key]: { name, code } }
+let _cfKeyToName  = {};   // uuid → "Carton Size", "HS Code", etc.
+let _divKeyToInfo = {};   // uuid → { name, code }
+
 const VALUATION = { 1: 'Average Cost', 2: 'FIFO', 3: 'LIFO', 4: 'Specific ID' };
 
 /* ══════════════════════════════════
-   Utility: resolve a Manager "reference" object or string
-   Manager often returns { key, name } objects for linked entities.
-   We always display .name if available, fallback to .text, then raw string.
+   Helpers
 ══════════════════════════════════ */
+const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const num   = (v, d=0) => v!=null ? Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}) : null;
+const price = v => v!=null ? num(v,2) : null;
+const dash  = () => `<span class="td-dim">—</span>`;
+const na    = () => `<span class="td-na" title="Not available in inventory-item-batch endpoint">n/a</span>`;
+
+/* Resolve a Manager reference object → display name */
 function resolveName(val) {
   if (val == null) return null;
   if (typeof val === 'object') {
-    // Manager reference objects typically have .name or .text
-    return val.name ?? val.text ?? val.nameWithCode ?? val.uniqueName ?? JSON.stringify(val);
+    // Check if this is a UUID key we have in our division lookup
+    const key = val.key ?? val.id ?? val.uuid;
+    if (key && _divKeyToInfo[key]) return _divKeyToInfo[key];
+    return { name: val.name ?? val.text ?? val.nameWithCode ?? JSON.stringify(val), code: val.code ?? null };
   }
-  return String(val);
+  // Plain string — could be a UUID
+  if (typeof val === 'string' && _divKeyToInfo[val]) return _divKeyToInfo[val];
+  return { name: String(val), code: null };
+}
+
+/* Get human CF column name from key UUID */
+function cfLabel(key) {
+  return _cfKeyToName[key] ?? _cfKeyToName[key?.toLowerCase()] ?? key;
 }
 
 /* ══════════════════════════════════
-   Utility: resolve custom field display name
-   customFields2.strings keys are often GUIDs — fetch the human label
-   from the key's "name" sub-property if available, else prettify the key.
-   Manager may structure CF keys as { key, name } pairs inside the batch.
-   We probe multiple known patterns.
+   fetchMetadata
+   Loads custom field definitions and division list
+   so we can display human names instead of UUIDs.
+   Manager endpoints tried:
+     /api4/text-custom-field-batch       → Text CFs (like "Carton Size")
+     /api4/number-custom-field-batch     → Numeric CFs
+     /api4/date-custom-field-batch       → Date CFs
+     /api4/checkbox-custom-field-batch   → Boolean CFs
+     /api4/division-batch                → Divisions (name + code)
 ══════════════════════════════════ */
-function cfKeyLabel(key, cfMeta) {
-  // cfMeta may hold a name lookup if Manager provides it
-  if (cfMeta && cfMeta[key] && typeof cfMeta[key] === 'object' && cfMeta[key].name) {
-    return cfMeta[key].name;
+async function fetchMetadata() {
+  document.getElementById('meta-notice').style.display = 'inline-block';
+
+  const cfEndpoints = [
+    '/api4/text-custom-field-batch',
+    '/api4/number-custom-field-batch',
+    '/api4/date-custom-field-batch',
+    '/api4/checkbox-custom-field-batch',
+    '/api4/dropdown-custom-field-batch',
+  ];
+
+  // Fetch all CF types in parallel — silently ignore endpoints that don't exist
+  const cfResults = await Promise.allSettled(cfEndpoints.map(ep => fetchAllPages(ep)));
+
+  cfResults.forEach(result => {
+    if (result.status !== 'fulfilled') return;
+    const items = result.value;
+    items.forEach(row => {
+      // Each row is { key: uuid, item: { name: "Carton Size", ... } } or similar
+      const key  = row?.key ?? row?.item?.key;
+      const name = row?.item?.name ?? row?.item?.fieldName ?? row?.name;
+      if (key && name) {
+        _cfKeyToName[key] = name;
+        _cfKeyToName[key.toLowerCase()] = name;
+      }
+    });
+  });
+
+  // Fetch divisions
+  try {
+    const divItems = await fetchAllPages('/api4/division-batch');
+    divItems.forEach(row => {
+      const key  = row?.key ?? row?.item?.key;
+      const name = row?.item?.name ?? row?.name;
+      const code = row?.item?.code ?? row?.code;
+      if (key && name) {
+        _divKeyToInfo[key] = { name, code };
+        _divKeyToInfo[key.toLowerCase()] = { name, code };
+      }
+    });
+  } catch(e) {
+    // Division endpoint optional
   }
-  // If the key looks like a UUID, return it as-is (will be replaced by metadata if found)
-  // Otherwise prettify camelCase / underscore
-  if (/^[0-9a-f-]{32,}$/i.test(key)) return key;
-  return key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim();
+
+  document.getElementById('meta-notice').style.display = 'none';
 }
 
 /* ══════════════════════════════════
@@ -424,23 +506,11 @@ function normalize(raw) {
   const it  = raw?.item ?? raw;
   const cf2 = it?.customFields2 ?? {};
 
-  // Collect all custom field values keyed by field identifier
-  // Manager may provide { key: uuid, name: 'Field Label', value: ... } patterns
-  // We capture both the raw map and try to extract human names.
-  const cfStrings     = cf2.strings      ?? {};
-  const cfDecimals    = cf2.decimals     ?? {};
-  const cfDates       = cf2.dates        ?? {};
-  const cfBooleans    = cf2.booleans     ?? {};
-  const cfStringArrays= cf2.stringArrays ?? {};
-
-  // Build human-name lookup from any embedded metadata arrays
-  // Some endpoints return arrays of { key, name, value } inside customFields
-  const cfNameMap = {};
-  if (Array.isArray(it?.customFields)) {
-    it.customFields.forEach(f => {
-      if (f?.key && f?.name) cfNameMap[f.key] = f.name;
-    });
-  }
+  const cfStrings      = cf2.strings      ?? {};
+  const cfDecimals     = cf2.decimals     ?? {};
+  const cfDates        = cf2.dates        ?? {};
+  const cfBooleans     = cf2.booleans     ?? {};
+  const cfStringArrays = cf2.stringArrays ?? {};
 
   const hasCF = !!(
     Object.keys(cfStrings).length ||
@@ -449,6 +519,27 @@ function normalize(raw) {
     Object.keys(cfBooleans).length ||
     Object.keys(cfStringArrays).length
   );
+
+  // Resolve division — could be UUID string, object, or null
+  const divRaw  = it?.division;
+  const defDivRaw = it?.hasDefaultDivision ? it?.defaultDivision : null;
+
+  // If divRaw is a plain UUID string, look it up in our map
+  // If it's an object with .key, look that up
+  // If it's an object with .name directly, use that
+  function resolveDiv(val) {
+    if (val == null) return null;
+    if (typeof val === 'string') {
+      return _divKeyToInfo[val] ?? _divKeyToInfo[val.toLowerCase()] ?? { name: val, code: null };
+    }
+    if (typeof val === 'object') {
+      const key = val.key ?? val.id;
+      if (key && _divKeyToInfo[key]) return _divKeyToInfo[key];
+      if (key && _divKeyToInfo[key?.toLowerCase()]) return _divKeyToInfo[key.toLowerCase()];
+      return { name: val.name ?? val.text ?? JSON.stringify(val), code: val.code ?? null };
+    }
+    return null;
+  }
 
   return {
     key:             raw?.key ?? null,
@@ -460,45 +551,39 @@ function normalize(raw) {
     reorderPoint:    it?.reorderPoint ?? false,
     qtyDesired:      it?.qtyDesired ?? 0,
 
-    // Inventory quantity fields (populated by inventory-item-batch when available)
-    qtyOwned:        it?.qtyOwned        ?? it?.quantityOwned      ?? null,
-    qtyOnHand:       it?.qtyOnHand       ?? it?.quantityOnHand     ?? null,
-    qtyToDeliver:    it?.qtyToDeliver    ?? it?.quantityToDeliver  ?? null,
-    qtyToReceive:    it?.qtyToReceive    ?? it?.quantityToReceive  ?? null,
-    averageCost:     it?.averageCost     ?? it?.unitCost           ??
+    // Inventory quantities
+    qtyOwned:        it?.qtyOwned       ?? it?.quantityOwned      ?? null,
+    qtyOnHand:       it?.qtyOnHand      ?? it?.quantityOnHand     ?? null,
+    qtyToDeliver:    it?.qtyToDeliver   ?? it?.quantityToDeliver  ?? null,
+    qtyToReceive:    it?.qtyToReceive   ?? it?.quantityToReceive  ?? null,
+    averageCost:     it?.averageCost    ?? it?.unitCost           ??
                      (it?.obsolete_StartingBalanceAverageCost2 > 0
                        ? it.obsolete_StartingBalanceAverageCost2 : null),
-    totalValue:      it?.totalValue      ?? it?.inventoryValue     ?? null,
+    totalValue:      it?.totalValue     ?? it?.inventoryValue     ?? null,
 
-    // Pricing defaults
+    // Pricing
     defPurchasePrice: it?.hasDefaultPurchaseUnitPrice ? (it?.defaultPurchaseUnitPrice ?? 0) : null,
     defSalePrice:     it?.hasDefaultSalesUnitPrice    ? (it?.defaultSalesUnitPrice    ?? 0) : null,
     defaultQty:       it?.hasDefaultQty ? (it?.defaultQty ?? 0) : null,
     defaultLineDesc:  it?.hasDefaultLineDescription ? it?.defaultLineDescription : null,
 
-    // Division — always resolve to human name
-    divisionName:      resolveName(it?.division),
-    defaultDivisionName: it?.hasDefaultDivision ? resolveName(it?.defaultDivision) : null,
-    divisionEnabled:   it?.divisionEnabled ?? false,
+    // Division — fully resolved to { name, code } or null
+    division:        resolveDiv(divRaw),
+    defaultDivision: resolveDiv(defDivRaw),
+    divisionEnabled: it?.divisionEnabled ?? false,
 
-    // Accounts — resolve names
-    incomeAccountName:  it?.customIncomeAccount  ? resolveName(it?.incomeAccount)  : null,
-    expenseAccountName: it?.customExpenseAccount ? resolveName(it?.expenseAccount) : null,
-    controlAccountName: resolveName(it?.controlAccount),
+    // Accounts
+    incomeAccountName:  it?.customIncomeAccount  ? resolveName(it?.incomeAccount)?.name  : null,
+    expenseAccountName: it?.customExpenseAccount ? resolveName(it?.expenseAccount)?.name : null,
+    controlAccountName: resolveName(it?.controlAccount)?.name ?? null,
 
-    // Custom fields raw maps (key → value)
-    cfStrings,
-    cfDecimals,
-    cfDates,
-    cfBooleans,
-    cfStringArrays,
-    cfNameMap,   // human-name lookup for CF keys
+    // Custom fields raw maps
+    cfStrings, cfDecimals, cfDates, cfBooleans, cfStringArrays,
     hasCF,
 
-    // Flags
-    hasCOGS:        it?.hasCostOfGoodsSold ?? false,
-    taxEnabled:     it?.taxCodeEnabled     ?? false,
-    projectEnabled: it?.projectEnabled     ?? false,
+    // Category from inventory list view
+    category: it?.category ?? null,
+    hsCode:   it?.hsCode   ?? null,
   };
 }
 
@@ -516,29 +601,34 @@ async function loadAllRecords() {
   document.getElementById('stats-grid').style.display = 'none';
   document.getElementById('tabs-container').style.display = 'none';
 
-  const ids = ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'];
-  ids.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = true; });
+  const ctrlIds = ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'];
+  ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=true; });
 
   try {
-    const raw = await getInventoryItemBatch((loaded, total, page) => {
-      status.textContent = total
-        ? `Page ${page} · ${loaded.toLocaleString()} / ${total.toLocaleString()}`
-        : `Page ${page} · ${loaded.toLocaleString()} records…`;
-      if (total) bar.style.width = Math.min(95, Math.round(loaded / total * 100)) + '%';
-    });
+    // Step 1: fetch CF definitions + divisions in parallel with items
+    status.textContent = 'Fetching field definitions…';
+    const [rawItems] = await Promise.all([
+      getInventoryItemBatch((loaded, total, page) => {
+        status.textContent = total
+          ? `Page ${page} · ${loaded.toLocaleString()} / ${total.toLocaleString()}`
+          : `Page ${page} · ${loaded.toLocaleString()} records…`;
+        if (total) bar.style.width = Math.min(85, Math.round(loaded/total*100)) + '%';
+      }),
+      fetchMetadata(),
+    ]);
 
     bar.style.width = '100%';
-    status.textContent = `✓ ${raw.length.toLocaleString()} records loaded`;
+    status.textContent = `✓ ${rawItems.length.toLocaleString()} records loaded`;
     btn.textContent = '↺ Reload'; btn.disabled = false;
 
-    ids.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = false; });
+    ctrlIds.forEach(id => { const el=document.getElementById(id); if(el) el.disabled=false; });
     document.getElementById('tabs-container').style.display = 'block';
 
-    _raw = raw.map(normalize);
+    _raw = rawItems.map(normalize);
     _page = 1;
     applyFilters();
 
-  } catch (err) {
+  } catch(err) {
     status.textContent = '⚠ ' + err.message;
     btn.textContent = '↺ Retry'; btn.disabled = false;
     document.getElementById('app-init').innerHTML =
@@ -547,39 +637,11 @@ async function loadAllRecords() {
 }
 
 /* ══════════════════════════════════
-   Helpers
-══════════════════════════════════ */
-const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const num   = (v, d=0) => v != null ? Number(v).toLocaleString(undefined, { minimumFractionDigits:d, maximumFractionDigits:d }) : null;
-const price = v => v != null ? num(v, 2) : null;
-const dash  = () => `<span class="td-dim">—</span>`;
-const na    = () => `<span class="td-na" title="Not provided by this endpoint">n/a</span>`;
-
-/* Collect all CF key→humanName pairs across the full dataset */
-function buildCFMeta(items, cfType) {
-  // Returns array of { key, label } deduplicated
-  const seen = new Map();
-  items.forEach(i => {
-    const map = i[cfType] ?? {};
-    const nameMap = i.cfNameMap ?? {};
-    Object.keys(map).forEach(k => {
-      if (!seen.has(k)) {
-        // Prefer embedded human name, else prettify
-        const label = nameMap[k] ?? cfKeyLabel(k, null);
-        seen.set(k, label);
-      }
-    });
-  });
-  return [...seen.entries()].map(([key, label]) => ({ key, label }));
-}
-
-/* ══════════════════════════════════
    Filters & sort
 ══════════════════════════════════ */
 function toggleF(key) {
   _filters[key] = !_filters[key];
-  const el = document.getElementById('f-' + key);
-  if (el) el.classList.toggle('on', _filters[key]);
+  document.getElementById('f-'+key)?.classList.toggle('on', _filters[key]);
   _page = 1; applyFilters();
 }
 
@@ -590,14 +652,14 @@ function applyFilters() {
   let list = _raw.filter(i => {
     if (_filters.active  && i.inactive) return false;
     if (_filters.reorder && !i.reorderPoint) return false;
-    if (_filters.hasdiv  && !i.divisionName && !i.defaultDivisionName) return false;
+    if (_filters.hasdiv  && !i.division) return false;
     if (_filters.hascf   && !i.hasCF) return false;
     if (q && !(i.itemName.toLowerCase().includes(q) || (i.itemCode??'').toLowerCase().includes(q))) return false;
     return true;
   });
 
-  list.sort((a, b) => {
-    switch (sortKey) {
+  list.sort((a,b) => {
+    switch(sortKey) {
       case 'name-asc':      return a.itemName.localeCompare(b.itemName);
       case 'name-desc':     return b.itemName.localeCompare(a.itemName);
       case 'code-asc':      return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
@@ -618,41 +680,39 @@ function applyFilters() {
 ══════════════════════════════════ */
 function renderStats() {
   const total   = _raw.length;
-  const active  = _raw.filter(i => !i.inactive).length;
-  const reorder = _raw.filter(i => i.reorderPoint).length;
-  const hasDivs = _raw.filter(i => i.divisionName).length;
-  const hasCFs  = _raw.filter(i => i.hasCF).length;
+  const active  = _raw.filter(i=>!i.inactive).length;
+  const reorder = _raw.filter(i=>i.reorderPoint).length;
+  const hasDivs = _raw.filter(i=>i.division).length;
+  const hasCFs  = _raw.filter(i=>i.hasCF).length;
   const sg = document.getElementById('stats-grid');
   sg.style.display = 'grid';
   sg.innerHTML = [
-    ['Total Items',    total,           'all records',           'var(--head)'],
-    ['Active',         active,          `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
-    ['Inactive',       total-active,    'hidden from use',       'var(--red)'],
-    ['Reorder Set',    reorder,         'have reorder point',    'var(--amber)'],
-    ['With Division',  hasDivs,         'have division',         'var(--purple)'],
-    ['Custom Fields',  hasCFs,          'have CF data',          'var(--teal)'],
-    ['Filtered Rows',  _filtered.length,'currently shown',       'var(--accent)'],
-  ].map(([lbl,val,sub,col])=>`
+    ['Total Items',   total,           'all records',        'var(--head)'],
+    ['Active',        active,          `${total?Math.round(active/total*100):0}% of total`,'var(--green)'],
+    ['Inactive',      total-active,    'hidden from use',    'var(--red)'],
+    ['Reorder Set',   reorder,         'have reorder point', 'var(--amber)'],
+    ['With Division', hasDivs,         'have division',      'var(--purple)'],
+    ['Custom Fields', hasCFs,          'have CF data',       'var(--teal)'],
+    ['Showing',       _filtered.length,'after filters',      'var(--accent)'],
+  ].map(([l,v,s,c])=>`
     <div class="stat-card">
-      <div class="stat-label">${lbl}</div>
-      <div class="stat-value" style="color:${col}">${Number(val).toLocaleString()}</div>
-      <div class="stat-sub">${sub}</div>
+      <div class="stat-label">${l}</div>
+      <div class="stat-value" style="color:${c}">${Number(v).toLocaleString()}</div>
+      <div class="stat-sub">${s}</div>
     </div>`).join('');
 }
 
 /* ══════════════════════════════════
-   Tab switch
+   Tab management
 ══════════════════════════════════ */
 function switchTab(tab) {
   _tab = tab; _page = 1;
-  document.querySelectorAll('.tab').forEach((el,i) => {
-    el.classList.toggle('active', ['inventory','pricing','divisions','customfields','all'][i] === tab);
-  });
+  const tabs = ['inventory','pricing','divisions','customfields','all'];
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', tabs[i]===tab));
   renderContent();
 }
-
 function renderContent() {
-  switch (_tab) {
+  switch(_tab) {
     case 'inventory':    renderInventoryTab();    break;
     case 'pricing':      renderPricingTab();      break;
     case 'divisions':    renderDivisionsTab();    break;
@@ -666,226 +726,236 @@ function renderContent() {
 ══════════════════════════════════ */
 function pageSlice() {
   const total = _filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(total/PAGE_SIZE));
   if (_page > totalPages) _page = totalPages;
-  const start = (_page - 1) * PAGE_SIZE;
-  return { items: _filtered.slice(start, start + PAGE_SIZE), start, total, totalPages };
+  const start = (_page-1)*PAGE_SIZE;
+  return { items: _filtered.slice(start, start+PAGE_SIZE), start, total, totalPages };
 }
-
 function pgHTML(total, totalPages, start) {
-  if (totalPages <= 1 && total <= PAGE_SIZE) return '';
-  const p = _page, mb = 7;
-  let ps = Math.max(1, p-3), pe = Math.min(totalPages, ps+mb-1);
-  if (pe-ps < mb-1) ps = Math.max(1, pe-mb+1);
-  let btns = '';
-  if (ps>1) btns += `<button class="pg-btn" onclick="goPage(1)">1</button>${ps>2?'<span class="pg-dots">…</span>':''}`;
-  for (let i=ps; i<=pe; i++) btns += `<button class="pg-btn${i===p?' cur':''}" onclick="goPage(${i})">${i}</button>`;
-  if (pe<totalPages) btns += `${pe<totalPages-1?'<span class="pg-dots">…</span>':''}<button class="pg-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
+  if (totalPages<=1 && total<=PAGE_SIZE) return '';
+  const p=_page, mb=7;
+  let ps=Math.max(1,p-3), pe=Math.min(totalPages,ps+mb-1);
+  if(pe-ps<mb-1) ps=Math.max(1,pe-mb+1);
+  let b='';
+  if(ps>1) b+=`<button class="pg-btn" onclick="goPage(1)">1</button>${ps>2?'<span class="pg-dots">…</span>':''}`;
+  for(let i=ps;i<=pe;i++) b+=`<button class="pg-btn${i===p?' cur':''}" onclick="goPage(${i})">${i}</button>`;
+  if(pe<totalPages) b+=`${pe<totalPages-1?'<span class="pg-dots">…</span>':''}<button class="pg-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
   return `<div class="pagination">
     <span>Rows ${start+1}–${Math.min(start+PAGE_SIZE,total)} of ${total.toLocaleString()}</span>
     <button class="pg-btn" onclick="goPage(${p-1})" ${p<=1?'disabled':''}>← Prev</button>
-    ${btns}
+    ${b}
     <button class="pg-btn" onclick="goPage(${p+1})" ${p>=totalPages?'disabled':''}>Next →</button>
   </div>`;
 }
-
 function goPage(p) {
-  const tp = Math.max(1, Math.ceil(_filtered.length / PAGE_SIZE));
+  const tp = Math.max(1, Math.ceil(_filtered.length/PAGE_SIZE));
   _page = Math.max(1, Math.min(p, tp));
   renderContent();
-  document.getElementById('app')?.scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('app')?.scrollIntoView({behavior:'smooth'});
 }
-
 function wrapTable(tbl, pag) {
-  if (!_filtered.length) return `<div class="tbl-wrap">
-    <div class="empty-state"><div class="icon">📭</div>
-    <div>${_raw.length ? 'No items match your filters.' : 'No data loaded.'}</div></div></div>`;
+  if (!_filtered.length) return `<div class="tbl-wrap"><div class="empty-state">
+    <div class="icon">📭</div>
+    <div>${_raw.length?'No items match your filters.':'No data loaded.'}</div>
+  </div></div>`;
   return `<div class="tbl-wrap"><div class="tbl-scroll">${tbl}</div>${pag}</div>`;
 }
 
-/* optional group row (alpha letter) */
 let _lastGrp = '';
-function maybeGroupRow(name, cols) {
-  const sortKey = document.getElementById('sort-select')?.value ?? 'name-asc';
-  if (sortKey !== 'name-asc') return '';
+function maybeGrp(name, cols) {
+  const sk = document.getElementById('sort-select')?.value ?? 'name-asc';
+  if (sk !== 'name-asc') return '';
   const ch = (name||'?')[0].toUpperCase();
-  const g = /[A-Z]/.test(ch) ? ch : '#';
+  const g  = /[A-Z]/.test(ch) ? ch : '#';
   if (g === _lastGrp) return '';
   _lastGrp = g;
   return `<tr class="grp-row"><td colspan="${cols}">— ${g} —</td></tr>`;
+}
+
+/* Division cell helper */
+function divCell(divInfo) {
+  if (!divInfo) return dash();
+  const label = esc(divInfo.name);
+  const code  = divInfo.code ? `<span class="div-code">(${esc(divInfo.code)})</span>` : '';
+  return `<span class="div-chip">${label}</span>${code}`;
+}
+
+/* ══════════════════════════════════
+   Collect CF column definitions from filtered data
+   Returns [{ key, label, type }] for each CF type
+══════════════════════════════════ */
+function getCFCols(items, cfField) {
+  const seen = new Map();
+  items.forEach(i => {
+    Object.keys(i[cfField]??{}).forEach(k => {
+      if (!seen.has(k)) seen.set(k, cfLabel(k));
+    });
+  });
+  return [...seen.entries()].map(([key,label]) => ({key, label}));
 }
 
 /* ══════════════════════════════════
    Tab: Inventory & Quantities
 ══════════════════════════════════ */
 function renderInventoryTab() {
-  const { items, start, total, totalPages } = pageSlice();
+  const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
   let rows = '';
   items.forEach(i => {
-    rows += maybeGroupRow(i.itemName, 11);
-    const qc = v => v != null ? `<span style="color:var(--text)">${num(v,2)}</span>` : na();
-    const statusBadge = i.inactive
+    rows += maybeGrp(i.itemName, 11);
+    const qc = v => v!=null ? `<span>${num(v,2)}</span>` : na();
+    const sb = i.inactive
       ? `<span class="badge b-inactive">Inactive</span>`
       : `<span class="badge b-active">Active</span>`;
-    const reorderCell = i.reorderPoint
+    const rc = i.reorderPoint
       ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`
       : dash();
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName ? esc(i.unitName) : dash()}</td>
+      <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
       <td class="td-num">${qc(i.qtyOwned)}</td>
       <td class="td-num">${qc(i.qtyOnHand)}</td>
       <td class="td-num">${qc(i.qtyToDeliver)}</td>
       <td class="td-num">${qc(i.qtyToReceive)}</td>
       <td class="td-num">${i.averageCost!=null?`<b>${num(i.averageCost,4)}</b>`:na()}</td>
       <td class="td-num">${i.totalValue!=null?`<b style="color:var(--green)">${num(i.totalValue,2)}</b>`:na()}</td>
-      <td>${reorderCell}</td>
-      <td>${statusBadge}</td>
+      <td>${rc}</td>
+      <td>${sb}</td>
     </tr>`;
   });
-
-  const tbl = `<table>
-    <thead>
-      <tr class="cg-row">
-        <th class="cg cg-id" colspan="3">Identification</th>
-        <th class="cg cg-qty" colspan="4">Quantities</th>
-        <th class="cg cg-val" colspan="2">Valuation</th>
-        <th class="cg cg-misc" colspan="2">Status</th>
-      </tr>
-      <tr class="hdr-row">
-        <th>Code</th><th>Item Name</th><th>Unit</th>
-        <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
-        <th class="r">Qty to Deliver</th><th class="r">Qty to Receive</th>
-        <th class="r">Avg Cost</th><th class="r">Total Value</th>
-        <th class="r">Reorder</th><th>Status</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>`;
-  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
+  const tbl = `<table><thead>
+    <tr class="cg-row">
+      <th class="cg cg-id" colspan="3">Identification</th>
+      <th class="cg cg-qty" colspan="4">Quantities</th>
+      <th class="cg cg-val" colspan="2">Valuation</th>
+      <th class="cg cg-misc" colspan="2">Status</th>
+    </tr>
+    <tr class="hdr-row">
+      <th>Code</th><th>Item Name</th><th>Unit</th>
+      <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
+      <th class="r">Qty to Deliver</th><th class="r">Qty to Receive</th>
+      <th class="r">Avg Cost</th><th class="r">Total Value</th>
+      <th class="r">Reorder</th><th>Status</th>
+    </tr>
+  </thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
    Tab: Pricing & Valuation
 ══════════════════════════════════ */
 function renderPricingTab() {
-  const { items, start, total, totalPages } = pageSlice();
+  const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
   let rows = '';
   items.forEach(i => {
-    rows += maybeGroupRow(i.itemName, 8);
-    const valLabel = VALUATION[i.valuationMethod] ?? (i.valuationMethod!=null?`Method ${i.valuationMethod}`:null);
+    rows += maybeGrp(i.itemName, 8);
+    const vl = VALUATION[i.valuationMethod];
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName ? esc(i.unitName) : dash()}</td>
-      <td>${valLabel ? `<span class="badge b-val">${esc(valLabel)}</span>` : dash()}</td>
-      <td class="td-num">${price(i.defPurchasePrice) ?? dash()}</td>
-      <td class="td-num">${price(i.defSalePrice) ?? dash()}</td>
-      <td class="td-num">${i.defaultQty!=null ? num(i.defaultQty) : dash()}</td>
-      <td style="font-size:10px;color:var(--text-dim)">${i.defaultLineDesc ? esc(i.defaultLineDesc) : dash()}</td>
+      <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
+      <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:dash()}</td>
+      <td class="td-num">${price(i.defPurchasePrice)??dash()}</td>
+      <td class="td-num">${price(i.defSalePrice)??dash()}</td>
+      <td class="td-num">${i.defaultQty!=null?num(i.defaultQty):dash()}</td>
+      <td style="font-size:10px;color:var(--text-dim)">${i.defaultLineDesc?esc(i.defaultLineDesc):dash()}</td>
     </tr>`;
   });
-
-  const tbl = `<table>
-    <thead>
-      <tr class="cg-row">
-        <th class="cg cg-id" colspan="3">Identification</th>
-        <th class="cg cg-val" colspan="2">Method &amp; Cost</th>
-        <th class="cg cg-val" colspan="3">Default Settings</th>
-      </tr>
-      <tr class="hdr-row">
-        <th>Code</th><th>Item Name</th><th>Unit</th>
-        <th>Valuation Method</th>
-        <th class="r">Purchase Price</th><th class="r">Sale Price</th>
-        <th class="r">Default Qty</th><th>Default Description</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>`;
-  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
+  const tbl = `<table><thead>
+    <tr class="cg-row">
+      <th class="cg cg-id" colspan="3">Identification</th>
+      <th class="cg cg-pri" colspan="2">Method &amp; Pricing</th>
+      <th class="cg cg-pri" colspan="3">Defaults</th>
+    </tr>
+    <tr class="hdr-row">
+      <th>Code</th><th>Item Name</th><th>Unit</th>
+      <th>Valuation Method</th>
+      <th class="r">Purchase Price</th><th class="r">Sale Price</th>
+      <th class="r">Default Qty</th><th>Default Description</th>
+    </tr>
+  </thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
    Tab: Divisions & Accounts
-   Division names shown (not keys)
+   Shows division NAME and CODE (e.g. "Pakola (D-4)")
 ══════════════════════════════════ */
 function renderDivisionsTab() {
-  const { items, start, total, totalPages } = pageSlice();
+  const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
   let rows = '';
   items.forEach(i => {
-    rows += maybeGroupRow(i.itemName, 8);
-    const dc = name => name ? `<span class="div-chip">${esc(name)}</span>` : dash();
-    const ac = name => name ? `<span style="font-size:10px">${esc(name)}</span>` : dash();
+    rows += maybeGrp(i.itemName, 8);
+    const ac = n => n ? `<span style="font-size:10px">${esc(n)}</span>` : dash();
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td>${dc(i.divisionName)}</td>
-      <td>${dc(i.defaultDivisionName)}</td>
+      <td>${divCell(i.division)}</td>
+      <td>${divCell(i.defaultDivision)}</td>
       <td style="text-align:center;color:${i.divisionEnabled?'var(--green)':'var(--muted)'}">${i.divisionEnabled?'✓':'✗'}</td>
       <td>${ac(i.incomeAccountName)}</td>
       <td>${ac(i.expenseAccountName)}</td>
       <td>${ac(i.controlAccountName)}</td>
     </tr>`;
   });
-
-  const tbl = `<table>
-    <thead>
-      <tr class="cg-row">
-        <th class="cg cg-id" colspan="2">Identification</th>
-        <th class="cg cg-div" colspan="3">Divisions</th>
-        <th class="cg cg-misc" colspan="3">Accounts</th>
-      </tr>
-      <tr class="hdr-row">
-        <th>Code</th><th>Item Name</th>
-        <th>Division</th><th>Default Division</th><th style="text-align:center">Div. On</th>
-        <th>Income Account</th><th>Expense Account</th><th>Control Account</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>`;
-  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
+  const tbl = `<table><thead>
+    <tr class="cg-row">
+      <th class="cg cg-id" colspan="2">Identification</th>
+      <th class="cg cg-div" colspan="3">Divisions</th>
+      <th class="cg cg-misc" colspan="3">Accounts</th>
+    </tr>
+    <tr class="hdr-row">
+      <th>Code</th><th>Item Name</th>
+      <th>Division</th><th>Default Division</th><th class="c">Div. Enabled</th>
+      <th>Income Account</th><th>Expense Account</th><th>Control Account</th>
+    </tr>
+  </thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
    Tab: Custom Fields
-   Column headers = human-readable field names (not keys).
-   Values shown as-is.
+   Column headers use human names fetched from
+   /api4/text-custom-field-batch (etc.) — e.g. "Carton Size", "HS Code"
+   NOT the raw UUID keys.
 ══════════════════════════════════ */
 function renderCFTab() {
-  const { items, start, total, totalPages } = pageSlice();
+  const {items,start,total,totalPages} = pageSlice();
 
-  // Build dynamic columns across all filtered items
-  const strCols  = buildCFMeta(_filtered, 'cfStrings');
-  const decCols  = buildCFMeta(_filtered, 'cfDecimals');
-  const boolCols = buildCFMeta(_filtered, 'cfBooleans');
-  const dateCols = buildCFMeta(_filtered, 'cfDates');
-  const arrCols  = buildCFMeta(_filtered, 'cfStringArrays');
-  const total_cols = 2 + strCols.length + decCols.length + boolCols.length + dateCols.length + arrCols.length;
+  // Build column lists with human labels
+  const strCols  = getCFCols(_filtered, 'cfStrings');
+  const decCols  = getCFCols(_filtered, 'cfDecimals');
+  const boolCols = getCFCols(_filtered, 'cfBooleans');
+  const dateCols = getCFCols(_filtered, 'cfDates');
+  const arrCols  = getCFCols(_filtered, 'cfStringArrays');
+  const cfCount  = strCols.length+decCols.length+boolCols.length+dateCols.length+arrCols.length;
 
-  if (total_cols === 2) {
+  if (cfCount === 0) {
     document.getElementById('app').innerHTML = `<div class="tbl-wrap">
       <div class="empty-state"><div class="icon">🏷</div>
-      <div>No custom field data found in loaded records.</div>
-      <div style="font-size:11px;margin-top:6px;color:var(--muted)">Custom fields appear here when items have customFields2 data from Manager.</div>
+        <div>No custom field data found in loaded records.</div>
+        <div style="font-size:11px;margin-top:6px;color:var(--muted)">
+          Custom fields (like "Carton Size") appear here once items have<br>
+          customFields2 data populated in Manager.
+        </div>
       </div></div>`;
     return;
   }
 
   _lastGrp = '';
+  const totalCols = 2+cfCount;
   let rows = '';
   items.forEach(i => {
-    rows += maybeGroupRow(i.itemName, total_cols);
+    rows += maybeGrp(i.itemName, totalCols);
     let cells = `
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>`;
-
     strCols.forEach(({key}) => {
       const v = i.cfStrings[key];
-      cells += `<td>${v!=null?`<span class="cf-tag" title="${esc(String(v))}">${esc(String(v))}</span>`:dash()}</td>`;
+      cells += `<td class="cf-cell">${v!=null?esc(String(v)):dash()}</td>`;
     });
     decCols.forEach(({key}) => {
       const v = i.cfDecimals[key];
@@ -893,32 +963,31 @@ function renderCFTab() {
     });
     boolCols.forEach(({key}) => {
       const v = i.cfBooleans[key];
-      cells += `<td style="text-align:center">${v!=null?(v?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--muted)">✗</span>'):dash()}</td>`;
+      cells += `<td style="text-align:center">${v!=null?(v?`<span style="color:var(--green)">✓</span>`:`<span style="color:var(--muted)">✗</span>`):dash()}</td>`;
     });
     dateCols.forEach(({key}) => {
       const v = i.cfDates[key];
-      cells += `<td style="font-family:var(--mono);font-size:10px">${v?esc(String(v)):dash()}</td>`;
+      cells += `<td class="cf-cell">${v?esc(String(v)):dash()}</td>`;
     });
     arrCols.forEach(({key}) => {
       const v = i.cfStringArrays[key];
-      const disp = Array.isArray(v) ? v.join(', ') : (v!=null ? String(v) : null);
-      cells += `<td style="font-size:10px">${disp?esc(disp):dash()}</td>`;
+      const d = Array.isArray(v)?v.join(', '):(v!=null?String(v):null);
+      cells += `<td class="cf-cell">${d?esc(d):dash()}</td>`;
     });
-
     rows += `<tr>${cells}</tr>`;
   });
 
-  // Column group header cells
+  // Column group header
   const cgRow = [
     `<th class="cg cg-id" colspan="2">Identification</th>`,
-    strCols.length  ? `<th class="cg cg-cf" colspan="${strCols.length}">Text Fields</th>` : '',
-    decCols.length  ? `<th class="cg cg-cf" colspan="${decCols.length}">Number Fields</th>` : '',
-    boolCols.length ? `<th class="cg cg-cf" colspan="${boolCols.length}">Boolean Fields</th>` : '',
-    dateCols.length ? `<th class="cg cg-cf" colspan="${dateCols.length}">Date Fields</th>` : '',
-    arrCols.length  ? `<th class="cg cg-cf" colspan="${arrCols.length}">List Fields</th>` : '',
+    strCols.length  ? `<th class="cg cg-cf" colspan="${strCols.length}">Text Fields</th>`    : '',
+    decCols.length  ? `<th class="cg cg-cf" colspan="${decCols.length}">Number Fields</th>`  : '',
+    boolCols.length ? `<th class="cg cg-cf" colspan="${boolCols.length}">Yes/No Fields</th>` : '',
+    dateCols.length ? `<th class="cg cg-cf" colspan="${dateCols.length}">Date Fields</th>`   : '',
+    arrCols.length  ? `<th class="cg cg-cf" colspan="${arrCols.length}">List Fields</th>`    : '',
   ].join('');
 
-  // Human-readable column headers
+  // Human-label column headers (e.g. "Carton Size" not the UUID)
   const hdrRow = [
     `<th>Code</th><th>Item Name</th>`,
     ...strCols.map(c  => `<th>${esc(c.label)}</th>`),
@@ -928,35 +997,31 @@ function renderCFTab() {
     ...arrCols.map(c  => `<th>${esc(c.label)}</th>`),
   ].join('');
 
-  const tbl = `<table>
-    <thead>
-      <tr class="cg-row">${cgRow}</tr>
-      <tr class="hdr-row">${hdrRow}</tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>`;
-  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
+  const tbl = `<table><thead>
+    <tr class="cg-row">${cgRow}</tr>
+    <tr class="hdr-row">${hdrRow}</tr>
+  </thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
    Tab: All Fields combined
 ══════════════════════════════════ */
 function renderAllTab() {
-  const { items, start, total, totalPages } = pageSlice();
+  const {items,start,total,totalPages} = pageSlice();
   _lastGrp = '';
   let rows = '';
   items.forEach(i => {
-    rows += maybeGroupRow(i.itemName, 16);
-    const qc  = v => v!=null ? num(v,2) : na();
-    const dc  = name => name ? `<span class="div-chip">${esc(name)}</span>` : dash();
-    const vl  = VALUATION[i.valuationMethod];
-    const sb  = i.inactive
+    rows += maybeGrp(i.itemName, 16);
+    const qc = v => v!=null?num(v,2):na();
+    const vl = VALUATION[i.valuationMethod];
+    const sb = i.inactive
       ? `<span class="badge b-inactive">Inactive</span>`
       : `<span class="badge b-active">Active</span>`;
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
+      <td class="td-code">${i.itemCode?esc(i.itemCode):dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName ? esc(i.unitName) : dash()}</td>
+      <td class="td-unit">${i.unitName?esc(i.unitName):dash()}</td>
       <td>${sb}</td>
       <td class="td-num">${qc(i.qtyOwned)}</td>
       <td class="td-num">${qc(i.qtyOnHand)}</td>
@@ -964,43 +1029,39 @@ function renderAllTab() {
       <td class="td-num">${qc(i.qtyToReceive)}</td>
       <td class="td-num">${i.averageCost!=null?num(i.averageCost,4):na()}</td>
       <td class="td-num">${i.totalValue!=null?`<b style="color:var(--green)">${num(i.totalValue,2)}</b>`:na()}</td>
-      <td>${vl ? `<span class="badge b-val">${esc(vl)}</span>` : dash()}</td>
-      <td class="td-num">${price(i.defPurchasePrice) ?? dash()}</td>
-      <td class="td-num">${price(i.defSalePrice) ?? dash()}</td>
-      <td>${dc(i.divisionName)}</td>
-      <td>${dc(i.defaultDivisionName)}</td>
-      <td>${i.reorderPoint ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>` : dash()}</td>
+      <td>${vl?`<span class="badge b-val">${esc(vl)}</span>`:dash()}</td>
+      <td class="td-num">${price(i.defPurchasePrice)??dash()}</td>
+      <td class="td-num">${price(i.defSalePrice)??dash()}</td>
+      <td>${divCell(i.division)}</td>
+      <td>${divCell(i.defaultDivision)}</td>
+      <td>${i.reorderPoint?`<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`:dash()}</td>
     </tr>`;
   });
-
-  const tbl = `<table>
-    <thead>
-      <tr class="cg-row">
-        <th class="cg cg-id" colspan="4">Identification</th>
-        <th class="cg cg-qty" colspan="4">Quantities</th>
-        <th class="cg cg-val" colspan="2">Valuation</th>
-        <th class="cg cg-val" colspan="3">Pricing</th>
-        <th class="cg cg-div" colspan="2">Divisions</th>
-        <th class="cg cg-misc" colspan="1">Reorder</th>
-      </tr>
-      <tr class="hdr-row">
-        <th>Code</th><th>Item Name</th><th>Unit</th><th>Status</th>
-        <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
-        <th class="r">To Deliver</th><th class="r">To Receive</th>
-        <th class="r">Avg Cost</th><th class="r">Total Value</th>
-        <th>Method</th>
-        <th class="r">Purchase</th><th class="r">Sale</th>
-        <th>Division</th><th>Default Div.</th>
-        <th class="r">Reorder</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>`;
-  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
+  const tbl = `<table><thead>
+    <tr class="cg-row">
+      <th class="cg cg-id" colspan="4">Identification</th>
+      <th class="cg cg-qty" colspan="4">Quantities</th>
+      <th class="cg cg-val" colspan="2">Valuation</th>
+      <th class="cg cg-pri" colspan="3">Pricing</th>
+      <th class="cg cg-div" colspan="2">Divisions</th>
+      <th class="cg cg-misc" colspan="1">Reorder</th>
+    </tr>
+    <tr class="hdr-row">
+      <th>Code</th><th>Item Name</th><th>Unit</th><th>Status</th>
+      <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
+      <th class="r">To Deliver</th><th class="r">To Receive</th>
+      <th class="r">Avg Cost</th><th class="r">Total Value</th>
+      <th>Method</th>
+      <th class="r">Purchase</th><th class="r">Sale</th>
+      <th>Division</th><th>Default Div.</th>
+      <th class="r">Reorder</th>
+    </tr>
+  </thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total,totalPages,start));
 }
 
 /* ══════════════════════════════════
-   render() — entry point from loadAllRecords
+   render — entry point
 ══════════════════════════════════ */
 function render(items) {
   _raw = items.map(normalize);
