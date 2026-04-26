@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inventory Items — Itemwise View</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080c12;
+    --surface:  #0d1117;
+    --panel:    #111822;
+    --border:   #1e2d3d;
+    --border2:  #243044;
+    --accent:   #38bdf8;
+    --accent2:  #7dd3fc;
+    --green:    #4ade80;
+    --amber:    #fbbf24;
+    --red:      #f87171;
+    --muted:    #4a6077;
+    --text:     #cdd9e5;
+    --text-dim: #8496a9;
+    --head:     #e6f0fa;
+    --mono:     'JetBrains Mono', monospace;
+    --sans:     'Syne', sans-serif;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+    line-height: 1.5;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px 16px; margin-bottom: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  }
+  .topbar-title {
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    letter-spacing: .08em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+
+  .load-btn {
+    padding: 7px 18px; border: none; border-radius: 6px; cursor: pointer;
+    font-family: var(--sans); font-size: 12px; font-weight: 700;
+    background: var(--accent); color: #030d1a;
+    transition: opacity .15s, transform .1s;
+    letter-spacing: .04em; white-space: nowrap;
+  }
+  .load-btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+  .load-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .search-wrap { position: relative; flex: 1; min-width: 160px; max-width: 320px; }
+  .search-wrap input {
+    width: 100%; padding: 7px 12px 7px 32px;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 12px;
+    outline: none; transition: border-color .2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 13px; pointer-events: none;
+  }
+
+  .sort-select {
+    padding: 7px 10px; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 12px;
+    outline: none; cursor: pointer;
+  }
+
+  .filter-toggle {
+    padding: 7px 12px; border: 1px solid var(--border2); border-radius: 6px;
+    background: transparent; color: var(--text-dim); font-family: var(--sans);
+    font-size: 12px; cursor: pointer; transition: all .15s;
+    white-space: nowrap;
+  }
+  .filter-toggle.active { background: var(--accent); color: #030d1a; border-color: var(--accent); font-weight: 700; }
+
+  .prog-wrap { flex: 1; min-width: 80px; max-width: 160px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .prog-bar  { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .25s; }
+  .status-txt { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+  .stat-value { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--head); }
+  .stat-sub   { font-size: 11px; color: var(--text-dim); }
+
+  /* ── Items table ── */
+  .table-wrap {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead { position: sticky; top: 0; z-index: 5; }
+  thead tr { background: #0a1420; }
+  th {
+    padding: 11px 14px; text-align: left;
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: .1em;
+    border-bottom: 1px solid var(--border2);
+    white-space: nowrap; cursor: pointer; user-select: none;
+    transition: color .15s;
+  }
+  th:hover { color: var(--accent2); }
+  th.sorted { color: var(--accent); }
+  th .sort-arrow { margin-left: 4px; opacity: .6; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .1s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(56,189,248,.04); }
+
+  td { padding: 10px 14px; vertical-align: middle; }
+
+  .td-name {
+    font-weight: 600; color: var(--head); max-width: 220px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .td-code {
+    font-family: var(--mono); font-size: 11px; color: var(--accent2);
+    white-space: nowrap;
+  }
+  .td-unit { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .td-price { font-family: var(--mono); font-size: 12px; text-align: right; white-space: nowrap; }
+  .td-num   { font-family: var(--mono); font-size: 12px; text-align: right; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; letter-spacing: .06em;
+    white-space: nowrap;
+  }
+  .badge-active   { background: rgba(74,222,128,.12); color: var(--green); border: 1px solid rgba(74,222,128,.25); }
+  .badge-inactive { background: rgba(248,113,113,.1);  color: var(--red);   border: 1px solid rgba(248,113,113,.2); }
+  .badge-val      { background: rgba(56,189,248,.1);   color: var(--accent2); border: 1px solid rgba(56,189,248,.2); }
+
+  .val-method { font-size: 10px; }
+
+  /* ── Group header row ── */
+  .group-row td {
+    background: rgba(30,45,61,.6);
+    font-size: 10px; font-weight: 700;
+    color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
+    padding: 6px 14px;
+    border-top: 1px solid var(--border2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  /* ── Empty / error ── */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted); font-size: 14px;
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .err-box {
+    color: var(--red); background: rgba(248,113,113,.07);
+    border: 1px solid rgba(248,113,113,.2);
+    border-radius: 8px; padding: 14px 18px;
+    font-size: 13px; margin-bottom: 16px;
+  }
+
+  /* ── Pagination ── */
+  .pagination {
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-dim);
+  }
+  .pg-btn {
+    padding: 5px 12px; border: 1px solid var(--border2);
+    border-radius: 5px; background: transparent; color: var(--text-dim);
+    font-family: var(--sans); font-size: 12px; cursor: pointer;
+    transition: all .15s;
+  }
+  .pg-btn:hover:not(:disabled) { background: var(--border2); color: var(--text); }
+  .pg-btn:disabled { opacity: .35; cursor: not-allowed; }
+  .pg-btn.active { background: var(--accent); color: #030d1a; border-color: var(--accent); font-weight: 700; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ── Control bar ── -->
+<div class="topbar">
+  <span class="topbar-title">📦 Inventory Items</span>
+  <div class="sep"></div>
+  <button class="load-btn" id="load-btn" onclick="loadAllRecords()">⬇ Load Records</button>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search items…" oninput="applyFilters()" disabled>
+  </div>
+
+  <select class="sort-select" id="sort-select" onchange="applyFilters()" disabled>
+    <option value="name-asc">Name A→Z</option>
+    <option value="name-desc">Name Z→A</option>
+    <option value="code-asc">Code A→Z</option>
+    <option value="sale-desc">Sale Price ↓</option>
+    <option value="sale-asc">Sale Price ↑</option>
+    <option value="purchase-desc">Purchase Price ↓</option>
+    <option value="qty-desc">Reorder Qty ↓</option>
+  </select>
+
+  <button class="filter-toggle" id="filter-active" onclick="toggleFilter('active')" disabled>Active Only</button>
+  <button class="filter-toggle" id="filter-reorder" onclick="toggleFilter('reorder')" disabled>Reorder Set</button>
+
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
+  <span class="status-txt" id="status-txt">Press Load to fetch data</span>
+</div>
+
+<!-- ── Stats ── -->
+<div class="stats-row" id="stats-row" style="display:none"></div>
+
+<!-- ── Main content ── -->
+<div id="app"></div>
+
+<script>
+/* ══════════════════════════════════
+   postMessage helper — DO NOT MODIFY
+══════════════════════════════════ */
+function postMessageWithResponse(message) {
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const timer = setTimeout(() => {
+      window.removeEventListener('message', handler);
+      reject(new Error('Timeout — is this running inside Manager.io?'));
+    }, 15000);
+    function handler(event) {
+      if (event.data?.type?.endsWith('-response') && event.data?.requestId === requestId) {
+        clearTimeout(timer);
+        window.removeEventListener('message', handler);
+        resolve(event.data.body);
+      }
+    }
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ ...message, requestId }, '*');
+  });
+}
+
+/* ══════════════════════════════════
+   getInventoryItemBatch
+   Fetches ALL pages — DO NOT SIMPLIFY.
+   Manager.io returns ≤50 records per call.
+   This loop follows next_page_token until
+   every record is loaded.
+══════════════════════════════════ */
+async function getInventoryItemBatch(onProgress) {
+  const allItems = [];
+  let nextToken  = null;
+  let pageNum    = 0;
+  let apiTotal   = null;
+
+  do {
+    const path = nextToken
+      ? '/api4/inventory-item-batch?PageSize=99999&next_page_token=' + encodeURIComponent(nextToken)
+      : '/api4/inventory-item-batch?PageSize=99999';
+
+    const data = await postMessageWithResponse({ type: 'api-request', method: 'GET', path });
+
+    const page = Array.isArray(data) ? data : (data.items || data.data || []);
+    allItems.push(...page);
+
+    nextToken = data.next_page_token || data.nextPageToken || data._links?.next?.href || null;
+
+    if (apiTotal === null) {
+      apiTotal = data.totalCount ?? data.total ?? data.count ?? data._metadata?.totalCount ?? null;
+    }
+
+    pageNum++;
+    if (onProgress) onProgress(allItems.length, apiTotal, pageNum);
+    if (pageNum >= 1000) break;
+
+  } while (nextToken);
+
+  return allItems;
+}
+
+/* ══════════════════════════════════
+   State
+══════════════════════════════════ */
+let _allItems = [];         // raw loaded records
+let _filtered = [];         // after search/filter/sort
+let _page     = 1;
+const PAGE_SIZE = 50;
+const _activeFilters = { active: false, reorder: false };
+
+/* ══════════════════════════════════
+   loadAllRecords — wired to Load button
+══════════════════════════════════ */
+async function loadAllRecords() {
+  const btn    = document.getElementById('load-btn');
+  const bar    = document.getElementById('prog-bar');
+  const status = document.getElementById('status-txt');
+  const app    = document.getElementById('app');
+
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+  bar.style.width = '0%';
+  app.innerHTML = '';
+  document.getElementById('stats-row').style.display = 'none';
+
+  // disable controls while loading
+  ['search-input','sort-select','filter-active','filter-reorder'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = true;
+  });
+
+  try {
+    const items = await getInventoryItemBatch((loaded, total, page) => {
+      status.textContent = total
+        ? `Page ${page} · ${loaded.toLocaleString()} / ${total.toLocaleString()} records`
+        : `Page ${page} · ${loaded.toLocaleString()} records loaded…`;
+      if (total) bar.style.width = Math.min(95, Math.round(loaded / total * 100)) + '%';
+    });
+
+    bar.style.width = '100%';
+    status.textContent = `✓ ${items.length.toLocaleString()} records loaded`;
+    btn.textContent = '↺ Reload';
+    btn.disabled = false;
+
+    // enable controls
+    ['search-input','sort-select','filter-active','filter-reorder'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = false;
+    });
+
+    _allItems = items;
+    _page = 1;
+    applyFilters();
+
+  } catch (err) {
+    status.textContent = '⚠ ' + err.message;
+    btn.textContent = '↺ Retry';
+    btn.disabled = false;
+    app.innerHTML = `<div class="err-box">⚠ ${err.message}<br><small>Make sure this is running inside Manager.io</small></div>`;
+  }
+}
+
+/* ══════════════════════════════════
+   Helpers
+══════════════════════════════════ */
+const fmtPrice = v => v != null && v !== 0
+  ? v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  : '<span style="color:var(--muted)">—</span>';
+
+const escHtml = s => String(s ?? '')
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+const VALUATION_LABELS = {
+  1: 'Average Cost',
+  2: 'FIFO',
+  3: 'LIFO',
+  4: 'Specific ID'
+};
+
+function getValuationLabel(v) {
+  return VALUATION_LABELS[v] ?? `Method ${v ?? '?'}`;
+}
+
+/* ══════════════════════════════════
+   toggleFilter
+══════════════════════════════════ */
+function toggleFilter(key) {
+  _activeFilters[key] = !_activeFilters[key];
+  const el = document.getElementById('filter-' + key);
+  if (el) el.classList.toggle('active', _activeFilters[key]);
+  _page = 1;
+  applyFilters();
+}
+
+/* ══════════════════════════════════
+   applyFilters — search + sort + filter
+══════════════════════════════════ */
+function applyFilters() {
+  const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
+
+  let list = _allItems.map(raw => {
+    // each item from the batch has raw.item (the inventory item data) and raw.key
+    const it = raw?.item ?? raw;
+    return {
+      key:           raw?.key ?? null,
+      itemCode:      it?.itemCode   ?? null,
+      itemName:      it?.itemName   ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
+      unitName:      it?.unitName   ?? null,
+      valuationMethod: it?.valuationMethod ?? null,
+      reorderPoint:  it?.reorderPoint ?? false,
+      qtyDesired:    it?.qtyDesired  ?? 0,
+      inactive:      it?.inactive    ?? false,
+      defPurchasePrice: it?.hasDefaultPurchaseUnitPrice ? (it?.defaultPurchaseUnitPrice ?? 0) : null,
+      defSalePrice:     it?.hasDefaultSalesUnitPrice    ? (it?.defaultSalesUnitPrice    ?? 0) : null,
+      defaultQty:    it?.hasDefaultQty ? (it?.defaultQty ?? 0) : null,
+      hasCOGS:       it?.hasCostOfGoodsSold ?? false,
+      division:      it?.division ?? null,
+      taxEnabled:    it?.taxCodeEnabled ?? false,
+      projectEnabled: it?.projectEnabled ?? false,
+    };
+  });
+
+  // filter: active only
+  if (_activeFilters.active) {
+    list = list.filter(i => !i.inactive);
+  }
+  // filter: reorder set
+  if (_activeFilters.reorder) {
+    list = list.filter(i => i.reorderPoint);
+  }
+  // search
+  if (q) {
+    list = list.filter(i =>
+      (i.itemName || '').toLowerCase().includes(q) ||
+      (i.itemCode || '').toLowerCase().includes(q) ||
+      (i.unitName || '').toLowerCase().includes(q)
+    );
+  }
+
+  // sort
+  list.sort((a, b) => {
+    switch (sortKey) {
+      case 'name-asc':      return (a.itemName||'').localeCompare(b.itemName||'');
+      case 'name-desc':     return (b.itemName||'').localeCompare(a.itemName||'');
+      case 'code-asc':      return (a.itemCode||'zzz').localeCompare(b.itemCode||'zzz');
+      case 'sale-desc':     return (b.defSalePrice ?? -Infinity) - (a.defSalePrice ?? -Infinity);
+      case 'sale-asc':      return (a.defSalePrice ?? Infinity)  - (b.defSalePrice ?? Infinity);
+      case 'purchase-desc': return (b.defPurchasePrice ?? -Infinity) - (a.defPurchasePrice ?? -Infinity);
+      case 'qty-desc':      return (b.qtyDesired ?? 0) - (a.qtyDesired ?? 0);
+      default:              return (a.itemName||'').localeCompare(b.itemName||'');
+    }
+  });
+
+  _filtered = list;
+  renderStats();
+  renderTable();
+}
+
+/* ══════════════════════════════════
+   renderStats
+══════════════════════════════════ */
+function renderStats() {
+  const all    = _allItems.length;
+  const active = _allItems.filter(r => !(r?.item?.inactive ?? r?.inactive ?? false)).length;
+  const withPrice = _filtered.filter(i => i.defSalePrice != null && i.defSalePrice > 0).length;
+  const reorder   = _allItems.filter(r => (r?.item?.reorderPoint ?? r?.reorderPoint ?? false)).length;
+
+  const statsEl = document.getElementById('stats-row');
+  statsEl.style.display = 'grid';
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Items</div>
+      <div class="stat-value">${all.toLocaleString()}</div>
+      <div class="stat-sub">all inventory records</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active</div>
+      <div class="stat-value" style="color:var(--green)">${active.toLocaleString()}</div>
+      <div class="stat-sub">${all > 0 ? Math.round(active/all*100) : 0}% of total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Inactive</div>
+      <div class="stat-value" style="color:var(--red)">${(all - active).toLocaleString()}</div>
+      <div class="stat-sub">hidden from use</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Reorder Set</div>
+      <div class="stat-value" style="color:var(--amber)">${reorder.toLocaleString()}</div>
+      <div class="stat-sub">have reorder point</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">With Sale Price</div>
+      <div class="stat-value" style="color:var(--accent2)">${withPrice.toLocaleString()}</div>
+      <div class="stat-sub">of ${_filtered.length} shown</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Showing</div>
+      <div class="stat-value">${_filtered.length.toLocaleString()}</div>
+      <div class="stat-sub">after filters applied</div>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════
+   renderTable — paginated, itemwise table
+══════════════════════════════════ */
+function renderTable() {
+  const app = document.getElementById('app');
+
+  if (_filtered.length === 0) {
+    app.innerHTML = `
+      <div class="table-wrap">
+        <div class="empty-state">
+          <div class="icon">📭</div>
+          <div>${_allItems.length === 0 ? 'No data loaded yet.' : 'No items match your search/filter.'}</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const totalPages = Math.ceil(_filtered.length / PAGE_SIZE);
+  if (_page > totalPages) _page = totalPages;
+  const start = (_page - 1) * PAGE_SIZE;
+  const pageItems = _filtered.slice(start, start + PAGE_SIZE);
+
+  /* Build alphabet group headers when sorted by name */
+  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
+  const useGroups = sortKey === 'name-asc' || sortKey === 'name-desc';
+
+  let rows = '';
+  let lastGroup = '';
+
+  pageItems.forEach(item => {
+    // group header letter
+    if (useGroups) {
+      const firstChar = (item.itemName || '?')[0].toUpperCase();
+      const group = /[A-Z]/.test(firstChar) ? firstChar : '#';
+      if (group !== lastGroup) {
+        rows += `<tr class="group-row"><td colspan="9">— ${escHtml(group)} —</td></tr>`;
+        lastGroup = group;
+      }
+    }
+
+    const statusBadge = item.inactive
+      ? `<span class="badge badge-inactive">Inactive</span>`
+      : `<span class="badge badge-active">Active</span>`;
+
+    const valBadge = item.valuationMethod != null
+      ? `<span class="badge badge-val val-method">${escHtml(getValuationLabel(item.valuationMethod))}</span>`
+      : `<span style="color:var(--muted)">—</span>`;
+
+    const reorderCell = item.reorderPoint
+      ? `<span style="color:var(--amber)">✦ ${item.qtyDesired > 0 ? item.qtyDesired.toLocaleString() : 'Set'}</span>`
+      : `<span style="color:var(--muted)">—</span>`;
+
+    rows += `
+      <tr>
+        <td class="td-code">${item.itemCode ? escHtml(item.itemCode) : '<span style="color:var(--muted)">—</span>'}</td>
+        <td class="td-name" title="${escHtml(item.itemName)}">${escHtml(item.itemName)}</td>
+        <td class="td-unit">${item.unitName ? escHtml(item.unitName) : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${valBadge}</td>
+        <td class="td-price">${fmtPrice(item.defPurchasePrice)}</td>
+        <td class="td-price">${fmtPrice(item.defSalePrice)}</td>
+        <td class="td-num">${reorderCell}</td>
+        <td>${item.defaultQty != null ? `<span style="font-family:var(--mono)">${item.defaultQty.toLocaleString()}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${statusBadge}</td>
+      </tr>`;
+  });
+
+  /* pagination buttons */
+  let pgButtons = '';
+  const maxBtns = 7;
+  let pStart = Math.max(1, _page - 3);
+  let pEnd   = Math.min(totalPages, pStart + maxBtns - 1);
+  if (pEnd - pStart < maxBtns - 1) pStart = Math.max(1, pEnd - maxBtns + 1);
+
+  if (pStart > 1) pgButtons += `<button class="pg-btn" onclick="goPage(1)">1</button>${pStart > 2 ? '<span style="color:var(--muted)">…</span>' : ''}`;
+  for (let p = pStart; p <= pEnd; p++) {
+    pgButtons += `<button class="pg-btn ${p === _page ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  if (pEnd < totalPages) pgButtons += `${pEnd < totalPages - 1 ? '<span style="color:var(--muted)">…</span>' : ''}<button class="pg-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
+
+  app.innerHTML = `
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('code-asc')">Item Code</th>
+              <th onclick="sortBy('name-asc')">Item Name</th>
+              <th>Unit</th>
+              <th>Valuation</th>
+              <th style="text-align:right">Purchase Price</th>
+              <th style="text-align:right">Sale Price</th>
+              <th style="text-align:right">Reorder Qty</th>
+              <th style="text-align:right">Default Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || '<tr><td colspan="9" class="empty-state">No items found</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>Showing ${start + 1}–${Math.min(start + PAGE_SIZE, _filtered.length)} of ${_filtered.length.toLocaleString()}</span>
+        <button class="pg-btn" onclick="goPage(_page-1)" ${_page === 1 ? 'disabled' : ''}>← Prev</button>
+        ${pgButtons}
+        <button class="pg-btn" onclick="goPage(_page+1)" ${_page >= totalPages ? 'disabled' : ''}>Next →</button>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════
+   Pagination & sort helpers
+══════════════════════════════════ */
+function goPage(p) {
+  const totalPages = Math.ceil(_filtered.length / PAGE_SIZE);
+  _page = Math.max(1, Math.min(p, totalPages));
+  renderTable();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function sortBy(key) {
+  const sel = document.getElementById('sort-select');
+  if (sel) { sel.value = key; }
+  _page = 1;
+  applyFilters();
+}
+
+/* ══════════════════════════════════
+   render(items) — wrapper called by loadAllRecords
+══════════════════════════════════ */
+function render(items) {
+  _allItems = items;
+  _page = 1;
+  applyFilters();
+}
+</script>
+</body>
+</html>
