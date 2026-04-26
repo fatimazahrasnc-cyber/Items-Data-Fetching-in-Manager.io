@@ -4,30 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Inventory Items — Full View</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #07090f;
-  --surface:   #0c1018;
-  --panel:     #101620;
-  --card:      #131b26;
-  --border:    #1c2a3a;
-  --border2:   #243344;
-  --accent:    #38bdf8;
-  --accent2:   #7dd3fc;
-  --green:     #4ade80;
-  --amber:     #fbbf24;
-  --red:       #f87171;
-  --purple:    #a78bfa;
-  --teal:      #2dd4bf;
-  --muted:     #3d5469;
-  --text:      #c5d4e3;
-  --text-dim:  #7a93a8;
-  --head:      #e2edf8;
-  --mono:      'JetBrains Mono', monospace;
-  --sans:      'Syne', sans-serif;
+  --bg:        #f5f7fa;
+  --surface:   #ffffff;
+  --panel:     #ffffff;
+  --border:    #dde2ea;
+  --border2:   #c8d0dc;
+  --accent:    #1d6fce;
+  --accent-lt: #e8f1fb;
+  --green:     #1a7f37;
+  --green-lt:  #e6f4ea;
+  --red:       #cf222e;
+  --red-lt:    #ffeef0;
+  --amber:     #9a6700;
+  --amber-lt:  #fff8c5;
+  --purple:    #6639ba;
+  --purple-lt: #ede8ff;
+  --teal:      #0e7490;
+  --teal-lt:   #e0f2f7;
+  --muted:     #8391a4;
+  --text:      #1c2635;
+  --text-dim:  #57657a;
+  --head:      #0d1b2a;
+  --mono:      'IBM Plex Mono', monospace;
+  --sans:      'Plus Jakarta Sans', system-ui, sans-serif;
+  --radius:    8px;
+  --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.05);
 }
 
 html, body { height: 100%; }
@@ -36,185 +42,191 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 14px;
+  padding: 16px;
   font-size: 13px;
 }
 
-/* ── Top bar ── */
+/* ── Topbar ── */
 .topbar {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  padding: 10px 14px; margin-bottom: 14px;
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: 10px;
+  padding: 10px 16px; margin-bottom: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
   position: sticky; top: 0; z-index: 200;
-  box-shadow: 0 6px 30px rgba(0,0,0,.6);
-  backdrop-filter: blur(8px);
 }
-.topbar-brand {
-  font-size: 12px; font-weight: 800; color: var(--accent);
-  letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
-}
-.v-sep { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
+.brand { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .04em; white-space: nowrap; }
+.vsep  { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
 
 .load-btn {
   padding: 7px 16px; border: none; border-radius: 6px; cursor: pointer;
-  font-family: var(--sans); font-size: 11px; font-weight: 800;
-  background: var(--accent); color: #020d18;
-  transition: opacity .15s, transform .1s;
-  letter-spacing: .05em; white-space: nowrap;
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  background: var(--accent); color: #fff;
+  transition: opacity .15s, transform .1s; white-space: nowrap;
 }
-.load-btn:hover:not(:disabled) { opacity: .85; transform: translateY(-1px); }
-.load-btn:disabled { opacity: .4; cursor: not-allowed; }
+.load-btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+.load-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.print-btn {
+  padding: 7px 14px; border: 1px solid var(--border2); border-radius: 6px;
+  background: transparent; color: var(--text-dim); font-family: var(--sans);
+  font-size: 12px; cursor: pointer; white-space: nowrap; transition: all .15s;
+}
+.print-btn:hover { background: var(--bg); color: var(--text); }
 
 .search-wrap { position: relative; min-width: 140px; max-width: 260px; flex: 1; }
 .search-wrap input {
   width: 100%; padding: 6px 10px 6px 28px;
-  background: var(--surface); border: 1px solid var(--border2);
+  background: var(--bg); border: 1px solid var(--border2);
   border-radius: 6px; color: var(--text);
   font-family: var(--mono); font-size: 11px; outline: none;
   transition: border-color .2s;
 }
 .search-wrap input:focus { border-color: var(--accent); }
 .search-wrap input::placeholder { color: var(--muted); }
-.search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--muted); pointer-events: none; }
+.si { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; }
 
-.ctrl-select {
-  padding: 6px 9px; background: var(--surface); border: 1px solid var(--border2);
+.ctrl-sel {
+  padding: 6px 9px; background: var(--bg); border: 1px solid var(--border2);
   border-radius: 6px; color: var(--text); font-family: var(--sans);
   font-size: 11px; outline: none; cursor: pointer;
 }
-.filter-btn {
-  padding: 6px 11px; border: 1px solid var(--border2); border-radius: 6px;
-  background: transparent; color: var(--text-dim);
-  font-family: var(--sans); font-size: 11px; cursor: pointer;
-  transition: all .15s; white-space: nowrap;
+.fbtn {
+  padding: 5px 11px; border: 1px solid var(--border2); border-radius: 6px;
+  background: transparent; color: var(--text-dim); font-family: var(--sans);
+  font-size: 11px; cursor: pointer; transition: all .15s; white-space: nowrap;
 }
-.filter-btn.on { background: var(--accent); color: #020d18; border-color: var(--accent); font-weight: 700; }
+.fbtn.on { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); font-weight: 700; }
 
-.prog-wrap { flex: 1; min-width: 60px; max-width: 140px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.prog-wrap { flex: 1; min-width: 60px; max-width: 140px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .prog-bar  { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .25s; }
 .status-txt { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
 
-/* ── Tab bar ── */
-.tab-bar {
-  display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap;
-}
-.tab {
-  padding: 7px 16px; border-radius: 7px 7px 0 0; border: 1px solid transparent;
-  font-size: 11px; font-weight: 700; cursor: pointer; transition: all .15s;
-  background: var(--panel); color: var(--text-dim); letter-spacing: .04em;
-}
-.tab.active { background: var(--card); border-color: var(--border2); border-bottom-color: var(--card); color: var(--accent); }
-.tab:hover:not(.active) { color: var(--text); }
-
-/* ── Stats cards ── */
+/* ── Stats ── */
 .stats-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 10px; margin-bottom: 14px;
 }
 .stat-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px 14px;
-  display: flex; flex-direction: column; gap: 3px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow);
 }
-.stat-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
-.stat-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--head); line-height: 1; }
-.stat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
+.stat-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px; }
+.stat-value { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--head); line-height: 1; }
+.stat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
 
-/* ── Table wrapper ── */
+/* ── Tabs ── */
+.tab-bar { display: flex; gap: 2px; margin-bottom: 0; border-bottom: 2px solid var(--border); }
+.tab {
+  padding: 8px 16px; font-size: 11px; font-weight: 700; cursor: pointer;
+  color: var(--text-dim); border-radius: 6px 6px 0 0;
+  transition: all .15s; white-space: nowrap; border: 1px solid transparent;
+  border-bottom: none; margin-bottom: -2px;
+}
+.tab:hover { color: var(--accent); }
+.tab.active {
+  background: var(--surface); color: var(--accent);
+  border-color: var(--border); border-bottom-color: var(--surface);
+}
+
+/* ── Table ── */
 .tbl-wrap {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border);
+  border-top: none; border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px;
 }
-.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 280px); overflow-y: auto; }
+.tbl-scroll { overflow-x: auto; max-height: calc(100vh - 300px); overflow-y: auto; }
 
-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead { position: sticky; top: 0; z-index: 10; }
-thead tr { background: #090e17; }
+
+/* col-group row */
+thead tr.cg-row { background: #f0f4f9; }
+th.cg {
+  padding: 4px 10px 3px; font-size: 8px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .14em; text-align: center;
+  border-bottom: 1px solid var(--border); border-right: 1px solid var(--border2);
+}
+th.cg:last-child { border-right: none; }
+.cg-id   { color: #5a6a7a; background: #edf1f6; }
+.cg-qty  { color: #0e7490; background: #e0f6fb; }
+.cg-val  { color: #1a7f37; background: #e6f4ea; }
+.cg-div  { color: #6639ba; background: #ede8ff; }
+.cg-cf   { color: #9a6700; background: #fff8c5; }
+.cg-misc { color: #5a6a7a; background: #edf1f6; }
+
+thead tr.hdr-row { background: #f6f8fb; }
 th {
-  padding: 9px 12px; text-align: left;
+  padding: 8px 10px; text-align: left;
   font-family: var(--mono); font-size: 9px; font-weight: 600;
-  color: var(--muted); text-transform: uppercase; letter-spacing: .1em;
-  border-bottom: 1px solid var(--border2);
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em;
+  border-bottom: 2px solid var(--border2);
+  border-right: 1px solid var(--border);
   white-space: nowrap; cursor: pointer; user-select: none;
   transition: color .15s;
 }
-th:hover { color: var(--accent2); }
-th.col-sorted { color: var(--accent); }
+th:last-child { border-right: none; }
+th:hover { color: var(--accent); }
 th.r { text-align: right; }
-
-/* column group headers */
-.col-group {
-  font-size: 8px; letter-spacing: .15em; text-transform: uppercase;
-  padding: 4px 12px 2px; border-bottom: none;
-  background: #070b12;
-}
-.cg-id   { color: #3d5469; }
-.cg-qty  { color: #1d5f6e; }
-.cg-val  { color: #2a5a35; }
-.cg-div  { color: #4a3a6e; }
-.cg-cf   { color: #5a3d28; }
-.cg-misc { color: #3d5469; }
 
 tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
 tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: rgba(56,189,248,.035); }
+tbody tr:hover { background: #f5f8ff; }
 
-td { padding: 8px 12px; vertical-align: middle; }
+td {
+  padding: 8px 10px; vertical-align: middle;
+  border-right: 1px solid #edf1f6;
+}
+td:last-child { border-right: none; }
 
-.td-name  { font-weight: 600; color: var(--head); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.td-code  { font-family: var(--mono); font-size: 10px; color: var(--accent2); white-space: nowrap; }
-.td-num   { font-family: var(--mono); font-size: 11px; text-align: right; }
-.td-dim   { color: var(--muted); }
-.td-unit  { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+.td-name { font-weight: 600; color: var(--head); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.td-code { font-family: var(--mono); font-size: 10px; color: var(--accent); white-space: nowrap; }
+.td-unit { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+.td-num  { font-family: var(--mono); font-size: 11px; text-align: right; }
+.td-dim  { color: #b0bac6; }
+.td-na   { color: #c8d4e0; font-style: italic; }
 
 .badge {
   display: inline-block; padding: 2px 7px; border-radius: 20px;
-  font-size: 9px; font-weight: 700; letter-spacing: .06em; white-space: nowrap;
+  font-size: 9px; font-weight: 700; letter-spacing: .05em; white-space: nowrap;
 }
-.b-active   { background: rgba(74,222,128,.1); color: var(--green); border: 1px solid rgba(74,222,128,.2); }
-.b-inactive { background: rgba(248,113,113,.1); color: var(--red);   border: 1px solid rgba(248,113,113,.2); }
-.b-val      { background: rgba(56,189,248,.1);  color: var(--accent2); border: 1px solid rgba(56,189,248,.18); }
-.b-div      { background: rgba(167,139,250,.1); color: var(--purple); border: 1px solid rgba(167,139,250,.2); }
-.b-reorder  { background: rgba(251,191,36,.1);  color: var(--amber);  border: 1px solid rgba(251,191,36,.2); }
+.b-active   { background: var(--green-lt);  color: var(--green);  border: 1px solid #b0e4be; }
+.b-inactive { background: var(--red-lt);    color: var(--red);    border: 1px solid #ffc0c0; }
+.b-val      { background: var(--accent-lt); color: var(--accent); border: 1px solid #b8d4f5; }
+.b-div      { background: var(--purple-lt); color: var(--purple); border: 1px solid #c8b8f0; }
+.b-reorder  { background: var(--amber-lt);  color: var(--amber);  border: 1px solid #e8d060; }
 
-/* group divider rows */
+/* group letter divider */
 .grp-row td {
-  background: rgba(24,38,56,.8);
-  font-size: 9px; font-weight: 700;
-  color: var(--accent); text-transform: uppercase; letter-spacing: .14em;
-  padding: 5px 12px;
-  border-top: 1px solid var(--border2); border-bottom: 1px solid var(--border2);
+  background: #eef2f8; font-size: 9px; font-weight: 800;
+  color: var(--accent); text-transform: uppercase; letter-spacing: .16em;
+  padding: 4px 10px; border-top: 1px solid var(--border2);
 }
 
-/* custom fields panel */
-.cf-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-.cf-tag {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 7px; border-radius: 4px; font-size: 9px;
-  background: rgba(251,191,36,.08); color: var(--amber);
-  border: 1px solid rgba(251,191,36,.18);
-  font-family: var(--mono);
-}
-.cf-tag .cf-key { color: var(--muted); }
-
-/* division chips */
+/* division chip */
 .div-chip {
   display: inline-block; padding: 2px 8px; border-radius: 4px;
-  font-size: 9px; background: rgba(167,139,250,.1); color: var(--purple);
-  border: 1px solid rgba(167,139,250,.2); font-family: var(--mono);
+  font-size: 10px; background: var(--purple-lt); color: var(--purple);
+  border: 1px solid #c8b8f0;
 }
 
-/* no data / empty */
+/* custom field tag */
+.cf-tag {
+  display: inline-block; padding: 2px 7px; border-radius: 4px;
+  font-size: 10px; background: var(--amber-lt); color: var(--amber);
+  border: 1px solid #e8d060; font-family: var(--mono);
+  max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* empty / error */
 .empty-state {
   text-align: center; padding: 60px 20px;
   color: var(--muted); font-size: 13px;
 }
-.empty-state .icon { font-size: 38px; margin-bottom: 10px; }
+.empty-state .icon { font-size: 40px; margin-bottom: 10px; }
 .err-box {
-  color: var(--red); background: rgba(248,113,113,.07);
-  border: 1px solid rgba(248,113,113,.2);
-  border-radius: 8px; padding: 14px 18px; font-size: 12px; margin-bottom: 14px;
+  color: var(--red); background: var(--red-lt);
+  border: 1px solid #ffc0c0; border-radius: var(--radius);
+  padding: 12px 16px; font-size: 12px; margin-bottom: 14px;
 }
 
 /* pagination */
@@ -222,78 +234,82 @@ td { padding: 8px 12px; vertical-align: middle; }
   display: flex; align-items: center; justify-content: flex-end; gap: 6px;
   padding: 10px 14px; border-top: 1px solid var(--border);
   font-size: 11px; color: var(--text-dim); flex-wrap: wrap;
+  background: #fafbfd;
 }
 .pg-btn {
   padding: 4px 10px; border: 1px solid var(--border2);
-  border-radius: 5px; background: transparent; color: var(--text-dim);
+  border-radius: 5px; background: var(--surface); color: var(--text-dim);
   font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all .15s;
 }
-.pg-btn:hover:not(:disabled) { background: var(--border2); color: var(--text); }
-.pg-btn:disabled { opacity: .3; cursor: not-allowed; }
-.pg-btn.cur { background: var(--accent); color: #020d18; border-color: var(--accent); font-weight: 700; }
+.pg-btn:hover:not(:disabled) { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
+.pg-btn:disabled { opacity: .35; cursor: not-allowed; }
+.pg-btn.cur { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
 .pg-dots { color: var(--muted); }
 
-/* section heading for divisions/CF tab */
-.section-title {
-  font-size: 10px; font-weight: 700; color: var(--muted);
-  text-transform: uppercase; letter-spacing: .12em;
-  padding: 14px 16px 6px; border-bottom: 1px solid var(--border);
+/* print */
+@media print {
+  body { padding: 0; background: white; font-size: 10px; }
+  .topbar, .tab-bar, .pagination, .stats-grid, .fbtn, .search-wrap, .ctrl-sel, .print-btn { display: none !important; }
+  .tbl-wrap { box-shadow: none; border-radius: 0; }
+  .tbl-scroll { max-height: none; overflow: visible; }
+  table { font-size: 9px; }
+  th, td { padding: 5px 7px; }
 }
 
-/* tooltip on truncated */
-[title] { cursor: help; }
-
-::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 </style>
 </head>
 <body>
 
 <!-- ── Control bar ── -->
 <div class="topbar">
-  <span class="topbar-brand">📦 Inventory</span>
-  <div class="v-sep"></div>
+  <span class="brand">📦 Inventory Items</span>
+  <div class="vsep"></div>
   <button class="load-btn" id="load-btn" onclick="loadAllRecords()">⬇ Load All Records</button>
+  <button class="print-btn" onclick="window.print()">🖨 Print / Export</button>
 
   <div class="search-wrap">
-    <span class="search-icon">🔍</span>
+    <span class="si">🔍</span>
     <input type="text" id="search-input" placeholder="Search name / code…" oninput="applyFilters()" disabled>
   </div>
 
-  <select class="ctrl-select" id="sort-select" onchange="applyFilters()" disabled>
+  <select class="ctrl-sel" id="sort-select" onchange="applyFilters()" disabled>
     <option value="name-asc">Name A→Z</option>
     <option value="name-desc">Name Z→A</option>
     <option value="code-asc">Code A→Z</option>
-    <option value="val-desc">Valuation Method ↓</option>
-    <option value="qty-desc">Qty Desired ↓</option>
     <option value="sale-desc">Sale Price ↓</option>
     <option value="purchase-desc">Purchase Price ↓</option>
+    <option value="qty-desc">Qty Desired ↓</option>
   </select>
 
-  <button class="filter-btn" id="f-active"  onclick="toggleF('active')"  disabled>Active Only</button>
-  <button class="filter-btn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder Set</button>
-  <button class="filter-btn" id="f-hasdiv"  onclick="toggleF('hasdiv')"  disabled>Has Division</button>
-  <button class="filter-btn" id="f-hascf"   onclick="toggleF('hascf')"   disabled>Has Custom Fields</button>
+  <button class="fbtn" id="f-active"  onclick="toggleF('active')"  disabled>Active Only</button>
+  <button class="fbtn" id="f-reorder" onclick="toggleF('reorder')" disabled>Reorder</button>
+  <button class="fbtn" id="f-hasdiv"  onclick="toggleF('hasdiv')"  disabled>Has Division</button>
+  <button class="fbtn" id="f-hascf"   onclick="toggleF('hascf')"   disabled>Has Custom Fields</button>
 
   <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
   <span class="status-txt" id="status-txt">Press Load to fetch data</span>
 </div>
 
-<!-- ── Stats ── -->
+<!-- Stats injected here -->
 <div class="stats-grid" id="stats-grid" style="display:none"></div>
 
-<!-- ── Tabs ── -->
-<div class="tab-bar" id="tab-bar" style="display:none">
-  <div class="tab active" onclick="switchTab('inventory')">📊 Inventory Quantities</div>
-  <div class="tab" onclick="switchTab('pricing')">💰 Pricing & Valuation</div>
-  <div class="tab" onclick="switchTab('divisions')">🏢 Divisions</div>
-  <div class="tab" onclick="switchTab('customfields')">🏷 Custom Fields</div>
-  <div class="tab" onclick="switchTab('all')">⚙ All Fields</div>
+<!-- Tab bar + content -->
+<div id="tabs-container" style="display:none">
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('inventory')">📊 Inventory &amp; Quantities</div>
+    <div class="tab" onclick="switchTab('pricing')">💰 Pricing &amp; Valuation</div>
+    <div class="tab" onclick="switchTab('divisions')">🏢 Divisions &amp; Accounts</div>
+    <div class="tab" onclick="switchTab('customfields')">🏷 Custom Fields</div>
+    <div class="tab" onclick="switchTab('all')">⚙ All Fields</div>
+  </div>
+  <div id="app"></div>
 </div>
 
-<!-- ── Content ── -->
-<div id="app"></div>
+<div id="app-init"></div>
 
 <script>
 /* ══════════════════════════════════
@@ -359,82 +375,130 @@ async function getInventoryItemBatch(onProgress) {
 /* ══════════════════════════════════
    State
 ══════════════════════════════════ */
-let _raw      = [];     // all loaded records
-let _filtered = [];     // after filters/sort
+let _raw      = [];
+let _filtered = [];
 let _page     = 1;
 let _tab      = 'inventory';
 const PAGE_SIZE = 50;
 const _filters = { active: false, reorder: false, hasdiv: false, hascf: false };
 
+/* valuation method labels */
+const VALUATION = { 1: 'Average Cost', 2: 'FIFO', 3: 'LIFO', 4: 'Specific ID' };
+
 /* ══════════════════════════════════
-   Helpers
+   Utility: resolve a Manager "reference" object or string
+   Manager often returns { key, name } objects for linked entities.
+   We always display .name if available, fallback to .text, then raw string.
 ══════════════════════════════════ */
-const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const num = (v, d=0) => v != null ? Number(v).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }) : null;
-const price = v => v != null && v !== 0 ? num(v, 2) : null;
-const dash  = s => s != null && s !== '' ? s : '<span class="td-dim">—</span>';
-const VALUATION = { 1: 'Avg Cost', 2: 'FIFO', 3: 'LIFO', 4: 'Specific ID' };
+function resolveName(val) {
+  if (val == null) return null;
+  if (typeof val === 'object') {
+    // Manager reference objects typically have .name or .text
+    return val.name ?? val.text ?? val.nameWithCode ?? val.uniqueName ?? JSON.stringify(val);
+  }
+  return String(val);
+}
 
-/* Normalize a raw API record into a flat item object */
+/* ══════════════════════════════════
+   Utility: resolve custom field display name
+   customFields2.strings keys are often GUIDs — fetch the human label
+   from the key's "name" sub-property if available, else prettify the key.
+   Manager may structure CF keys as { key, name } pairs inside the batch.
+   We probe multiple known patterns.
+══════════════════════════════════ */
+function cfKeyLabel(key, cfMeta) {
+  // cfMeta may hold a name lookup if Manager provides it
+  if (cfMeta && cfMeta[key] && typeof cfMeta[key] === 'object' && cfMeta[key].name) {
+    return cfMeta[key].name;
+  }
+  // If the key looks like a UUID, return it as-is (will be replaced by metadata if found)
+  // Otherwise prettify camelCase / underscore
+  if (/^[0-9a-f-]{32,}$/i.test(key)) return key;
+  return key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim();
+}
+
+/* ══════════════════════════════════
+   Normalize raw API record → flat object
+══════════════════════════════════ */
 function normalize(raw) {
-  const it = raw?.item ?? raw;
+  const it  = raw?.item ?? raw;
   const cf2 = it?.customFields2 ?? {};
+
+  // Collect all custom field values keyed by field identifier
+  // Manager may provide { key: uuid, name: 'Field Label', value: ... } patterns
+  // We capture both the raw map and try to extract human names.
+  const cfStrings     = cf2.strings      ?? {};
+  const cfDecimals    = cf2.decimals     ?? {};
+  const cfDates       = cf2.dates        ?? {};
+  const cfBooleans    = cf2.booleans     ?? {};
+  const cfStringArrays= cf2.stringArrays ?? {};
+
+  // Build human-name lookup from any embedded metadata arrays
+  // Some endpoints return arrays of { key, name, value } inside customFields
+  const cfNameMap = {};
+  if (Array.isArray(it?.customFields)) {
+    it.customFields.forEach(f => {
+      if (f?.key && f?.name) cfNameMap[f.key] = f.name;
+    });
+  }
+
   const hasCF = !!(
-    (cf2.strings && Object.keys(cf2.strings).length) ||
-    (cf2.decimals && Object.keys(cf2.decimals).length) ||
-    (cf2.dates    && Object.keys(cf2.dates).length) ||
-    (cf2.booleans && Object.keys(cf2.booleans).length) ||
-    (cf2.stringArrays && Object.keys(cf2.stringArrays).length) ||
-    it?.customFields
+    Object.keys(cfStrings).length ||
+    Object.keys(cfDecimals).length ||
+    Object.keys(cfDates).length ||
+    Object.keys(cfBooleans).length ||
+    Object.keys(cfStringArrays).length
   );
+
   return {
-    key:            raw?.key ?? null,
-    itemCode:       it?.itemCode   ?? null,
-    itemName:       it?.itemName   ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
-    unitName:       it?.unitName   ?? null,
+    key:             raw?.key ?? null,
+    itemCode:        it?.itemCode   ?? null,
+    itemName:        it?.itemName   ?? it?.nameWithCode ?? it?.text ?? '(Unnamed)',
+    unitName:        it?.unitName   ?? null,
     valuationMethod: it?.valuationMethod ?? null,
-    inactive:       it?.inactive   ?? false,
-    reorderPoint:   it?.reorderPoint ?? false,
-    qtyDesired:     it?.qtyDesired ?? 0,
+    inactive:        it?.inactive   ?? false,
+    reorderPoint:    it?.reorderPoint ?? false,
+    qtyDesired:      it?.qtyDesired ?? 0,
 
-    // Inventory qty fields (API may not populate all for every endpoint — show if present)
-    qtyOwned:       it?.qtyOwned          ?? it?.quantityOwned       ?? null,
-    qtyOnHand:      it?.qtyOnHand         ?? it?.quantityOnHand      ?? null,
-    qtyToDeliver:   it?.qtyToDeliver      ?? it?.quantityToDeliver   ?? null,
-    qtyToReceive:   it?.qtyToReceive      ?? it?.quantityToReceive   ?? null,
-    averageCost:    it?.averageCost        ?? it?.unitCost            ?? (it?.obsolete_StartingBalanceAverageCost2 !== 0 ? it?.obsolete_StartingBalanceAverageCost2 : null) ?? null,
-    totalValue:     it?.totalValue        ?? it?.inventoryValue      ?? null,
+    // Inventory quantity fields (populated by inventory-item-batch when available)
+    qtyOwned:        it?.qtyOwned        ?? it?.quantityOwned      ?? null,
+    qtyOnHand:       it?.qtyOnHand       ?? it?.quantityOnHand     ?? null,
+    qtyToDeliver:    it?.qtyToDeliver    ?? it?.quantityToDeliver  ?? null,
+    qtyToReceive:    it?.qtyToReceive    ?? it?.quantityToReceive  ?? null,
+    averageCost:     it?.averageCost     ?? it?.unitCost           ??
+                     (it?.obsolete_StartingBalanceAverageCost2 > 0
+                       ? it.obsolete_StartingBalanceAverageCost2 : null),
+    totalValue:      it?.totalValue      ?? it?.inventoryValue     ?? null,
 
-    // Pricing
+    // Pricing defaults
     defPurchasePrice: it?.hasDefaultPurchaseUnitPrice ? (it?.defaultPurchaseUnitPrice ?? 0) : null,
     defSalePrice:     it?.hasDefaultSalesUnitPrice    ? (it?.defaultSalesUnitPrice    ?? 0) : null,
     defaultQty:       it?.hasDefaultQty ? (it?.defaultQty ?? 0) : null,
+    defaultLineDesc:  it?.hasDefaultLineDescription ? it?.defaultLineDescription : null,
 
-    // Division
-    division:       it?.division    ?? null,
-    defaultDivision: it?.hasDefaultDivision ? it?.defaultDivision : null,
-    divisionEnabled: it?.divisionEnabled ?? false,
+    // Division — always resolve to human name
+    divisionName:      resolveName(it?.division),
+    defaultDivisionName: it?.hasDefaultDivision ? resolveName(it?.defaultDivision) : null,
+    divisionEnabled:   it?.divisionEnabled ?? false,
 
-    // Accounts
-    incomeAccount:  it?.customIncomeAccount  ? it?.incomeAccount  : null,
-    expenseAccount: it?.customExpenseAccount ? it?.expenseAccount : null,
-    controlAccount: it?.controlAccount ?? null,
+    // Accounts — resolve names
+    incomeAccountName:  it?.customIncomeAccount  ? resolveName(it?.incomeAccount)  : null,
+    expenseAccountName: it?.customExpenseAccount ? resolveName(it?.expenseAccount) : null,
+    controlAccountName: resolveName(it?.controlAccount),
 
-    // Custom fields
-    customFields:   it?.customFields  ?? null,
-    cf2Strings:     cf2.strings       ?? null,
-    cf2Decimals:    cf2.decimals      ?? null,
-    cf2Dates:       cf2.dates         ?? null,
-    cf2Booleans:    cf2.booleans      ?? null,
-    cf2StringArrays:cf2.stringArrays  ?? null,
+    // Custom fields raw maps (key → value)
+    cfStrings,
+    cfDecimals,
+    cfDates,
+    cfBooleans,
+    cfStringArrays,
+    cfNameMap,   // human-name lookup for CF keys
     hasCF,
 
     // Flags
     hasCOGS:        it?.hasCostOfGoodsSold ?? false,
     taxEnabled:     it?.taxCodeEnabled     ?? false,
     projectEnabled: it?.projectEnabled     ?? false,
-    defaultLineDesc: it?.hasDefaultLineDescription ? it?.defaultLineDescription : null,
-    defaultTaxCode: it?.hasDefaultTaxCode ? it?.defaultTaxCode : null,
   };
 }
 
@@ -445,15 +509,15 @@ async function loadAllRecords() {
   const btn    = document.getElementById('load-btn');
   const bar    = document.getElementById('prog-bar');
   const status = document.getElementById('status-txt');
-  const app    = document.getElementById('app');
 
   btn.disabled = true; btn.textContent = 'Loading…';
-  bar.style.width = '0%'; app.innerHTML = '';
+  bar.style.width = '0%';
+  document.getElementById('app-init').innerHTML = '';
   document.getElementById('stats-grid').style.display = 'none';
-  document.getElementById('tab-bar').style.display = 'none';
-  ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.disabled = true;
-  });
+  document.getElementById('tabs-container').style.display = 'none';
+
+  const ids = ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'];
+  ids.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = true; });
 
   try {
     const raw = await getInventoryItemBatch((loaded, total, page) => {
@@ -467,10 +531,8 @@ async function loadAllRecords() {
     status.textContent = `✓ ${raw.length.toLocaleString()} records loaded`;
     btn.textContent = '↺ Reload'; btn.disabled = false;
 
-    ['search-input','sort-select','f-active','f-reorder','f-hasdiv','f-hascf'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.disabled = false;
-    });
-    document.getElementById('tab-bar').style.display = 'flex';
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = false; });
+    document.getElementById('tabs-container').style.display = 'block';
 
     _raw = raw.map(normalize);
     _page = 1;
@@ -479,12 +541,40 @@ async function loadAllRecords() {
   } catch (err) {
     status.textContent = '⚠ ' + err.message;
     btn.textContent = '↺ Retry'; btn.disabled = false;
-    app.innerHTML = `<div class="err-box">⚠ ${esc(err.message)}<br><small>Make sure this is running inside Manager.io</small></div>`;
+    document.getElementById('app-init').innerHTML =
+      `<div class="err-box">⚠ ${esc(err.message)}<br><small>Make sure this is running inside Manager.io</small></div>`;
   }
 }
 
 /* ══════════════════════════════════
-   Filter / sort
+   Helpers
+══════════════════════════════════ */
+const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const num   = (v, d=0) => v != null ? Number(v).toLocaleString(undefined, { minimumFractionDigits:d, maximumFractionDigits:d }) : null;
+const price = v => v != null ? num(v, 2) : null;
+const dash  = () => `<span class="td-dim">—</span>`;
+const na    = () => `<span class="td-na" title="Not provided by this endpoint">n/a</span>`;
+
+/* Collect all CF key→humanName pairs across the full dataset */
+function buildCFMeta(items, cfType) {
+  // Returns array of { key, label } deduplicated
+  const seen = new Map();
+  items.forEach(i => {
+    const map = i[cfType] ?? {};
+    const nameMap = i.cfNameMap ?? {};
+    Object.keys(map).forEach(k => {
+      if (!seen.has(k)) {
+        // Prefer embedded human name, else prettify
+        const label = nameMap[k] ?? cfKeyLabel(k, null);
+        seen.set(k, label);
+      }
+    });
+  });
+  return [...seen.entries()].map(([key, label]) => ({ key, label }));
+}
+
+/* ══════════════════════════════════
+   Filters & sort
 ══════════════════════════════════ */
 function toggleF(key) {
   _filters[key] = !_filters[key];
@@ -494,15 +584,15 @@ function toggleF(key) {
 }
 
 function applyFilters() {
-  const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
-  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
+  const q = (document.getElementById('search-input')?.value ?? '').trim().toLowerCase();
+  const sortKey = document.getElementById('sort-select')?.value ?? 'name-asc';
 
   let list = _raw.filter(i => {
     if (_filters.active  && i.inactive) return false;
     if (_filters.reorder && !i.reorderPoint) return false;
-    if (_filters.hasdiv  && !i.division && !i.defaultDivision) return false;
+    if (_filters.hasdiv  && !i.divisionName && !i.defaultDivisionName) return false;
     if (_filters.hascf   && !i.hasCF) return false;
-    if (q && !(i.itemName.toLowerCase().includes(q) || (i.itemCode||'').toLowerCase().includes(q))) return false;
+    if (q && !(i.itemName.toLowerCase().includes(q) || (i.itemCode??'').toLowerCase().includes(q))) return false;
     return true;
   });
 
@@ -510,11 +600,10 @@ function applyFilters() {
     switch (sortKey) {
       case 'name-asc':      return a.itemName.localeCompare(b.itemName);
       case 'name-desc':     return b.itemName.localeCompare(a.itemName);
-      case 'code-asc':      return (a.itemCode||'zzz').localeCompare(b.itemCode||'zzz');
-      case 'val-desc':      return (b.valuationMethod??0) - (a.valuationMethod??0);
-      case 'qty-desc':      return (b.qtyDesired??0) - (a.qtyDesired??0);
-      case 'sale-desc':     return (b.defSalePrice??-Infinity) - (a.defSalePrice??-Infinity);
-      case 'purchase-desc': return (b.defPurchasePrice??-Infinity) - (a.defPurchasePrice??-Infinity);
+      case 'code-asc':      return (a.itemCode??'zzz').localeCompare(b.itemCode??'zzz');
+      case 'sale-desc':     return (b.defSalePrice??-Infinity)-(a.defSalePrice??-Infinity);
+      case 'purchase-desc': return (b.defPurchasePrice??-Infinity)-(a.defPurchasePrice??-Infinity);
+      case 'qty-desc':      return (b.qtyDesired??0)-(a.qtyDesired??0);
       default:              return a.itemName.localeCompare(b.itemName);
     }
   });
@@ -528,27 +617,25 @@ function applyFilters() {
    Stats
 ══════════════════════════════════ */
 function renderStats() {
-  const total    = _raw.length;
-  const active   = _raw.filter(i => !i.inactive).length;
-  const reorder  = _raw.filter(i => i.reorderPoint).length;
-  const hasDivs  = _raw.filter(i => i.division || i.defaultDivision).length;
-  const hasCFs   = _raw.filter(i => i.hasCF).length;
-  const shown    = _filtered.length;
-
+  const total   = _raw.length;
+  const active  = _raw.filter(i => !i.inactive).length;
+  const reorder = _raw.filter(i => i.reorderPoint).length;
+  const hasDivs = _raw.filter(i => i.divisionName).length;
+  const hasCFs  = _raw.filter(i => i.hasCF).length;
   const sg = document.getElementById('stats-grid');
   sg.style.display = 'grid';
   sg.innerHTML = [
-    ['Total Items',    total,                 'all records',           'var(--head)'],
-    ['Active',         active,                `${total>0?Math.round(active/total*100):0}% of total`, 'var(--green)'],
-    ['Inactive',       total - active,        'hidden from use',       'var(--red)'],
-    ['Reorder Set',    reorder,               'have reorder point',    'var(--amber)'],
-    ['With Division',  hasDivs,               'have division assigned','var(--purple)'],
-    ['Custom Fields',  hasCFs,                'have custom data',      'var(--teal)'],
-    ['Showing',        shown,                 'after filters',         'var(--accent2)'],
-  ].map(([label, val, sub, color]) => `
+    ['Total Items',    total,           'all records',           'var(--head)'],
+    ['Active',         active,          `${total?Math.round(active/total*100):0}% of total`, 'var(--green)'],
+    ['Inactive',       total-active,    'hidden from use',       'var(--red)'],
+    ['Reorder Set',    reorder,         'have reorder point',    'var(--amber)'],
+    ['With Division',  hasDivs,         'have division',         'var(--purple)'],
+    ['Custom Fields',  hasCFs,          'have CF data',          'var(--teal)'],
+    ['Filtered Rows',  _filtered.length,'currently shown',       'var(--accent)'],
+  ].map(([lbl,val,sub,col])=>`
     <div class="stat-card">
-      <div class="stat-label">${label}</div>
-      <div class="stat-value" style="color:${color}">${Number(val).toLocaleString()}</div>
+      <div class="stat-label">${lbl}</div>
+      <div class="stat-value" style="color:${col}">${Number(val).toLocaleString()}</div>
       <div class="stat-sub">${sub}</div>
     </div>`).join('');
 }
@@ -558,25 +645,24 @@ function renderStats() {
 ══════════════════════════════════ */
 function switchTab(tab) {
   _tab = tab; _page = 1;
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-  const tabs = ['inventory','pricing','divisions','customfields','all'];
-  const idx = tabs.indexOf(tab);
-  document.querySelectorAll('.tab')[idx]?.classList.add('active');
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', ['inventory','pricing','divisions','customfields','all'][i] === tab);
+  });
   renderContent();
 }
 
 function renderContent() {
   switch (_tab) {
-    case 'inventory':   renderInventoryTab(); break;
-    case 'pricing':     renderPricingTab();   break;
-    case 'divisions':   renderDivisionsTab(); break;
-    case 'customfields':renderCFTab();        break;
-    case 'all':         renderAllTab();       break;
+    case 'inventory':    renderInventoryTab();    break;
+    case 'pricing':      renderPricingTab();      break;
+    case 'divisions':    renderDivisionsTab();    break;
+    case 'customfields': renderCFTab();           break;
+    case 'all':          renderAllTab();          break;
   }
 }
 
 /* ══════════════════════════════════
-   Pagination helpers
+   Pagination
 ══════════════════════════════════ */
 function pageSlice() {
   const total = _filtered.length;
@@ -586,18 +672,17 @@ function pageSlice() {
   return { items: _filtered.slice(start, start + PAGE_SIZE), start, total, totalPages };
 }
 
-function paginationHTML(total, totalPages, start) {
-  if (totalPages <= 1) return '';
-  const p = _page, maxB = 7;
-  let ps = Math.max(1, p - 3), pe = Math.min(totalPages, ps + maxB - 1);
-  if (pe - ps < maxB - 1) ps = Math.max(1, pe - maxB + 1);
+function pgHTML(total, totalPages, start) {
+  if (totalPages <= 1 && total <= PAGE_SIZE) return '';
+  const p = _page, mb = 7;
+  let ps = Math.max(1, p-3), pe = Math.min(totalPages, ps+mb-1);
+  if (pe-ps < mb-1) ps = Math.max(1, pe-mb+1);
   let btns = '';
-  if (ps > 1) btns += `<button class="pg-btn" onclick="goPage(1)">1</button>${ps>2?'<span class="pg-dots">…</span>':''}`;
-  for (let i = ps; i <= pe; i++) btns += `<button class="pg-btn${i===p?' cur':''}" onclick="goPage(${i})">${i}</button>`;
-  if (pe < totalPages) btns += `${pe<totalPages-1?'<span class="pg-dots">…</span>':''}<button class="pg-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
-
+  if (ps>1) btns += `<button class="pg-btn" onclick="goPage(1)">1</button>${ps>2?'<span class="pg-dots">…</span>':''}`;
+  for (let i=ps; i<=pe; i++) btns += `<button class="pg-btn${i===p?' cur':''}" onclick="goPage(${i})">${i}</button>`;
+  if (pe<totalPages) btns += `${pe<totalPages-1?'<span class="pg-dots">…</span>':''}<button class="pg-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
   return `<div class="pagination">
-    <span>Rows ${start+1}–${Math.min(start+PAGE_SIZE, total)} of ${total.toLocaleString()}</span>
+    <span>Rows ${start+1}–${Math.min(start+PAGE_SIZE,total)} of ${total.toLocaleString()}</span>
     <button class="pg-btn" onclick="goPage(${p-1})" ${p<=1?'disabled':''}>← Prev</button>
     ${btns}
     <button class="pg-btn" onclick="goPage(${p+1})" ${p>=totalPages?'disabled':''}>Next →</button>
@@ -611,95 +696,75 @@ function goPage(p) {
   document.getElementById('app')?.scrollIntoView({ behavior: 'smooth' });
 }
 
-function emptyOrTable(content, pagination) {
-  if (!_filtered.length) return `<div class="tbl-wrap"><div class="empty-state"><div class="icon">📭</div><div>${_raw.length?'No items match filters.':'No data loaded yet.'}</div></div></div>`;
-  return `<div class="tbl-wrap"><div class="tbl-scroll">${content}</div>${pagination}</div>`;
+function wrapTable(tbl, pag) {
+  if (!_filtered.length) return `<div class="tbl-wrap">
+    <div class="empty-state"><div class="icon">📭</div>
+    <div>${_raw.length ? 'No items match your filters.' : 'No data loaded.'}</div></div></div>`;
+  return `<div class="tbl-wrap"><div class="tbl-scroll">${tbl}</div>${pag}</div>`;
 }
 
-/* ── Group letter header helper ── */
-function groupRow(name, colspan) {
+/* optional group row (alpha letter) */
+let _lastGrp = '';
+function maybeGroupRow(name, cols) {
+  const sortKey = document.getElementById('sort-select')?.value ?? 'name-asc';
+  if (sortKey !== 'name-asc') return '';
   const ch = (name||'?')[0].toUpperCase();
   const g = /[A-Z]/.test(ch) ? ch : '#';
-  return `<tr class="grp-row"><td colspan="${colspan}">— ${g} —</td></tr>`;
+  if (g === _lastGrp) return '';
+  _lastGrp = g;
+  return `<tr class="grp-row"><td colspan="${cols}">— ${g} —</td></tr>`;
 }
 
 /* ══════════════════════════════════
-   Tab: Inventory Quantities
+   Tab: Inventory & Quantities
 ══════════════════════════════════ */
 function renderInventoryTab() {
   const { items, start, total, totalPages } = pageSlice();
-  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
-  const grouped = sortKey === 'name-asc';
-  let lastG = '', rows = '';
-
+  _lastGrp = '';
+  let rows = '';
   items.forEach(i => {
-    if (grouped) {
-      const g = /[A-Z]/i.test((i.itemName||'?')[0]) ? (i.itemName[0].toUpperCase()) : '#';
-      if (g !== lastG) { rows += groupRow(i.itemName, 9); lastG = g; }
-    }
-
+    rows += maybeGroupRow(i.itemName, 11);
+    const qc = v => v != null ? `<span style="color:var(--text)">${num(v,2)}</span>` : na();
     const statusBadge = i.inactive
       ? `<span class="badge b-inactive">Inactive</span>`
       : `<span class="badge b-active">Active</span>`;
-
-    const reorderBadge = i.reorderPoint
-      ? `<span class="badge b-reorder">✦ ${i.qtyDesired > 0 ? num(i.qtyDesired) : 'Set'}</span>`
-      : `<span class="td-dim">—</span>`;
-
-    // qty columns — show value if not null, else show note that field may not be in this endpoint
-    const qtyCell = v => v != null
-      ? `<span style="color:var(--text)">${num(v, 2)}</span>`
-      : `<span class="td-dim" title="Not returned by inventory-item-batch">n/a</span>`;
-
-    const avgCostCell = i.averageCost != null
-      ? `<span style="color:var(--amber)">${num(i.averageCost, 4)}</span>`
-      : `<span class="td-dim">n/a</span>`;
-
-    const totalValCell = i.totalValue != null
-      ? `<span style="color:var(--green)">${num(i.totalValue, 2)}</span>`
-      : `<span class="td-dim">n/a</span>`;
-
+    const reorderCell = i.reorderPoint
+      ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>`
+      : dash();
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : '<span class="td-dim">—</span>'}</td>
+      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName ? esc(i.unitName) : '<span class="td-dim">—</span>'}</td>
-      <td class="td-num">${qtyCell(i.qtyOwned)}</td>
-      <td class="td-num">${qtyCell(i.qtyOnHand)}</td>
-      <td class="td-num">${qtyCell(i.qtyToDeliver)}</td>
-      <td class="td-num">${qtyCell(i.qtyToReceive)}</td>
-      <td class="td-num">${avgCostCell}</td>
-      <td class="td-num">${totalValCell}</td>
-      <td>${reorderBadge}</td>
+      <td class="td-unit">${i.unitName ? esc(i.unitName) : dash()}</td>
+      <td class="td-num">${qc(i.qtyOwned)}</td>
+      <td class="td-num">${qc(i.qtyOnHand)}</td>
+      <td class="td-num">${qc(i.qtyToDeliver)}</td>
+      <td class="td-num">${qc(i.qtyToReceive)}</td>
+      <td class="td-num">${i.averageCost!=null?`<b>${num(i.averageCost,4)}</b>`:na()}</td>
+      <td class="td-num">${i.totalValue!=null?`<b style="color:var(--green)">${num(i.totalValue,2)}</b>`:na()}</td>
+      <td>${reorderCell}</td>
       <td>${statusBadge}</td>
     </tr>`;
   });
 
   const tbl = `<table>
     <thead>
-      <tr>
-        <th class="col-group cg-id" colspan="3">Identification</th>
-        <th class="col-group cg-qty" colspan="4">Quantities</th>
-        <th class="col-group cg-val" colspan="2">Valuation</th>
-        <th class="col-group cg-misc" colspan="2">Status</th>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="3">Identification</th>
+        <th class="cg cg-qty" colspan="4">Quantities</th>
+        <th class="cg cg-val" colspan="2">Valuation</th>
+        <th class="cg cg-misc" colspan="2">Status</th>
       </tr>
-      <tr>
-        <th onclick="sortTable('code-asc')">Code</th>
-        <th onclick="sortTable('name-asc')">Item Name</th>
-        <th>Unit</th>
-        <th class="r">Qty Owned</th>
-        <th class="r">Qty On Hand</th>
-        <th class="r">Qty to Deliver</th>
-        <th class="r">Qty to Receive</th>
-        <th class="r">Avg Cost</th>
-        <th class="r">Total Value</th>
-        <th class="r">Reorder</th>
-        <th>Status</th>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th><th>Unit</th>
+        <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
+        <th class="r">Qty to Deliver</th><th class="r">Qty to Receive</th>
+        <th class="r">Avg Cost</th><th class="r">Total Value</th>
+        <th class="r">Reorder</th><th>Status</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
   </table>`;
-
-  document.getElementById('app').innerHTML = emptyOrTable(tbl, paginationHTML(total, totalPages, start));
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
 }
 
 /* ══════════════════════════════════
@@ -707,255 +772,218 @@ function renderInventoryTab() {
 ══════════════════════════════════ */
 function renderPricingTab() {
   const { items, start, total, totalPages } = pageSlice();
-  let rows = '', lastG = '';
-  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
-  const grouped = sortKey === 'name-asc';
-
+  _lastGrp = '';
+  let rows = '';
   items.forEach(i => {
-    if (grouped) {
-      const g = /[A-Z]/i.test((i.itemName||'?')[0]) ? i.itemName[0].toUpperCase() : '#';
-      if (g !== lastG) { rows += groupRow(i.itemName, 8); lastG = g; }
-    }
-
-    const valLabel = VALUATION[i.valuationMethod] ?? (i.valuationMethod != null ? `#${i.valuationMethod}` : null);
+    rows += maybeGroupRow(i.itemName, 8);
+    const valLabel = VALUATION[i.valuationMethod] ?? (i.valuationMethod!=null?`Method ${i.valuationMethod}`:null);
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : '<span class="td-dim">—</span>'}</td>
+      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName ? esc(i.unitName) : '<span class="td-dim">—</span>'}</td>
-      <td>${valLabel ? `<span class="badge b-val">${esc(valLabel)}</span>` : '<span class="td-dim">—</span>'}</td>
-      <td class="td-num">${price(i.defPurchasePrice) ?? '<span class="td-dim">—</span>'}</td>
-      <td class="td-num">${price(i.defSalePrice) ?? '<span class="td-dim">—</span>'}</td>
-      <td class="td-num">${i.defaultQty != null ? num(i.defaultQty) : '<span class="td-dim">—</span>'}</td>
-      <td>${i.defaultLineDesc ? `<span style="font-size:10px;color:var(--text-dim)">${esc(i.defaultLineDesc)}</span>` : '<span class="td-dim">—</span>'}</td>
+      <td class="td-unit">${i.unitName ? esc(i.unitName) : dash()}</td>
+      <td>${valLabel ? `<span class="badge b-val">${esc(valLabel)}</span>` : dash()}</td>
+      <td class="td-num">${price(i.defPurchasePrice) ?? dash()}</td>
+      <td class="td-num">${price(i.defSalePrice) ?? dash()}</td>
+      <td class="td-num">${i.defaultQty!=null ? num(i.defaultQty) : dash()}</td>
+      <td style="font-size:10px;color:var(--text-dim)">${i.defaultLineDesc ? esc(i.defaultLineDesc) : dash()}</td>
     </tr>`;
   });
 
   const tbl = `<table>
     <thead>
-      <tr>
-        <th class="col-group cg-id" colspan="3">Identification</th>
-        <th class="col-group cg-val" colspan="2">Method / Cost</th>
-        <th class="col-group cg-val" colspan="3">Defaults</th>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="3">Identification</th>
+        <th class="cg cg-val" colspan="2">Method &amp; Cost</th>
+        <th class="cg cg-val" colspan="3">Default Settings</th>
       </tr>
-      <tr>
-        <th>Code</th>
-        <th>Item Name</th>
-        <th>Unit</th>
-        <th>Valuation</th>
-        <th class="r">Purchase Price</th>
-        <th class="r">Sale Price</th>
-        <th class="r">Default Qty</th>
-        <th>Default Description</th>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th><th>Unit</th>
+        <th>Valuation Method</th>
+        <th class="r">Purchase Price</th><th class="r">Sale Price</th>
+        <th class="r">Default Qty</th><th>Default Description</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
   </table>`;
-
-  document.getElementById('app').innerHTML = emptyOrTable(tbl, paginationHTML(total, totalPages, start));
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
 }
 
 /* ══════════════════════════════════
-   Tab: Divisions
+   Tab: Divisions & Accounts
+   Division names shown (not keys)
 ══════════════════════════════════ */
 function renderDivisionsTab() {
   const { items, start, total, totalPages } = pageSlice();
-  let rows = '', lastG = '';
-  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
-  const grouped = sortKey === 'name-asc';
-
+  _lastGrp = '';
+  let rows = '';
   items.forEach(i => {
-    if (grouped) {
-      const g = /[A-Z]/i.test((i.itemName||'?')[0]) ? i.itemName[0].toUpperCase() : '#';
-      if (g !== lastG) { rows += groupRow(i.itemName, 8); lastG = g; }
-    }
-
-    const divisionChip = name => name
-      ? `<span class="div-chip">${esc(typeof name === 'object' ? (name.name ?? JSON.stringify(name)) : name)}</span>`
-      : `<span class="td-dim">—</span>`;
-
+    rows += maybeGroupRow(i.itemName, 8);
+    const dc = name => name ? `<span class="div-chip">${esc(name)}</span>` : dash();
+    const ac = name => name ? `<span style="font-size:10px">${esc(name)}</span>` : dash();
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : '<span class="td-dim">—</span>'}</td>
+      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td>${divisionChip(i.division)}</td>
-      <td>${divisionChip(i.defaultDivision)}</td>
-      <td style="text-align:center">${i.divisionEnabled ? '✓' : '<span class="td-dim">✗</span>'}</td>
-      <td>${i.incomeAccount  ? `<span style="font-size:10px;color:var(--teal)">${esc(typeof i.incomeAccount === 'object' ? (i.incomeAccount.name ?? JSON.stringify(i.incomeAccount)) : i.incomeAccount)}</span>` : '<span class="td-dim">—</span>'}</td>
-      <td>${i.expenseAccount ? `<span style="font-size:10px;color:var(--amber)">${esc(typeof i.expenseAccount === 'object' ? (i.expenseAccount.name ?? JSON.stringify(i.expenseAccount)) : i.expenseAccount)}</span>` : '<span class="td-dim">—</span>'}</td>
-      <td>${i.controlAccount ? `<span style="font-size:10px;color:var(--purple)">${esc(typeof i.controlAccount === 'object' ? (i.controlAccount.name ?? JSON.stringify(i.controlAccount)) : i.controlAccount)}</span>` : '<span class="td-dim">—</span>'}</td>
+      <td>${dc(i.divisionName)}</td>
+      <td>${dc(i.defaultDivisionName)}</td>
+      <td style="text-align:center;color:${i.divisionEnabled?'var(--green)':'var(--muted)'}">${i.divisionEnabled?'✓':'✗'}</td>
+      <td>${ac(i.incomeAccountName)}</td>
+      <td>${ac(i.expenseAccountName)}</td>
+      <td>${ac(i.controlAccountName)}</td>
     </tr>`;
   });
 
   const tbl = `<table>
     <thead>
-      <tr>
-        <th class="col-group cg-id" colspan="2">Identification</th>
-        <th class="col-group cg-div" colspan="3">Divisions</th>
-        <th class="col-group cg-misc" colspan="3">Accounts</th>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="2">Identification</th>
+        <th class="cg cg-div" colspan="3">Divisions</th>
+        <th class="cg cg-misc" colspan="3">Accounts</th>
       </tr>
-      <tr>
-        <th>Code</th>
-        <th>Item Name</th>
-        <th>Division</th>
-        <th>Default Division</th>
-        <th style="text-align:center">Div. Enabled</th>
-        <th>Income Account</th>
-        <th>Expense Account</th>
-        <th>Control Account</th>
+      <tr class="hdr-row">
+        <th>Code</th><th>Item Name</th>
+        <th>Division</th><th>Default Division</th><th style="text-align:center">Div. On</th>
+        <th>Income Account</th><th>Expense Account</th><th>Control Account</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
   </table>`;
-
-  document.getElementById('app').innerHTML = emptyOrTable(tbl, paginationHTML(total, totalPages, start));
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
 }
 
 /* ══════════════════════════════════
    Tab: Custom Fields
+   Column headers = human-readable field names (not keys).
+   Values shown as-is.
 ══════════════════════════════════ */
 function renderCFTab() {
   const { items, start, total, totalPages } = pageSlice();
-  let rows = '', lastG = '';
-  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
-  const grouped = sortKey === 'name-asc';
 
-  // Collect all cf2 keys across dataset to build dynamic columns
-  const allStrKeys  = new Set(), allDecKeys = new Set(), allBoolKeys = new Set(), allDateKeys = new Set();
-  _filtered.forEach(i => {
-    Object.keys(i.cf2Strings  || {}).forEach(k => allStrKeys.add(k));
-    Object.keys(i.cf2Decimals || {}).forEach(k => allDecKeys.add(k));
-    Object.keys(i.cf2Booleans || {}).forEach(k => allBoolKeys.add(k));
-    Object.keys(i.cf2Dates    || {}).forEach(k => allDateKeys.add(k));
-  });
-  const strKeys  = [...allStrKeys];
-  const decKeys  = [...allDecKeys];
-  const boolKeys = [...allBoolKeys];
-  const dateKeys = [...allDateKeys];
-  const hasAnyCF = strKeys.length || decKeys.length || boolKeys.length || dateKeys.length;
+  // Build dynamic columns across all filtered items
+  const strCols  = buildCFMeta(_filtered, 'cfStrings');
+  const decCols  = buildCFMeta(_filtered, 'cfDecimals');
+  const boolCols = buildCFMeta(_filtered, 'cfBooleans');
+  const dateCols = buildCFMeta(_filtered, 'cfDates');
+  const arrCols  = buildCFMeta(_filtered, 'cfStringArrays');
+  const total_cols = 2 + strCols.length + decCols.length + boolCols.length + dateCols.length + arrCols.length;
 
-  if (!hasAnyCF) {
-    // No custom fields in data — show note
+  if (total_cols === 2) {
     document.getElementById('app').innerHTML = `<div class="tbl-wrap">
-      <div class="empty-state">
-        <div class="icon">🏷</div>
-        <div style="margin-bottom:8px">No custom fields found in loaded data.</div>
-        <div style="font-size:11px;color:var(--text-dim)">Custom fields appear here when items have customFields2 data populated.</div>
-      </div>
-    </div>`;
+      <div class="empty-state"><div class="icon">🏷</div>
+      <div>No custom field data found in loaded records.</div>
+      <div style="font-size:11px;margin-top:6px;color:var(--muted)">Custom fields appear here when items have customFields2 data from Manager.</div>
+      </div></div>`;
     return;
   }
 
+  _lastGrp = '';
+  let rows = '';
   items.forEach(i => {
-    if (grouped) {
-      const g = /[A-Z]/i.test((i.itemName||'?')[0]) ? i.itemName[0].toUpperCase() : '#';
-      if (g !== lastG) { rows += groupRow(i.itemName, 2 + strKeys.length + decKeys.length + boolKeys.length + dateKeys.length); lastG = g; }
-    }
-
+    rows += maybeGroupRow(i.itemName, total_cols);
     let cells = `
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : '<span class="td-dim">—</span>'}</td>
+      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>`;
 
-    strKeys.forEach(k => {
-      const v = i.cf2Strings?.[k]; cells += `<td>${v != null ? `<span class="cf-tag"><span class="cf-key">${esc(k)}</span>${esc(v)}</span>` : '<span class="td-dim">—</span>'}</td>`;
+    strCols.forEach(({key}) => {
+      const v = i.cfStrings[key];
+      cells += `<td>${v!=null?`<span class="cf-tag" title="${esc(String(v))}">${esc(String(v))}</span>`:dash()}</td>`;
     });
-    decKeys.forEach(k => {
-      const v = i.cf2Decimals?.[k]; cells += `<td class="td-num">${v != null ? num(v, 2) : '<span class="td-dim">—</span>'}</td>`;
+    decCols.forEach(({key}) => {
+      const v = i.cfDecimals[key];
+      cells += `<td class="td-num">${v!=null?num(Number(v),2):dash()}</td>`;
     });
-    boolKeys.forEach(k => {
-      const v = i.cf2Booleans?.[k]; cells += `<td style="text-align:center">${v != null ? (v ? '✓' : '✗') : '<span class="td-dim">—</span>'}</td>`;
+    boolCols.forEach(({key}) => {
+      const v = i.cfBooleans[key];
+      cells += `<td style="text-align:center">${v!=null?(v?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--muted)">✗</span>'):dash()}</td>`;
     });
-    dateKeys.forEach(k => {
-      const v = i.cf2Dates?.[k]; cells += `<td style="font-size:10px;font-family:var(--mono)">${v ? esc(v) : '<span class="td-dim">—</span>'}</td>`;
+    dateCols.forEach(({key}) => {
+      const v = i.cfDates[key];
+      cells += `<td style="font-family:var(--mono);font-size:10px">${v?esc(String(v)):dash()}</td>`;
+    });
+    arrCols.forEach(({key}) => {
+      const v = i.cfStringArrays[key];
+      const disp = Array.isArray(v) ? v.join(', ') : (v!=null ? String(v) : null);
+      cells += `<td style="font-size:10px">${disp?esc(disp):dash()}</td>`;
     });
 
     rows += `<tr>${cells}</tr>`;
   });
 
-  const colSpans = [
-    strKeys.length  ? `<th class="col-group cg-cf" colspan="${strKeys.length}">Text Fields</th>` : '',
-    decKeys.length  ? `<th class="col-group cg-cf" colspan="${decKeys.length}">Numeric Fields</th>` : '',
-    boolKeys.length ? `<th class="col-group cg-cf" colspan="${boolKeys.length}">Boolean Fields</th>` : '',
-    dateKeys.length ? `<th class="col-group cg-cf" colspan="${dateKeys.length}">Date Fields</th>` : '',
+  // Column group header cells
+  const cgRow = [
+    `<th class="cg cg-id" colspan="2">Identification</th>`,
+    strCols.length  ? `<th class="cg cg-cf" colspan="${strCols.length}">Text Fields</th>` : '',
+    decCols.length  ? `<th class="cg cg-cf" colspan="${decCols.length}">Number Fields</th>` : '',
+    boolCols.length ? `<th class="cg cg-cf" colspan="${boolCols.length}">Boolean Fields</th>` : '',
+    dateCols.length ? `<th class="cg cg-cf" colspan="${dateCols.length}">Date Fields</th>` : '',
+    arrCols.length  ? `<th class="cg cg-cf" colspan="${arrCols.length}">List Fields</th>` : '',
   ].join('');
 
-  const colHeaders = [
-    ...strKeys.map(k  => `<th>${esc(k)}</th>`),
-    ...decKeys.map(k  => `<th class="r">${esc(k)}</th>`),
-    ...boolKeys.map(k => `<th style="text-align:center">${esc(k)}</th>`),
-    ...dateKeys.map(k => `<th>${esc(k)}</th>`),
+  // Human-readable column headers
+  const hdrRow = [
+    `<th>Code</th><th>Item Name</th>`,
+    ...strCols.map(c  => `<th>${esc(c.label)}</th>`),
+    ...decCols.map(c  => `<th class="r">${esc(c.label)}</th>`),
+    ...boolCols.map(c => `<th style="text-align:center">${esc(c.label)}</th>`),
+    ...dateCols.map(c => `<th>${esc(c.label)}</th>`),
+    ...arrCols.map(c  => `<th>${esc(c.label)}</th>`),
   ].join('');
 
   const tbl = `<table>
     <thead>
-      <tr>
-        <th class="col-group cg-id" colspan="2">Identification</th>
-        ${colSpans}
-      </tr>
-      <tr>
-        <th>Code</th>
-        <th>Item Name</th>
-        ${colHeaders}
-      </tr>
+      <tr class="cg-row">${cgRow}</tr>
+      <tr class="hdr-row">${hdrRow}</tr>
     </thead>
     <tbody>${rows}</tbody>
   </table>`;
-
-  document.getElementById('app').innerHTML = emptyOrTable(tbl, paginationHTML(total, totalPages, start));
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
 }
 
 /* ══════════════════════════════════
-   Tab: All Fields
+   Tab: All Fields combined
 ══════════════════════════════════ */
 function renderAllTab() {
   const { items, start, total, totalPages } = pageSlice();
-  let rows = '', lastG = '';
-  const sortKey = document.getElementById('sort-select')?.value || 'name-asc';
-  const grouped = sortKey === 'name-asc';
-
+  _lastGrp = '';
+  let rows = '';
   items.forEach(i => {
-    if (grouped) {
-      const g = /[A-Z]/i.test((i.itemName||'?')[0]) ? i.itemName[0].toUpperCase() : '#';
-      if (g !== lastG) { rows += groupRow(i.itemName, 16); lastG = g; }
-    }
-
-    const valLabel = VALUATION[i.valuationMethod] ?? (i.valuationMethod != null ? `#${i.valuationMethod}` : null);
-    const statusBadge = i.inactive ? `<span class="badge b-inactive">Inactive</span>` : `<span class="badge b-active">Active</span>`;
-    const qc = v => v != null ? `<span style="color:var(--text)">${num(v,2)}</span>` : `<span class="td-dim">n/a</span>`;
-
-    const divCell = d => d
-      ? `<span class="div-chip">${esc(typeof d==='object'?(d.name??JSON.stringify(d)):d)}</span>`
-      : `<span class="td-dim">—</span>`;
-
+    rows += maybeGroupRow(i.itemName, 16);
+    const qc  = v => v!=null ? num(v,2) : na();
+    const dc  = name => name ? `<span class="div-chip">${esc(name)}</span>` : dash();
+    const vl  = VALUATION[i.valuationMethod];
+    const sb  = i.inactive
+      ? `<span class="badge b-inactive">Inactive</span>`
+      : `<span class="badge b-active">Active</span>`;
     rows += `<tr>
-      <td class="td-code">${i.itemCode ? esc(i.itemCode) : '<span class="td-dim">—</span>'}</td>
+      <td class="td-code">${i.itemCode ? esc(i.itemCode) : dash()}</td>
       <td class="td-name" title="${esc(i.itemName)}">${esc(i.itemName)}</td>
-      <td class="td-unit">${i.unitName ? esc(i.unitName) : '<span class="td-dim">—</span>'}</td>
-      <td>${statusBadge}</td>
+      <td class="td-unit">${i.unitName ? esc(i.unitName) : dash()}</td>
+      <td>${sb}</td>
       <td class="td-num">${qc(i.qtyOwned)}</td>
       <td class="td-num">${qc(i.qtyOnHand)}</td>
       <td class="td-num">${qc(i.qtyToDeliver)}</td>
       <td class="td-num">${qc(i.qtyToReceive)}</td>
-      <td class="td-num">${i.averageCost != null ? `<span style="color:var(--amber)">${num(i.averageCost,4)}</span>` : '<span class="td-dim">n/a</span>'}</td>
-      <td class="td-num">${i.totalValue != null ? `<span style="color:var(--green)">${num(i.totalValue,2)}</span>` : '<span class="td-dim">n/a</span>'}</td>
-      <td>${valLabel ? `<span class="badge b-val">${esc(valLabel)}</span>` : '<span class="td-dim">—</span>'}</td>
-      <td class="td-num">${price(i.defPurchasePrice) ?? '<span class="td-dim">—</span>'}</td>
-      <td class="td-num">${price(i.defSalePrice) ?? '<span class="td-dim">—</span>'}</td>
-      <td>${divCell(i.division)}</td>
-      <td>${divCell(i.defaultDivision)}</td>
-      <td>${i.reorderPoint ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>` : '<span class="td-dim">—</span>'}</td>
+      <td class="td-num">${i.averageCost!=null?num(i.averageCost,4):na()}</td>
+      <td class="td-num">${i.totalValue!=null?`<b style="color:var(--green)">${num(i.totalValue,2)}</b>`:na()}</td>
+      <td>${vl ? `<span class="badge b-val">${esc(vl)}</span>` : dash()}</td>
+      <td class="td-num">${price(i.defPurchasePrice) ?? dash()}</td>
+      <td class="td-num">${price(i.defSalePrice) ?? dash()}</td>
+      <td>${dc(i.divisionName)}</td>
+      <td>${dc(i.defaultDivisionName)}</td>
+      <td>${i.reorderPoint ? `<span class="badge b-reorder">✦ ${i.qtyDesired>0?num(i.qtyDesired):'Set'}</span>` : dash()}</td>
     </tr>`;
   });
 
   const tbl = `<table>
     <thead>
-      <tr>
-        <th class="col-group cg-id" colspan="4">Identification</th>
-        <th class="col-group cg-qty" colspan="4">Quantities</th>
-        <th class="col-group cg-val" colspan="2">Valuation</th>
-        <th class="col-group cg-val" colspan="3">Pricing</th>
-        <th class="col-group cg-div" colspan="2">Divisions</th>
-        <th class="col-group cg-misc" colspan="1">Reorder</th>
+      <tr class="cg-row">
+        <th class="cg cg-id" colspan="4">Identification</th>
+        <th class="cg cg-qty" colspan="4">Quantities</th>
+        <th class="cg cg-val" colspan="2">Valuation</th>
+        <th class="cg cg-val" colspan="3">Pricing</th>
+        <th class="cg cg-div" colspan="2">Divisions</th>
+        <th class="cg cg-misc" colspan="1">Reorder</th>
       </tr>
-      <tr>
+      <tr class="hdr-row">
         <th>Code</th><th>Item Name</th><th>Unit</th><th>Status</th>
         <th class="r">Qty Owned</th><th class="r">Qty On Hand</th>
         <th class="r">To Deliver</th><th class="r">To Receive</th>
@@ -968,18 +996,11 @@ function renderAllTab() {
     </thead>
     <tbody>${rows}</tbody>
   </table>`;
-
-  document.getElementById('app').innerHTML = emptyOrTable(tbl, paginationHTML(total, totalPages, start));
-}
-
-function sortTable(key) {
-  const sel = document.getElementById('sort-select');
-  if (sel) sel.value = key;
-  _page = 1; applyFilters();
+  document.getElementById('app').innerHTML = wrapTable(tbl, pgHTML(total, totalPages, start));
 }
 
 /* ══════════════════════════════════
-   render(items) — entry point
+   render() — entry point from loadAllRecords
 ══════════════════════════════════ */
 function render(items) {
   _raw = items.map(normalize);
